@@ -20,7 +20,7 @@ Classes:
        SpMarkov
        LocalMarkov
 """
-from Numeric import *
+from numpy import *
 # stars imports
 from stars import *
 from Data import *
