@@ -5,6 +5,8 @@
 
 graph = {0:[2,1],1:[0,3],2:[0,4,3],3:[1,2,5,],4:[2,6,5],5:[3,4,7],6:[4,7],7:[5,6]}
 
+
+
 	
 def short(G={}):
 	"""Returns the shortest steps and path from each vertex to each other.
@@ -40,6 +42,9 @@ def short(G={}):
 				for item in range(len(neigh[num][0])):	
 					end = neigh[num][0][item]
 					if anst[end][2] == -1:
+                        # this adds if node isn't yet visited, but there is no
+                        # distance check, so perhaps this won't find the
+                        # shortest path?
 						anst[end][2]=anst[st][2]+1
 						anst[end][3]=pp + " - "+str(end)
 						t = t-1
