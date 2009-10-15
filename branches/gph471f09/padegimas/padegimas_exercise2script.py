@@ -25,8 +25,8 @@ while i < 8:
 	j = 0
 	while j < 7:
 		print shortest_path (g, i, j)
-		print len (shortest_path (g, i, j))
+		print len (shortest_path (g, i, j))  # length of path is one less 
 		j = j + 1
 	print shortest_path (g, i, j)
-	print len (shortest_path (g, i, j))
+	print len (shortest_path (g, i, j)) 
 	i = i + 1
