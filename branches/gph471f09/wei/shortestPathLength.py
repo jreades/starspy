@@ -43,4 +43,7 @@ def shortestPathLength(graph = {0: [2, 1], 1: [0, 3], 2: [0, 4, 3], 3: [1, 2, 5]
 
 dis = shortestPathLength()
 print dis
+
+
+# where are the paths?
             
