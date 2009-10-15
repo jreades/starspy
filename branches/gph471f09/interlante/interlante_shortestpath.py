@@ -43,3 +43,6 @@ for i in nodes:
 			print shortestpath(conn,i,j)
 			s= i + "->" + j + " with shortest path length of " + str(len(shortestpath(conn,i,j)))
 			print s
+
+
+# paths are one unit shorter than you are reporting.
