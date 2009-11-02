@@ -15,9 +15,13 @@ class Kmeans(object):
             Recompute the centroid of each cluster
     (4) Until The centroids do not change
     
-    This class is to wrap the class "scipy.cluster.vq"
+    This class is to wrap the class "scipy.cluster.vq", including some customized functions as well.
     More details can be found at 
     http://docs.scipy.org/doc/scipy/reference/cluster.vq.html
+
+    customized functions:
+    (1) dic1(self)
+    (2) dic2(self)
     '''
 
 
