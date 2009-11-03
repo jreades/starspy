@@ -30,6 +30,11 @@ class HCluster(object):
     (2) getChildren(self, Z, index)
     (3) expandClusters(self, Z
     (4) kClusters(self, Z, k)
+    (5) kClusters2(self, Z, k)
+    (5) compareLists(self, L1, L2)
+    (6) minCluster(self, Z, L)
+    (7) obsToClusters(self, Z, L)
+
     '''
 
 
@@ -906,15 +911,168 @@ class HCluster(object):
             for i in range(nkeys):
                 D[int(temp[i])]=self.getChildren(Z,temp[i])
         return D
+
+    def kClusters2(self, Z, k):
+        '''
+        If we need k clusters in the hierachy clustering, this function will return a list of k indexes of those clusters.
+
+        Arguments: 
+            Z : ndarray, The linkage matrix on which to perform the operation.
+            k : int, the desired number of clusters
+            
+        Returns: 
+            L : list.
+
+        Example:
+            >>> features  = array([[ 1.9,2.3],
+            ...                    [ 1.5,2.5],
+            ...                    [ 0.8,0.6],
+            ...                    [ 0.4,1.8],
+            ...                    [ 0.1,0.1],
+            ...                    [ 0.2,1.8],
+            ...                    [ 2.0,0.5],
+            ...                    [ 0.3,1.5],
+            ...                    [ 1.0,1.0]])
+            >>> mycls=HCluster(features)
+            >>> x=mycls.pdist(features)
+            >>> y=mycls.linkage(x)    
+            >>> rs=mycls.kClusters2(y,5)
+            >>> print rs
+            >>> 
+            [12, 6, 4, 10, 11]
+        '''
+        L=[]
+        n=self.num_obs_linkage(Z)
+        temp=[]
+        if k==1:
+            L.append(2*n-2)
+        else:
+            for i in range(k-1): #get the index of the clusters
+                x1=Z[n-2-i][0]
+                x2=Z[n-2-i][1]
+                L.append(int(min(x1,x2)))
+                if k-len(L)==1:
+                    L.append(int(max(x1,x2)))
+        return L
+
+    def compareLists(self, L1, L2):
+        '''
+        If L2 contains every elements in L1, return True, otherwise, return False.
+        
+        Arguments: 
+            L1 : list
+            L2 : list
+ 
+        Returns: 
+            rs : bool
+
+        Example:
+            >>> features  = array([[ 1.9,2.3],
+            ...                    [ 1.5,2.5],
+            ...                    [ 0.8,0.6],
+            ...                    [ 0.4,1.8],
+            ...                    [ 0.1,0.1],
+            ...                    [ 0.2,1.8],
+            ...                    [ 2.0,0.5],
+            ...                    [ 0.3,1.5],
+            ...                    [ 1.0,1.0]])
+            >>> mycls=HCluster(features)
+            >>> l=[2,3]
+            >>> m=[2,3,4]
+            >>> print mycls.compareLists(l,m)
+            >>> 
+            True
+        '''
+        nlen=len(L1)
+        for i in range(nlen):
+            if not L1[i] in L2:
+                return False
+        return True
+
+    def minCluster(self, Z, L):
+        '''
+        Return the smallest cluster that contains the original observations in L.
+
+        Arguments: 
+            Z : ndarray, The linkage matrix on which to perform the operation.
+            L : list, including the indexes of orignial obeservations
+ 
+        Returns: 
+            indexCls : the index of the cluster that contains all the original observations in L.  
+
+        Example:
+            >>> features  = array([[ 1.9,2.3],
+            ...                    [ 1.5,2.5],
+            ...                    [ 0.8,0.6],
+            ...                    [ 0.4,1.8],
+            ...                    [ 0.1,0.1],
+            ...                    [ 0.2,1.8],
+            ...                    [ 2.0,0.5],
+            ...                    [ 0.3,1.5],
+            ...                    [ 1.0,1.0]])
+            >>> mycls=HCluster(features)
+            >>> x=mycls.pdist(features)
+            >>> y=mycls.linkage(x)
+            >>> l=[2,4]    
+            >>> print mycls.minCluster(y, l)
+            >>> 
+            14
+        '''
+        arr=self.expandClusters(Z)
+        n=len(arr)
+        for i in range(n):
+            if self.compareLists(L, arr[i]):
+                return i
+        
+
+    def obsToClusters(self, Z, L):
+        '''
+        Given a list L of indexes of orignial obeservations, return an alternative in which the number
+        of clusters is largest that can be acquired.
+
+        Arguments: 
+            Z : ndarray, The linkage matrix on which to perform the operation.
+            L : list, including the indexes of orignial obeservations
+ 
+        Returns: 
+            indexL : a list including numbers of clusters corresponding to various alternatives of clustering.
+                    with this number and function kClusters(), one desired solution of clustering can be attained. 
+
+        Example:
+            >>> features  = array([[ 1.9,2.3],
+            ...                    [ 1.5,2.5],
+            ...                    [ 0.8,0.6],
+            ...                    [ 0.4,1.8],
+            ...                    [ 0.1,0.1],
+            ...                    [ 0.2,1.8],
+            ...                    [ 2.0,0.5],
+            ...                    [ 0.3,1.5],
+            ...                    [ 1.0,1.0]])
+            >>> mycls=HCluster(features)
+            >>> x=mycls.pdist(features)
+            >>> y=mycls.linkage(x)
+            >>> l=[2,4]
+            >>> print mycls.obsToClusters(y, l)
+            >>> 
+            3
+        '''
+        idCluster=self.minCluster(Z, L)
+        n=self.num_obs_linkage(Z)
+        for i in range(1, 2*n-2):
+            temp=self.kClusters2(Z, i)
+            if idCluster in temp:
+                return i
         
 if __name__ == '__main__':
     features = array([[ 1.9,2.3],[ 1.5,2.5],[ 0.8,0.6],[ 0.4,1.8],[ 0.1,0.1],[ 0.2,1.8],[ 2.0,0.5],[ 0.3,1.5],[ 1.0,1.0]])
     mycls=HCluster(features)
     x=mycls.pdist(features)
     y=mycls.linkage(x)    
-    rs=mycls.kClusters(y,3)
-    print rs
-
+    #rs=mycls.kClusters2(y,5)
+    #print rs
+    l=[0,6]
+    #m=[2,5,4]
+    print mycls.obsToClusters(y, l)
     
 
 
