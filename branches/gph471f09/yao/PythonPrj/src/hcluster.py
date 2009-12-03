@@ -3,6 +3,7 @@ Created on 2009-10-31
 
 @author: Jing YAO
 '''
+
 from numpy import array
 
 from scipy.cluster import hierarchy
@@ -784,6 +785,7 @@ class HCluster(object):
 
         Arguments: 
             Z : ndarray, The linkage matrix on which to perform the operation.
+            index: int, the index of the cluster.
  
         Returns: 
             L : list.
@@ -874,7 +876,8 @@ class HCluster(object):
             k : int, the desired number of clusters
  
         Returns: 
-            D : dictionary.
+            D : dictionary.keys are indexes of clusters, and value are list 
+                of indexes of original observations in each cluster.
 
         Example:
             >>> features  = array([[ 1.9,2.3],
@@ -1027,16 +1030,16 @@ class HCluster(object):
 
     def obsToClusters(self, Z, L):
         '''
-        Given a list L of indexes of orignial obeservations, return an alternative in which the number
-        of clusters is largest that can be acquired.
+        Given a list L of indexes of orignial observations, return the smallest number
+        of clusters that should get to ensure the observations in the list will in the same
+        cluster.
 
         Arguments: 
             Z : ndarray, The linkage matrix on which to perform the operation.
             L : list, including the indexes of orignial obeservations
  
         Returns: 
-            indexL : a list including numbers of clusters corresponding to various alternatives of clustering.
-                    with this number and function kClusters(), one desired solution of clustering can be attained. 
+            n : the numbers of clusters. With this number and function kClusters(), one desired solution of clustering can be attained. 
 
         Example:
             >>> features  = array([[ 1.9,2.3],
@@ -1067,12 +1070,13 @@ if __name__ == '__main__':
     features = array([[ 1.9,2.3],[ 1.5,2.5],[ 0.8,0.6],[ 0.4,1.8],[ 0.1,0.1],[ 0.2,1.8],[ 2.0,0.5],[ 0.3,1.5],[ 1.0,1.0]])
     mycls=HCluster(features)
     x=mycls.pdist(features)
-    y=mycls.linkage(x)    
+    y=mycls.linkage(x)
+    mycls.dendrogram(y)    
     #rs=mycls.kClusters2(y,5)
     #print rs
-    l=[0,6]
+    #l=[2,4]
     #m=[2,5,4]
-    print mycls.obsToClusters(y, l)
+    #print mycls.obsToClusters(y, l)
     
 
 
