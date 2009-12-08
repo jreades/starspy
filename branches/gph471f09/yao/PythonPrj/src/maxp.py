@@ -111,9 +111,9 @@ class MAXp(object):
         step6: assign remaining areas to one of the existing regions.
         '''
         self.p=0 # number of regions
-        nLoop=0
-        bFeasible=True
-        while nLoop<=MAX_ATTEMPTS:
+        nLoop=0        
+        bSolving=True
+        while bSolving and nLoop<=MAX_ATTEMPTS:
             nLoop+=1
             remains=range(self.nobs) # remaining unassigned areas  
             regions=[]
@@ -149,10 +149,12 @@ class MAXp(object):
             if len(regions)==0 and nLoop==MAX_ATTEMPTS:
                 print "no initial solutions can be found!"
                 bFeasible=False
+                self.p=0
                 break
             
             # if some feasible solutions are found, assign enclaves into nearest region     
             if len(regions)!=0:
+                bFeasible=True
                 # assign areas in enclaves into formed regions
                 self.p=len(regions)
                 nEnclaves=len(enclaves)
@@ -185,10 +187,10 @@ class MAXp(object):
                     else:
                         if nAttempts==nEnclaves:
                             bFeasible=False
-                            print "no initial solutions can be found!"
                             break
                         
-                if bFeasible:           
+                if bFeasible: 
+                    bSolving=False
                     # set final regions
                     self.regions=copy.copy(regions)
                     self.area2region={}
