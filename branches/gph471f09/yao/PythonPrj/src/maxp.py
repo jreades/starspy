@@ -10,6 +10,8 @@ import sys
 import copy
 from components import check_contiguity
 
+MAX_ATTEMPTS=100
+MAX_DISTANCE=9999999
 
 class MAXp(object):
     '''
@@ -62,7 +64,7 @@ class MAXp(object):
         
         # local search phase: find the optimal local move
         self.wss=[]
-        curfobj=999999
+        curfobj=MAX_DISTANCE
         for idelem, elem in enumerate(solution):
             # result of construction phase
             self.regions=copy.copy(elem)
@@ -110,7 +112,8 @@ class MAXp(object):
         '''
         self.p=0 # number of regions
         nLoop=0
-        while nLoop<=100:
+        bFeasible=True
+        while nLoop<=MAX_ATTEMPTS:
             nLoop+=1
             remains=range(self.nobs) # remaining unassigned areas  
             regions=[]
@@ -131,6 +134,7 @@ class MAXp(object):
                             neighbors=self.w.neighbors[area]
                             neighbors=[neigh for neigh in neighbors if neigh in remains]
                             neighbors=[neigh for neigh in neighbors if neigh not in region]
+                            neighbors=[neigh for neigh in neighbors if neigh not in candidates]
                             candidates.extend(neighbors)
                         if len(candidates)==0: # the growing region has no neighbors
                             enclaves.extend(region)
@@ -141,11 +145,20 @@ class MAXp(object):
                             region.append(id_bestNeighbor) # add the best neighbor
                             remains.remove(id_bestNeighbor) # update remaining areas
         
-            # if no initial solution has been found, try again                
+            # if no initial solution has been found, try again 
+            if len(regions)==0 and nLoop==MAX_ATTEMPTS:
+                print "no initial solutions can be found!"
+                bFeasible=False
+                break
+            
+            # if some feasible solutions are found, assign enclaves into nearest region     
             if len(regions)!=0:
                 # assign areas in enclaves into formed regions
                 self.p=len(regions)
+                nEnclaves=len(enclaves)
+                nAttempts=0
                 while len(enclaves)!=0:
+                    nAttempts+=1
                     temp2=random.sample(enclaves,1) #randomly select an area to be assigned to regions
                     idEnclave=temp2[0]
                     # find all the neighbor regions; if no neighbor regions, leave it in enclaves
@@ -156,7 +169,7 @@ class MAXp(object):
                             idregion.append(i)
                     # assign the area to a neighboring region based on greedy function
                     if len(idregion)!=0:
-                        tag=9999999
+                        tag=MAX_DISTANCE
                         for j in idregion:
                             temp=self.greedy_function(idEnclave, regions[j])
                             if temp < tag:
@@ -165,13 +178,23 @@ class MAXp(object):
                         # assign the enclave to the best neighboring region
                         regions[id_bestRegion].append(idEnclave)
                         enclaves.remove(idEnclave)
-                           
-                # set final regions
-                self.regions=copy.copy(regions)
-                self.area2region={}
-                for r,region in enumerate(regions):
-                    for area in region:
-                        self.area2region[area]=r
+                        #update the length of enclaves
+                        nEnclaves=len(enclaves)
+                        nAttempts=0
+                    # decide whethter there is no feasible solution
+                    else:
+                        if nAttempts==nEnclaves:
+                            bFeasible=False
+                            print "no initial solutions can be found!"
+                            break
+                        
+                if bFeasible:           
+                    # set final regions
+                    self.regions=copy.copy(regions)
+                    self.area2region={}
+                    for r,region in enumerate(regions):
+                        for area in region:
+                            self.area2region[area]=r
                 
     
     def get_BestNeighbor(self, neighbors, region):
@@ -185,7 +208,7 @@ class MAXp(object):
         Return:
             n: integer, index of the area to be moved
         '''
-        tag=9999999
+        tag=MAX_DISTANCE
         idNeighbor=-1
         for i in neighbors:
             temp=self.greedy_function(i, region)
