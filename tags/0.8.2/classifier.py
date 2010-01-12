@@ -138,7 +138,8 @@ class Classifier:
             self.binCumulativeCounts = counts
             counts = array(counts)
             c1 = [counts[0]]
-            c1.extend(counts[1:] - counts[:-1])
+            c2=counts[1:len(counts)]-counts[:-1]
+            c1.extend(c2)
             self.binCounts = c1
             self.nBins = len(self.bins)
 
