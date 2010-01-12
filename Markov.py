@@ -60,10 +60,10 @@ def centile(array,k):
     n1 = int(floor(q)) 
     n2 = int(ceil(q)) 
     r= q - n1
-    as = sort(array)
+    ars = sort(array)
     n1 = n1 - 1
     n2 = n2 - 1
-    centile = as[n1] + r * (as[n2]-as[n1])
+    centile = ars[n1] + r * (ars[n2]-ars[n1])
     return centile
 
 def fullQuint(variable):
