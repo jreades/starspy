@@ -17,7 +17,7 @@ This module implements various handy utilities for STARS.
 
 """
 """Utility functions for STARS"""
-from Numeric import *
+from numpy.oldnumeric import *
 from MLab import *
 from RandomArray import permutation
 
