@@ -4,69 +4,94 @@ abstract view class for refactoring of STARS
 modification of yin's solution
 """
 
-from Tkinter import *      
+import Tkinter as Tk
 
-class Application(Frame):
-    def __init__(self, master=None):
-        Frame.__init__(self, master,width=900,height=600)
-        self.width, self.height=500,500
-        self.feature = 'lines'
-        coords=[[20,20,70,70],[300,300,350,430]]
-        self.coordinates=coords
+N=Tk.N
+S=Tk.S
+E=Tk.E
+W=Tk.W
+BG='gray'
 
-        self.createWidgets(self.width,self.height)
-        self.bind('<Configure>', self.canvas_conf)
-        self.grid(sticky=N+S+E+W)
-       
-    def createWidgets(self,wid,high):
-        top = self.winfo_toplevel()
+class View(object,Tk.Frame):
+    """
+    Abstract View class for STARS
+    
+    """
+    def __init__(self,master=None,height=900,width=900,dynamic_size=True,
+            center=False,title=None):
+        top=Tk.Toplevel(master)
         top.rowconfigure(0,weight=1)
         top.columnconfigure(0,weight=1)
+        Tk.Frame.__init__(self,top,height=height,width=width)
+        self.top=top
         self.rowconfigure(0,weight=1)
         self.columnconfigure(0,weight=1)
-        self.canvas = Canvas(self, bg="gray",width=wid,height=high)       
-        self.width = self.canvas.winfo_reqwidth()
-        self.height = self.canvas.winfo_reqheight()
-        #self.drawLines(self.canvas,self.coordinates)
-        self.drawObjects()
-        self.canvas.grid(row=0,column=0,sticky=N+S+E+W)        
+        if dynamic_size:
+            w=min(self.top.wm_maxsize())
+            w/=2.
+            h=w
+            height=w
+            width=w
+        self.canvas=Tk.Canvas(self, bg=BG,width=width,height=height)
+        self.width=self.canvas.winfo_reqwidth()
+        self.height=self.canvas.winfo_reqheight()
+        self.canvas.grid(row=0,column=0,sticky=N+S+E+W)
+        self.bind('<Configure>', self.__on_configure)
+        self.grid(sticky=N+S+E+W)
+        self.__draw()
+        if center:
+            self.__center()
+        self._title=title
+        self.top.title(title)
 
-    def drawObjects(self):
+    def __draw(self):
+
+        # override this in subclasses
+        w=self.width/10.
         for i in range(10):
-            x0=i*50
-            x1=x0+50
+            x0=i*w
+            x1=x0+w
             for j in range(10):
-                y0=j*50
-                y1=y0+50
+                y0=j*w
+                y1=y0+w
                 coords=(x0,y0,x1,y0,x1,y1,x0,y0)
                 self.canvas.create_polygon(coords,fill='green')
-                print x0,x1,y0,y1
-        self.canvas.create_text(250,250,text='hi there')
-    def drawLines(self,canvas,coordinates):
-        lines = []
-        """
-        coordinates is from the convert function to get the coordinates
-        of the features on the canvas
-        """
-        for line in coordinates:
-            xo = line[0]
-            yo = line[1]
-            xd = line[2]
-            yd = line[3]
-            id = canvas.create_line(xo,yo,xd,yd,tags = "lines")
-            lines.append(id)
-       
-        return lines
 
-    def canvas_conf(self,event):
+    def __center(self):
+        self.update_idletasks()
+        h=self.top.winfo_height()
+        w=self.top.winfo_width()
+        ws,hs=self.top.winfo_screenwidth(),self.top.winfo_screenheight()
+        self.top.geometry("%dx%d+%d+%d" % (w,h, (ws/2) - (w/2), (hs/2) - (h/2)))
+
+    def __on_configure(self,event):
+        """
+        Handles window resizing events
+        """
         x_scale = event.width*1.0/self.width
         y_scale = event.height*1.0/self.height
         self.width = event.width
         self.height = event.height
-        self.canvas.scale(ALL,0,0,x_scale,y_scale)
-       
+        self.canvas.scale(Tk.ALL,0,0,x_scale,y_scale)
 
-app = Application()                   
-app.master.title("Sample application")                                                    
-app.mainloop()
+    @property
+    def title(self):
+        return self._title
+
+    @title.setter
+    def title(self, value):
+        self._title=value
+        print 'setter'
+        self.top.title(value)
+    
+
+
+
+
+if __name__ == '__main__':
+
+    v=View()
+    v2=View(center=True)
+    v3=View(center=True,title='V3')
+
 
