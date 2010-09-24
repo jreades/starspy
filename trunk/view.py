@@ -11,6 +11,7 @@ S=Tk.S
 E=Tk.E
 W=Tk.W
 BG='gray'
+LEGEND_WIDTH=50
 
 class View(object,Tk.Frame):
     """
@@ -68,11 +69,63 @@ class View(object,Tk.Frame):
         """
         Handles window resizing events
         """
+        self.canvas.delete('legend')
         x_scale = event.width*1.0/self.width
         y_scale = event.height*1.0/self.height
         self.width = event.width
         self.height = event.height
         self.canvas.scale(Tk.ALL,0,0,x_scale,y_scale)
+
+    def do_legend(self):
+        self.update_idletasks()
+        h=self.top.winfo_height()
+        w=self.top.winfo_width()
+
+        lheight=100
+        lwidth=100
+
+        x0=10
+        x1=x0+lwidth
+        y0=h-10-lheight
+        y1=h-10
+        xm=(x1+x0)/2.
+        ym=(y1+y0)/2.
+
+        legend=self.canvas.create_rectangle(x0,y0,x1,y1,fill='white',tag='legend')
+        ltext=self.canvas.create_text(xm,ym,text='Legend',tag='legend')
+
+        self.canvas.tag_bind('legend','<Button-1>',self.legend_b1)
+        self.canvas.tag_bind('legend','<ButtonRelease-1>',
+                self.legend_b1_release)
+
+        self.l_x0=x0
+        self.l_y0=y0
+
+    def legend_b1(self, event):
+        print 'button pressed on legend'
+        self.canvas.tag_bind('legend','<Button1-Motion>', self.legend_motion)
+
+    def legend_motion(self, event):
+        print 'mouse moving in legend'
+        cx = self.canvas.canvasx(event.x)
+        cy = self.canvas.canvasy(event.y)
+        try:
+            dx = cx - self.l_x0
+            dy = cy - self.l_y0
+        except:
+            pass
+        self.canvas.move('legend',dx,dy)
+        self.l_x0=cx
+        self.l_y0=cy
+
+    def legend_b1_release(self, event):
+        self.canvas.unbind("<Button1-Motion>")
+        print 'mouse release'
+
+
+
+
+
 
     @property
     def title(self):
@@ -84,9 +137,7 @@ class View(object,Tk.Frame):
         print 'setter'
         self.top.title(value)
     
-
-
-
+ 
 
 if __name__ == '__main__':
 
