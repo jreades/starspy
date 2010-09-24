@@ -1,7 +1,6 @@
 """
 abstract view class for refactoring of STARS
 
-modification of yin's solution
 """
 
 import Tkinter as Tk
@@ -49,12 +48,13 @@ class View(object,Tk.Frame):
 
         # override this in subclasses
         w=self.width/10.
-        for i in range(10):
+        h=self.canvas.winfo_reqheight()/10.
+        for i in range(100):
             x0=i*w
             x1=x0+w
             for j in range(10):
-                y0=j*w
-                y1=y0+w
+                y0=j*h
+                y1=y0+h
                 coords=(x0,y0,x1,y0,x1,y1,x0,y0)
                 self.canvas.create_polygon(coords,fill='green')
 
@@ -80,24 +80,19 @@ class View(object,Tk.Frame):
         self.update_idletasks()
         h=self.top.winfo_height()
         w=self.top.winfo_width()
-
         lheight=100
         lwidth=100
-
         x0=10
         x1=x0+lwidth
         y0=h-10-lheight
         y1=h-10
         xm=(x1+x0)/2.
         ym=(y1+y0)/2.
-
         legend=self.canvas.create_rectangle(x0,y0,x1,y1,fill='white',tag='legend')
         ltext=self.canvas.create_text(xm,ym,text='Legend',tag='legend')
-
         self.canvas.tag_bind('legend','<Button-1>',self.legend_b1)
         self.canvas.tag_bind('legend','<ButtonRelease-1>',
                 self.legend_b1_release)
-
         self.l_x0=x0
         self.l_y0=y0
 
