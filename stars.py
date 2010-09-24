@@ -707,7 +707,7 @@ if __name__ == '__main__':
     import Markov
     from Table import *
     from SDialog import *
-    from Numeric import *
+    from numpy.oldnumeric import *
 
 
     args = sys.argv

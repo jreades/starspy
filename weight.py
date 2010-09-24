@@ -16,11 +16,12 @@ OVERVIEW:
 This module implements spatial weights classes for STARS.
 
 
+
 """
 
 import time
 from shapereader import *
-import Numeric
+import numpy.oldnumeric as Numeric
 import LinearAlgebra
 
 import Gis # for centroids on disconnected island polygons

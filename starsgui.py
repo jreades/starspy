@@ -21,7 +21,7 @@ import sys, os, string
 from Tkinter import *                        # widget classes
 from guimixin import *        # mix-in methods
 from guimaker import *        # frame, plus menu/toolbar builder
-from Numeric import *
+from numpy.oldnumeric import *
 import pickle
 import os.path
 import version

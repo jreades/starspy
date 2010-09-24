@@ -12,9 +12,9 @@ Version 2.  See the file COPYING for more details.
 ======================================================================
 """
 
-from Numeric import *
-from MLab import *
-from UserArray import *
+from numpy.oldnumeric import *
+#from MLab import *
+#from UserArray import *
 from copy import copy
 import os.path
 
