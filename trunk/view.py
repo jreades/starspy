@@ -2,7 +2,6 @@
 abstract view class for refactoring of STARS
 
 """
-
 import Tkinter as Tk
 
 N=Tk.N
@@ -43,7 +42,7 @@ class View(object,Tk.Frame):
             self.__center()
         self._title=title
         self.top.title(title)
-        
+        self.make_menu()
 
         # bindings
         self.canvas.bind("<1>", self.button_1)
@@ -53,10 +52,43 @@ class View(object,Tk.Frame):
         # zooming
         self.canvas.bind("<Control-z>", self.start_zooming_e)
         self.canvas.bind("<Control-u>", self.zoom_reverse_e)
+        self.canvas.bind("<Control-p>", self.start_panning_e)
+        self.canvas.bind("<Control-m>", self.do_menu_e)
         self.zoom_on=0
         self.zoom_history=[]
-
         self.canvas.focus_set()
+
+        # panning
+        self.panning_on=0
+
+    def start_panning_e(self,event):
+        self.toggle_panning()
+
+    def toggle_panning(self):
+        if self.panning_on:
+            self.panning_on=0
+            self.canvas.unbind("<1>")
+            self.canvas.unbind("<Button1-Motion>")
+            self.canvas.unbind("<ButtonRelease-1>")
+            self.canvas.bind("<1>", self.button_1)
+        else:
+            self.panning_on=1
+            self.canvas.bind("<1>",self.panning_start)
+            self.canvas.bind("<Button1-Motion>",self.panning_stretch)
+            self.canvas.bind("<ButtonRelease-1>",self.panning_stop)
+
+   
+    def panning_start(self,event):
+        if self.panning_on:
+            self.zoom_on=0
+            self.canvas.scan_mark(event.x,event.y)
+
+    def panning_stretch(self,event):
+        if self.panning_on:
+            self.canvas.scan_dragto(event.x,event.y,gain=1)
+
+    def panning_stop(self,event):
+        pass
 
     def start_zooming_e(self,event):
         print 'start zooming'
@@ -71,6 +103,7 @@ class View(object,Tk.Frame):
             self.canvas.bind("<1>", self.button_1)
         else:
             self.zoom_on=1
+            self.panning_on=0
             self.canvas.unbind("<1>")
             self.canvas.unbind("<Button1-Motion>")
             self.canvas.unbind("<ButtonRelease-1>")
@@ -78,14 +111,12 @@ class View(object,Tk.Frame):
             self.canvas.bind("<Button1-Motion>",self.zoom_window_stretch)
             self.canvas.bind("<ButtonRelease-1>",self.zoom_window_stop)
 
-
     def button_1(self,event):
         print 'button 1'
     def button_2(self,event):
         print 'button 2'
     def button_3(self,event):
         print 'button 3'
-    
     
     def zoom_window_start(self, event):
         if self.zoom_on:
@@ -120,7 +151,6 @@ class View(object,Tk.Frame):
 
     def zoom_window_delete(self):
         self.canvas.delete('zoom_window')
-
     
     def zoom(self, percent=2.0, coords=None):
         Mx=self.width/2.
@@ -160,8 +190,6 @@ class View(object,Tk.Frame):
         except:
             print 'back at original scale'
 
-
-
     def __draw(self):
 
         # override this in subclasses
@@ -194,6 +222,10 @@ class View(object,Tk.Frame):
         self.height = event.height
         self.canvas.scale(Tk.ALL,0,0,x_scale,y_scale)
 
+    def show_legend(self):
+        self.do_legend()
+    def hide_legend(self):
+        self.canvas.delete('legend')
     def do_legend(self):
         self.zoom_on=0
         self.update_idletasks()
@@ -236,8 +268,6 @@ class View(object,Tk.Frame):
         self.canvas.unbind("<Button1-Motion>")
         print 'mouse release'
 
-
-
     @property
     def title(self):
         return self._title
@@ -255,7 +285,49 @@ class View(object,Tk.Frame):
         self.toggle_zooming()
 
 
+    # menu
+    def make_menu(self):
+        # override in subclasses
+        self.menu=Tk.Menu(self.master,tearoff=0)
+        self.file_menu()
+        self.menu.add('separator')
+        self.legend_menu()
 
+    def do_menu_e(self,event):
+        try:
+            self.menu.tk_popup(event.x_root,event.y_root,0)
+        finally:
+            self.menu.grab_release()
+
+    def file_menu(self):
+        choices=Tk.Menu()
+        choices.add_command(label='Save',underline=0,
+                command=self.save)
+        choices.add_command(label="Quit",underline=0,
+                command=self.quit)
+        self.menu.add_cascade(label="File",underline=0,menu=choices)
+    def legend_menu(self): 
+        choices=Tk.Menu()
+        choices.add_command(label='Show Legend',underline=0,
+                command=self.show_legend)
+        choices.add_command(label="Hide Legend",underline=0,
+                command=self.hide_legend)
+        self.menu.add_cascade(label="Legend",underline=0,menu=choices)
+    def save(self):
+        from tkFileDialog import asksaveasfilename
+        f = asksaveasfilename(parent=self.top,
+                             defaultextension=".ps",title="Save map as..")
+        if not f:
+            raise Cancel
+        try:
+            f=f+".ps"
+            self.canvas.postscript(file=f)
+        except IOError:
+            from tkMessageBox import showwarning
+            showwarning("Save As", "Cannot save the file.")
+            raise Cancel
+    def quit(self):
+        self.top.destroy()
 
 if __name__ == '__main__':
 
