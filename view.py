@@ -43,6 +43,124 @@ class View(object,Tk.Frame):
             self.__center()
         self._title=title
         self.top.title(title)
+        
+
+        # bindings
+        self.canvas.bind("<1>", self.button_1)
+        self.canvas.bind("<2>", self.button_2)
+        self.canvas.bind("<3>", self.button_3)
+
+        # zooming
+        self.canvas.bind("<Control-z>", self.start_zooming_e)
+        self.canvas.bind("<Control-u>", self.zoom_reverse_e)
+        self.zoom_on=0
+        self.zoom_history=[]
+
+        self.canvas.focus_set()
+
+    def start_zooming_e(self,event):
+        print 'start zooming'
+        self.toggle_zooming()
+
+    def toggle_zooming(self):
+        if self.zoom_on:
+            self.zoom_on=0
+            self.canvas.unbind("<1>")
+            self.canvas.unbind("<Button1-Motion>")
+            self.canvas.unbind("<ButtonRelease-1>")
+            self.canvas.bind("<1>", self.button_1)
+        else:
+            self.zoom_on=1
+            self.canvas.unbind("<1>")
+            self.canvas.unbind("<Button1-Motion>")
+            self.canvas.unbind("<ButtonRelease-1>")
+            self.canvas.bind("<1>",self.zoom_window_start)
+            self.canvas.bind("<Button1-Motion>",self.zoom_window_stretch)
+            self.canvas.bind("<ButtonRelease-1>",self.zoom_window_stop)
+
+
+    def button_1(self,event):
+        print 'button 1'
+    def button_2(self,event):
+        print 'button 2'
+    def button_3(self,event):
+        print 'button 3'
+    
+    
+    def zoom_window_start(self, event):
+        if self.zoom_on:
+            self.zoom_x0 = self.canvas.canvasx(event.x)
+            self.zoom_y0 = self.canvas.canvasy(event.y)
+
+    def zoom_window_stop(self, event):
+        if self.zoom_on:
+            try:
+                #handle case where no size change occurs
+                x0,y0,x1,y1 = self.canvas.coords("zoom_window")
+                self.zoom_window_delete()
+                self.zoom_window_on=0
+                self.zoom(coords=(x0,y0,x1,y1))
+            except:
+                pass
+
+    def zoom_window_stretch(self, event):
+        if self.zoom_on:
+            cx = self.canvas.canvasx(event.x)
+            cy = self.canvas.canvasy(event.y)
+            self.zoom_x1 = cx
+            self.zoom_y1 = cy
+            self.zoom_window_delete()
+            self.zoom_window_create([self.zoom_x0,self.zoom_y0,cx,cy])
+
+    def zoom_window_create(self, coords):
+        if self.zoom_on:
+            x0,y0,x1,y1=coords
+            self.zoom_window = self.canvas.create_rectangle(x0,y0,x1,y1,
+                    tag='zoom_window',outline='white')
+
+    def zoom_window_delete(self):
+        self.canvas.delete('zoom_window')
+
+    
+    def zoom(self, percent=2.0, coords=None):
+        Mx=self.width/2.
+        My=self.height/2.
+
+        if coords:
+            x0,y0,x1,y1=coords
+            mx = (x0+x1)/2.
+            my = (y0+y1)/2.
+        else:
+            my=My
+            mx=Mx
+
+        dx = Mx-mx
+        dy = My-my
+        self.zoom_history.append((percent,dx,dy))
+        self.percent=percent
+        self.canvas.move(Tk.ALL,dx,dy)
+        self.canvas.scale(Tk.ALL, Mx, My, percent, percent)
+        print 'zoom'
+
+    def zoom_reverse_e(self, event):
+        self.zoom_reverse()
+
+    def zoom_reverse(self):
+        try:
+            percent,dx,dy = self.zoom_history.pop()
+            percent = 1./percent
+            dx = -1 * dx
+            dy = -1 * dy
+            My = self.height / 2.
+            Mx = self.width / 2.
+         
+            self.canvas.scale(Tk.ALL,Mx,My,percent,percent)
+            self.canvas.move(Tk.ALL,dx,dy)
+            self.percent=percent
+        except:
+            print 'back at original scale'
+
+
 
     def __draw(self):
 
@@ -77,6 +195,7 @@ class View(object,Tk.Frame):
         self.canvas.scale(Tk.ALL,0,0,x_scale,y_scale)
 
     def do_legend(self):
+        self.zoom_on=0
         self.update_idletasks()
         h=self.top.winfo_height()
         w=self.top.winfo_width()
@@ -119,9 +238,6 @@ class View(object,Tk.Frame):
 
 
 
-
-
-
     @property
     def title(self):
         return self._title
@@ -131,8 +247,15 @@ class View(object,Tk.Frame):
         self._title=value
         print 'setter'
         self.top.title(value)
-    
- 
+
+    def start_zooming_E(self, event):
+        self.toggle_zooming()
+
+    def start_zooming(self):
+        self.toggle_zooming()
+
+
+
 
 if __name__ == '__main__':
 
