@@ -1,0 +1,11 @@
+:mod:`CanvasCoords` --- Canvas Coordinates
+===============================================
+
+The :mod:`CanvasCoords` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: CanvasCoords
+    :synopsis: Maps geographic coords to canvas coords
+    :members:
