@@ -1,0 +1,11 @@
+:mod:`databasebase` --- databasebase
+===============================================
+
+The :mod:`database` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: Database
+    :synopsis: 
+    :members:

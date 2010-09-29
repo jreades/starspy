@@ -1,0 +1,11 @@
+:mod:`Data` --- Data
+===============================================
+
+The :mod:`data` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: Data
+    :synopsis: Data module!
+    :members:
