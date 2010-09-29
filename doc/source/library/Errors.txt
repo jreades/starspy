@@ -1,7 +1,7 @@
-:mod:`errors` --- errors
+:mod:`Errors` --- Errors Module
 ===============================================
 
-The :mod:`errors` module provides ...
+The :mod:`Errors` module provides ...
 
 .. versionadded:: 0.1
 

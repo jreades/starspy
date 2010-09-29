@@ -1,0 +1,11 @@
+:mod:`Subscriber` --- Subscriber Module
+===============================================
+
+The :mod:`Subscriber` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: Subscriber
+    :synopsis: The Subscriber module checks for and reports Subscriber!
+    :members:

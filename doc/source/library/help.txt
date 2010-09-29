@@ -1,0 +1,11 @@
+:mod:`help` --- help Module
+===============================================
+
+The :mod:`help` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: help
+    :synopsis: The help module checks for and reports help!
+    :members:

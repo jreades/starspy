@@ -1,7 +1,7 @@
 :mod:`Data` --- Data
 ===============================================
 
-The :mod:`data` module provides ...
+The :mod:`Data` module provides ...
 
 .. versionadded:: 0.1
 

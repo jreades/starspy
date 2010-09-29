@@ -1,0 +1,11 @@
+:mod:`binnum` --- binnum Module
+===============================================
+
+The :mod:`binnum` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: binnum
+    :synopsis: The binnum module checks for and reports binnum!
+    :members:

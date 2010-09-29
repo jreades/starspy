@@ -26,7 +26,10 @@ sys.path.append(os.path.abspath('../../'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.coverage', 'sphinx.ext.pngmath', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc',  'sphinx.ext.coverage', 'sphinx.ext.pngmath', 'sphinx.ext.viewcode']
+
+# add these back in after setup
+#'sphinx.ext.doctest',
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -140,10 +143,10 @@ html_static_path = ['_static']
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_domain_indices = True
+html_domain_indices = True
 
 # If false, no index is generated.
-#html_use_index = True
+html_use_index = True
 
 # If true, the index is split into individual pages for each letter.
 #html_split_index = False

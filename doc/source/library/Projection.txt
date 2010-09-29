@@ -1,0 +1,11 @@
+:mod:`Projection` --- Projection Module
+===============================================
+
+The :mod:`Projection` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: Projection
+    :synopsis: The Projection module checks for and reports Projection!
+    :members:

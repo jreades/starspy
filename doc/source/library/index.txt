@@ -7,63 +7,9 @@ STARS - Space-Time Analysis of Regional Systems
 :Release: |version|
 :Date: |today|
 
-===========================
-STARS Module Documentation
-===========================
-
-STARS is ...
-
-Available sub-packages
-----------------------
 
 .. toctree::
-    :maxdepth:2
+    :glob:
 
-    CanvasCoords
-    Matcher
-    classifier
-    pdf
-    Common
-    Messages
-    color
-    sdialogue
-    Data
-    Mobility
-    dbfload
-    setup
-    DataViewer
-    ProjectMaker
-    eda
-    setupPM
-    Database
-    ProjectWorker
-    gView
-    shapereader
-    Errors
-    Projection
-    gal
-    smoothing
-    FileIO
-    SDialog
-    guimaker
-    stars
-    Gis
-    STARSsmoothing
-    guimixin
-    starsgui
-    History
-    Subscriber
-    help
-    version
-    Inequality
-    Table
-    index
-    view
-    Interaction
-    Utility
-    iview
-    weight
-    Markov
-    binnum
-    kmean
+    *
 
