@@ -1,0 +1,12 @@
+
+:mod:`dataviewer` --- dataviewer
+===============================================
+
+The :mod:`dataviewer` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: DataViewer
+    :synopsis: 
+    :members:

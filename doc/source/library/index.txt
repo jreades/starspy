@@ -18,7 +18,6 @@ Available sub-packages
 
 .. toctree::
     :maxdepth:2
-    :glob:
 
     CanvasCoords
     Matcher

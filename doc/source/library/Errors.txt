@@ -1,0 +1,11 @@
+:mod:`errors` --- errors
+===============================================
+
+The :mod:`errors` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: Errors
+    :synopsis: The Errors module checks for and reports Errors!
+    :members:
