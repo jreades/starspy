@@ -1,0 +1,11 @@
+:mod:`guimixin` --- guimixin Module
+===============================================
+
+The :mod:`guimixin` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: guimixin
+    :synopsis: The guimixin module checks for and reports guimixin!
+    :members:

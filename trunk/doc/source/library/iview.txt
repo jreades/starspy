@@ -1,0 +1,11 @@
+:mod:`iview` --- iview Module
+===============================================
+
+The :mod:`iview` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: iview
+    :synopsis: The iview module checks for and reports iview!
+    :members:

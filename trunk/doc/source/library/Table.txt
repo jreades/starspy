@@ -1,0 +1,11 @@
+:mod:`Table` --- Table Module
+===============================================
+
+The :mod:`Table` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: Table
+    :synopsis: The Table module checks for and reports Table!
+    :members:

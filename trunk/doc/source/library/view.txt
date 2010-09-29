@@ -1,0 +1,11 @@
+:mod:`view` --- view Module
+===============================================
+
+The :mod:`view` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: view
+    :synopsis: The view module checks for and reports view!
+    :members:

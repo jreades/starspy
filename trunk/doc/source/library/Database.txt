@@ -1,7 +1,7 @@
-:mod:`databasebase` --- databasebase
+:mod:`Database` --- Database
 ===============================================
 
-The :mod:`database` module provides ...
+The :mod:`Database` module provides ...
 
 .. versionadded:: 0.1
 

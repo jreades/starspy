@@ -1,0 +1,11 @@
+:mod:`sdialogue` --- sdialogue Module
+===============================================
+
+The :mod:`sdialogue` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: sdialogue
+    :synopsis: The sdialogue module checks for and reports sdialogue!
+    :members:

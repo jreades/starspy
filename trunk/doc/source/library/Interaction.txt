@@ -1,0 +1,11 @@
+:mod:`Interaction` --- Interaction
+===============================================
+
+The :mod:`Interaction` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: Interaction
+    :synopsis: Interaction module!
+    :members:

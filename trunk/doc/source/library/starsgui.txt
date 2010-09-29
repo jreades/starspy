@@ -1,0 +1,11 @@
+:mod:`starsgui` --- starsgui Module
+===============================================
+
+The :mod:`starsgui` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: starsgui
+    :synopsis: The starsgui module checks for and reports starsgui!
+    :members:

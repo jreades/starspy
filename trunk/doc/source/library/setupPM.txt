@@ -1,0 +1,11 @@
+:mod:`setupPM` --- setupPM Module
+===============================================
+
+The :mod:`setupPM` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: setupPM
+    :synopsis: The setupPM module checks for and reports setupPM!
+    :members:

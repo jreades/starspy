@@ -1,0 +1,11 @@
+:mod:`Utility` --- Utility Module
+===============================================
+
+The :mod:`Utility` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: Utility
+    :synopsis: The Utility module checks for and reports Utility!
+    :members:

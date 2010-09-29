@@ -1,0 +1,11 @@
+:mod:`History` --- History
+===============================================
+
+The :mod:`History` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: History
+    :synopsis: History module!
+    :members:

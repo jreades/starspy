@@ -1,0 +1,11 @@
+:mod:`ProjectMaker` --- ProjectMaker Module
+===============================================
+
+The :mod:`ProjectMaker` module provides ...
+
+.. versionadded:: 0.1
+
+
+.. automodule:: ProjectMaker
+    :synopsis: The ProjectMaker module checks for and reports ProjectMaker!
+    :members:
