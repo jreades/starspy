@@ -3,6 +3,7 @@ abstract view class for refactoring of STARS
 
 """
 import Tkinter as Tk
+import dialogues
 
 N=Tk.N
 S=Tk.S
@@ -10,6 +11,7 @@ E=Tk.E
 W=Tk.W
 BG='gray'
 LEGEND_WIDTH=50
+import projections
 
 class View(object,Tk.Frame):
     """
@@ -37,7 +39,7 @@ class View(object,Tk.Frame):
         self.canvas.grid(row=0,column=0,sticky=N+S+E+W)
         self.bind('<Configure>', self.__on_configure)
         self.grid(sticky=N+S+E+W)
-        self.__draw()
+        self.draw()
         if center:
             self.__center()
         self._title=title
@@ -190,7 +192,7 @@ class View(object,Tk.Frame):
         except:
             print 'back at original scale'
 
-    def __draw(self):
+    def draw(self):
 
         # override this in subclasses
         w=self.width/10.
@@ -288,7 +290,7 @@ class View(object,Tk.Frame):
     # menu
     def make_menu(self):
         # override in subclasses
-        self.menu=Tk.Menu(self.master,tearoff=0)
+        self.menu=Tk.Menu(self.master,tearoff=0,postcommand=self.menu_update)
         self.file_menu()
         self.menu.add('separator')
         self.legend_menu()
@@ -329,10 +331,276 @@ class View(object,Tk.Frame):
     def quit(self):
         self.top.destroy()
 
-if __name__ == '__main__':
+    def menu_update(self):
+        print 'override'
 
-    v=View()
-    v2=View(center=True)
-    v3=View(center=True,title='V3')
+
+class Choropleth(View):
+    """Choropleth Mapping """
+    def __init__(self,polygons,bb=None, p2s=None,colors=None):
+        self.polygons=polygons
+        if bb:
+            self.bb=bb
+        else:
+            self.set_bb()
+        self.p2s=p2s
+        if p2s:
+            s2p={}
+            vals=p2s.values()
+            for val in vals:
+                s2p[val]=[]
+            for key in p2s.keys():
+                right=p2s[key]
+                s2p[right].append(key)
+            self.s2p=s2p
+        self.colors=colors
+        View.__init__(self)
+
+    def set_bb(self):
+        print 'not implemented'
+    def legend_menu(self): 
+        choices=Tk.Menu()
+        choices.add_command(label='Show Legend',underline=0,
+                command=self.show_legend)
+        choices.add_command(label="Hide Legend",underline=0,
+                command=self.hide_legend)
+        choices.add('separator')
+        choices.add_command(label="Quantiles",underline=0,
+                command=self.do_quantiles)
+        choices.add_command(label="Equal Intervals",underline=0,
+                command=self.do_equal_intervals)
+        choices.add_command(label="Maximum Breaks",underline=0,
+                command=self.do_maximum_breaks)
+        self.menu.add_cascade(label="Legend",underline=0,menu=choices)
+
+    def do_quantiles(self):
+        print 'quantiles'
+        self.classifier='quantiles'
+ 
+        dbf=self.shape_file.split(".")[0]
+        dbf=dbf+".dbf"
+        f=ps.open(dbf)
+        vnames=f.header
+        cd=dialogues.Classifier(vnames,attribute_command=self.set_variable,
+                k_command=self.set_k,parent=self,title="Quantiles")
+
+    def set_variable(self,id):
+        self.classifier='quantiles'
+        dbf=self.shape_file.split(".")[0]
+        dbf=dbf+".dbf"
+        f=ps.open(dbf)
+        vnames=f.header
+        self.variable_name=vnames[id]
+        v=np.array(f.by_col(self.variable_name))
+        c=ps.Quantiles(v,self.k)
+        self.c=c
+        self.y=v
+        colors=color.colorSchemes.getScheme('projector','sequential',self.k).colors
+        k=self.p2s.keys()
+        k.sort()
+        colors=[colors[c.yb[self.p2s[i]]] for i in k]
+        self.colors=colors
+        self.recolor()
+        self.c=c
+
+
+    def set_k(self,k):
+        k=int(k)
+        self.k=k
+
+    def do_equal_intervals(self):
+        self.classifier='equal_intervals'
+        print 'ei'
+
+    def do_maximum_breaks(self):
+        self.classifer='maximum_breaks'
+        print 'mb'
+
+    def world_2_screen(self):
+        w=self.width
+        h=self.height
+
+        mx=w/2.
+        my=h/2.
+        self.screen_polygons=self.polygons[:]
+        x0,y0,x1,y1=self.bb
+
+        mwx=(x1+x0)/2.
+        mwy=(y1+y0)/2.
+
+        # scale
+        sx=w/(x1-x0)
+        sy=h/(y1-y0)
+
+        sx=min(sx,sy)*0.9
+        self.sx=sx
+
+        for i,polygon  in enumerate(self.screen_polygons):
+            for j,vert in enumerate(polygon):
+                x,y=vert
+
+                xs=(x-mwx)*sx + mx
+                ys=(mwy-y)*sx + my
+                polygon[j]=(xs,ys)
+            self.screen_polygons[i]=polygon
+
+    def draw(self):
+        self.world_2_screen()
+
+        marks2p={}
+        p2marks={}
+        for i,polygon in enumerate(self.screen_polygons):
+            color=self.colors[i]
+            marks2p[i]=self.canvas.create_polygon(polygon,fill=color,outline='black')
+            p2marks[marks2p[i]]=i
+        self.marks2p=marks2p
+        self.p2marks=p2marks
+
+            #print i
+            #t=raw_input('here')
+    def recolor(self):
+        for i in self.marks2p:
+            self.canvas.itemconfigure(self.marks2p[i],fill=self.colors[i])
+
+class PlotShapeFile:
+    """exploring shapefiles """
+    def __init__(self,shapefile="us48join.shp",variable=None,classifier='quantiles',
+            k=5,scheme='sequential', projection='unproj'):
+
+        if projection=='unproj':
+            proj=projections.unproj
+        elif projection=='mercator':
+            proj=projections.mercator
+
+        head,tail=shapefile.split(".")
+        f=ps.open(shapefile)
+        bb=f.bbox
+        polygons=[]
+        flag=1
+        while flag:
+            try:
+                shp=f.next()
+                polygons.append(shp)
+            except:
+                flag=0
+
+        # unprojected first
+        new_polygons=[]
+        p2s={}
+        s2p={}
+        x0,y0=proj(bb[0],bb[1])
+        x1,y1=proj(bb[2],bb[3])
+        bb=[x0,y0,x1,y1]
+        print bb
+        pid=0
+        for i,polygon in enumerate(polygons):
+            s2p[i]=[]
+            for part in polygon.parts:
+                verts=[]
+                for j,point in enumerate(part):
+                    lon,lat=point
+                    x,y=proj(lon,lat)
+                    verts.append((x,y))
+                    x0=min(x,x0)
+                    x1=max(x,x1)
+                    y0=min(y,y0)
+                    y1=max(y,y1)
+                new_polygons.append(verts)
+                s2p[i].append(pid)
+                p2s[pid]=i
+                pid+=1
+        self.s2p=s2p
+        self.p2s=p2s
+        f.close()
+        if variable:
+            d=ps.open(head+".dbf")
+            y=np.array(map(int,d.by_col(variable)))
+            mc=ps.Quantiles(y)
+            cs=color.colorSchemes.getScheme('projector','sequential',5).colors
+            k=p2s.keys()
+            k.sort()
+            colors=[cs[mc.yb[p2s[i]]] for i in k]
+        else:
+            colors=['white' for i in p2s.keys()]
+        cm=Choropleth(new_polygons, bb,self.p2s,colors=colors)
+        cm.shape_file=shapefile
+        self.cm=cm
+
+
+
+
+if __name__ == '__main__':
+    import pysal as ps
+    import projections as mercator
+    import numpy as np
+    import color
+
+    p=PlotShapeFile('us48join.shp')
+    """
+    vu=PlotShapeFile('data/virginiacounties.shp')
+    v=PlotShapeFile('data/virginiacounties.shp',projection='mercator')
+    #v=View()
+    #v2=View(center=True)
+    #v3=View(center=True,title='V3')
+    head="us48join"
+
+    f=ps.open(head+".shp")
+    bb=f.bbox
+    polygons=[]
+    flag=1
+    while flag:
+        try:
+            shp=f.next()
+            polygons.append(shp)
+        except:
+            flag=0
+
+    # unprojected first
+    new_polygons=[]
+    p2s={}
+    x0,y0=proj(bb[0],bb[1])
+    x1,y1=proj(bb[2],bb[3])
+    bb=[x0,y0,x1,y1]
+    print bb
+    pid=0
+    for i,polygon in enumerate(polygons):
+        for part in polygon.parts:
+            verts=[]
+            for j,point in enumerate(part):
+                lon,lat=point
+                x,y=proj(lon,lat)
+                verts.append((x,y))
+                x0=min(x,x0)
+                x1=max(x,x1)
+                y0=min(y,y0)
+                y1=max(y,y1)
+            new_polygons.append(verts)
+            p2s[pid]=i
+            pid+=1
+
+    f.close()
+    d=ps.open(head+".dbf")
+    y=np.array(map(int,d.by_col('N88')))
+    mc=ps.Quantiles(y)
+    cs=color.colorSchemes.getScheme('projector','sequential',5).colors
+    colors=[cs[i] for i in mc.yb]
+    cm=Choropleth(new_polygons, bb,p2s,colors=cs)
+    """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
