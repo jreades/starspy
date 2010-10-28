@@ -140,8 +140,6 @@ class View(object,Tk.Frame):
         if self.zoom_on:
             cx = self.canvas.canvasx(event.x)
             cy = self.canvas.canvasy(event.y)
-            self.zoom_x1 = cx
-            self.zoom_y1 = cy
             self.zoom_window_delete()
             self.zoom_window_create([self.zoom_x0,self.zoom_y0,cx,cy])
 
