@@ -595,6 +595,8 @@ if __name__ == '__main__':
 
     p=PlotShapeFile('us48join.shp')
 
+
+    # prototyping Marks
     top=Tk.Toplevel()
     can=Tk.Canvas(top,width=500,height=500,bg='grey')
     can.grid()
