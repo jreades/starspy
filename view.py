@@ -524,6 +524,66 @@ class PlotShapeFile:
         cm.shape_file=shapefile
         self.cm=cm
 
+class Mark:
+    """
+    Abstract class for Mark
+
+    A Mark is a widget drawn on a Canvas
+    """
+    def __init__(self,canvas,coords,tags=[],fill='white',outline='black'):
+        self.canvas=canvas
+        self.coords=coords
+        self.tags=tags
+        self.fill=fill
+        self.outline=outline
+        self.draw()
+
+    def highlight(self):
+        self._highlighted=True
+
+    def unhighlight(self):
+        self._highlighted=False
+
+    def draw(self):
+        print 'override in subclass'
+
+    def lift(self):
+        """
+        Lift the mark above all marks currently obscuring it
+        """
+        pass
+
+class Polygon(Mark):
+    def __init__(self,canvas,coords,fill='white',outline='black',
+            tags=[]):
+        self.fill=fill
+        self.outline=outline
+        Mark.__init__(self,canvas,coords,tags=tags)
+
+    def draw(self):
+        self.id=self.canvas.create_polygon(self.coords,tags=self.tags)
+
+class Point(Mark):
+    def __init__(self,canvas,coords,fill='white',outline='black',
+            tags=[]):
+        self.fill=fill
+        self.outline=outline
+        Mark.__init__(self,canvas,coords,tags=tags)
+
+    def draw(self):
+        self.id=self.canvas.create_oval(self.coords,fill=self.fill,
+                outline=self.outline,tags=self.tags)
+
+class Line(Mark):
+    def __init__(self,canvas,coords,fill='white',outline='black',
+            tags=[]):
+        self.fill=fill
+        self.outline=outline
+        Mark.__init__(self,canvas,coords,tags=tags)
+
+    def draw(self):
+        self.id=self.canvas.create_line(self.coords,tags=self.tags)
+
 
 
 
@@ -534,56 +594,13 @@ if __name__ == '__main__':
     import color
 
     p=PlotShapeFile('us48join.shp')
-    """
-    vu=PlotShapeFile('data/virginiacounties.shp')
-    v=PlotShapeFile('data/virginiacounties.shp',projection='mercator')
-    #v=View()
-    #v2=View(center=True)
-    #v3=View(center=True,title='V3')
-    head="us48join"
 
-    f=ps.open(head+".shp")
-    bb=f.bbox
-    polygons=[]
-    flag=1
-    while flag:
-        try:
-            shp=f.next()
-            polygons.append(shp)
-        except:
-            flag=0
+    top=Tk.Toplevel()
+    can=Tk.Canvas(top,width=500,height=500,bg='grey')
+    can.grid()
 
-    # unprojected first
-    new_polygons=[]
-    p2s={}
-    x0,y0=proj(bb[0],bb[1])
-    x1,y1=proj(bb[2],bb[3])
-    bb=[x0,y0,x1,y1]
-    print bb
-    pid=0
-    for i,polygon in enumerate(polygons):
-        for part in polygon.parts:
-            verts=[]
-            for j,point in enumerate(part):
-                lon,lat=point
-                x,y=proj(lon,lat)
-                verts.append((x,y))
-                x0=min(x,x0)
-                x1=max(x,x1)
-                y0=min(y,y0)
-                y1=max(y,y1)
-            new_polygons.append(verts)
-            p2s[pid]=i
-            pid+=1
-
-    f.close()
-    d=ps.open(head+".dbf")
-    y=np.array(map(int,d.by_col('N88')))
-    mc=ps.Quantiles(y)
-    cs=color.colorSchemes.getScheme('projector','sequential',5).colors
-    colors=[cs[i] for i in mc.yb]
-    cm=Choropleth(new_polygons, bb,p2s,colors=cs)
-    """
+    p=(250,250,280,280)
+    p=Point(can,coords=p,fill='blue')
 
 
 
