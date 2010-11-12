@@ -356,8 +356,11 @@ class Scatter(View):
 
         if y.ndim==1:
             y.shape=(len(y),1)
-
         self.n,self.k=y.shape
+        if x:
+            self.x=x
+        else:
+            self.x=np.arange(1,self.n+1)
 
         if mark_type=='b' or mark_type=='l' or mark_type=='p':
             self.mark_type=[mark_type]*self.k
@@ -371,10 +374,65 @@ class Scatter(View):
             else:
                 self.colors=LINE_COLORS[:self.k]
         self.y=y
-        self.x=x
+
+        
         self.xlim=xlim
         self.ylim=ylim
         View.__init__(self)
+
+    def add_line(self,coords,fill='black'):
+        new_coords=[]
+        for coord in coords:
+            x,y=coord
+            new_coords.append(self.world_2_screen_i(x,y))
+        self.canvas.create_line(new_coords,fill=fill)
+
+    def add_text(self,coords,text=None,position='c'):
+        x,y=coords
+        coords=self.world_2_screen_i(x,y)
+        self.canvas.create_text(coords,text=text)
+
+
+
+    def world_2_screen_i(self,x,y):
+        # get buffer
+        w=self.canvas.winfo_width()
+        h=self.canvas.winfo_height()
+        #print w,h
+
+        cx_0=w*BUFFER
+        cx_1=w*(1-BUFFER)
+        cy_0=h*BUFFER
+        cy_1=h*(1-BUFFER)
+
+        cr_y=cy_1-cy_0
+        cr_x=cx_1-cx_0
+
+        # get range of y
+        y_min=self.y.min()
+        y_max=self.y.max()
+        if self.ylim:
+            y_min,y_max=self.ylim
+        y_r=y_max-y_min
+
+        # get range of x
+
+        x_min=self.x.min()
+        x_max=self.x.max()
+        x_r=x_max-x_min
+
+        if self.xlim:
+            x_min,x_max=self.xlim
+
+        x_r=x_max-x_min
+
+        scale_y=cr_y*1./y_r
+        scale_x=cr_x*1./x_r
+
+        y=(y_max-y)*scale_y+cy_0
+        x=(x-x_min)*scale_x+cx_0
+        return(x,y)
+
 
     def world_2_screen(self):
         
@@ -400,21 +458,14 @@ class Scatter(View):
 
         # get range of x
 
-        if self.x:
-            x_min=self.x.min()
-            x_max=self.x.max()
-            x_r=x_max-x_min
-        else:
-            x_r=len(self.y)
-            x=np.arange(1,x_r+1)
-            x_min=x.min()
-            x_max=x.max()
+        x_min=self.x.min()
+        x_max=self.x.max()
+        x_r=x_max-x_min
 
         if self.xlim:
             x_min,x_max=self.xlim
 
         x_r=x_max-x_min
-        self.x=x
 
         scale_y=cr_y*1./y_r
         scale_x=cr_x*1./x_r
