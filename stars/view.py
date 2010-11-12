@@ -11,6 +11,9 @@ E=Tk.E
 W=Tk.W
 BG='gray'
 LEGEND_WIDTH=50
+BUFFER=0.05
+LINE_COLORS='blue','green','red','yellow','cyan','magenta','purple'
+
 import projections
 
 class View(object,Tk.Frame):
@@ -27,6 +30,8 @@ class View(object,Tk.Frame):
         self.top=top
         self.rowconfigure(0,weight=1)
         self.columnconfigure(0,weight=1)
+        self.height=height
+        self.width=width
         if dynamic_size:
             w=min(self.top.wm_maxsize())
             w/=2.
@@ -332,6 +337,124 @@ class View(object,Tk.Frame):
     def menu_update(self):
         print 'override'
 
+    def show_legend(self):
+        print 'override'
+
+    def hide_legend(self):
+        print 'override'
+
+
+class Scatter(View):
+    """
+    Scatterplot
+    """
+    def __init__(self,y,x=None,xlim=None,ylim=None,colors=None,
+            mark_type='b'):
+
+        if type(y)==type([]):
+            y=np.array(y)
+
+        if y.ndim==1:
+            y.shape=(len(y),1)
+
+        self.n,self.k=y.shape
+
+        if mark_type=='b' or mark_type=='l' or mark_type=='p':
+            self.mark_type=[mark_type]*self.k
+
+        if colors:
+            self.colors=colors
+        else:  
+            if self.k > len(LINE_COLORS):
+                LC=LINE_COLORS*self.k
+                self.colors=LC[:self.k]
+            else:
+                self.colors=LINE_COLORS[:self.k]
+        self.y=y
+        self.x=x
+        self.xlim=xlim
+        self.ylim=ylim
+        View.__init__(self)
+
+    def world_2_screen(self):
+        
+        # get buffer
+        w=self.width
+        h=self.height
+        #print w,h
+
+        cx_0=w*BUFFER
+        cx_1=w*(1-BUFFER)
+        cy_0=h*BUFFER
+        cy_1=h*(1-BUFFER)
+
+        cr_y=cy_1-cy_0
+        cr_x=cx_1-cx_0
+
+        # get range of y
+        y_min=self.y.min()
+        y_max=self.y.max()
+        if self.ylim:
+            y_min,y_max=self.ylim
+        y_r=y_max-y_min
+
+        # get range of x
+
+        if self.x:
+            x_min=self.x.min()
+            x_max=self.x.max()
+            x_r=x_max-x_min
+        else:
+            x_r=len(self.y)
+            x=np.arange(1,x_r+1)
+            x_min=x.min()
+            x_max=x.max()
+
+        if self.xlim:
+            x_min,x_max=self.xlim
+
+        x_r=x_max-x_min
+        self.x=x
+
+        scale_y=cr_y*1./y_r
+        scale_x=cr_x*1./x_r
+
+        y=(y_max-self.y)*scale_y+cy_0
+        x=(self.x-x_min)*scale_x+cx_0
+
+        self.screen_x=x
+        self.screen_y=y
+
+        self.canvas.create_rectangle(cx_0,cy_0,cx_1,cy_1)
+        #print scale_x,scale_y,cx_0,cy_0,cx_1,cy_1
+
+    def draw(self):
+        self.world_2_screen()
+        n=len(self.screen_y)
+        for j in range(self.k):
+            color=self.colors[j]
+            for i in range(self.n):
+                x=self.screen_x[i]
+                y=self.screen_y[i,j]
+                #print x,y,self.x[i],self.y[i,j]
+                if self.mark_type[j]=='b' or self.mark_type[j]=='p':
+                    self.canvas.create_oval(x-2,y-2,x+2,y+2,fill=color,
+                            outline=color)
+            if self.mark_type[j]=='b' or self.mark_type[j]=='l':
+                coords=[(self.screen_x[i],yi) for i,yi in enumerate(self.screen_y[:,j])]
+                self.canvas.create_line(coords,fill=color)
+
+
+
+
+
+
+
+
+    
+
+
+
 
 class Choropleth(View):
     """Choropleth Mapping """
@@ -552,6 +675,17 @@ class Mark:
         Lift the mark above all marks currently obscuring it
         """
         pass
+    def world_2_canvas(self,coords):
+        """
+        convert world coordinates to canvas coordinates
+        """
+
+        # get bb for drawing area
+
+        # get extent of world coordinates
+
+        pass
+
 
 class Polygon(Mark):
     def __init__(self,canvas,coords,fill='white',outline='black',
@@ -593,7 +727,7 @@ if __name__ == '__main__':
     import numpy as np
     import color
 
-    p=PlotShapeFile('examples/us48join.shp')
+    m=PlotShapeFile('examples/us48join.shp')
 
 
     # prototyping Marks
@@ -603,21 +737,11 @@ if __name__ == '__main__':
 
     p=(250,250,280,280)
     p=Point(can,coords=p,fill='blue')
+    s=Scatter(np.arange(10))
+    s.title='scatter'
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    y=np.random.randn(100,10)
+    #y=np.array([y,y+10])
+    #y=y.T
+    s1=Scatter(y,mark_type='l')
 
