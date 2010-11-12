@@ -462,7 +462,7 @@ class Choropleth(View):
 
 class PlotShapeFile:
     """exploring shapefiles """
-    def __init__(self,shapefile="us48join.shp",variable=None,classifier='quantiles',
+    def __init__(self,shapefile="examples/us48join.shp",variable=None,classifier='quantiles',
             k=5,scheme='sequential', projection='unproj'):
 
         if projection=='unproj':
@@ -593,7 +593,7 @@ if __name__ == '__main__':
     import numpy as np
     import color
 
-    p=PlotShapeFile('us48join.shp')
+    p=PlotShapeFile('examples/us48join.shp')
 
 
     # prototyping Marks
