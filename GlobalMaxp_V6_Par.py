@@ -53,8 +53,11 @@ class GlobalMaxp:
                 pool = mp.Pool(processes = numOfProcess)
                 id1 = copy.copy(self.w.id_order)
                 id2 = copy.copy(self.w.id_order)
+
                 neighbor1 = copy.copy(self.w.neighbors)
                 neighbor2 = copy.copy(self.w.neighbors)
+
+                neighbor1=dict(self.w.neighbors.items())
                 arguments = [[curval, initial/numOfProcess, self.z, self.floor, self.floor_variable, id1, neighbor1]]
                 arguments.append([curval, initial/numOfProcess, self.z,self.floor, self.floor_variable, id2, neighbor2])
                 results = pool.map(pickBest, arguments)
