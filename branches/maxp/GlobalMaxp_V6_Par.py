@@ -18,12 +18,9 @@ import multiprocessing as mp
 
 LARGE=10**6
 MAX_ATTEMPTS=100
-globalW = [pysal.lat2W()]
 
 class GlobalMaxp:
-        
-        globalW = [pysal.lat2W()]
-        
+    
         def __init__(self,w,z,floor,floor_variable,
                     verbose=False,initial=100,seeds=[]):
 
@@ -54,8 +51,12 @@ class GlobalMaxp:
                 
                 numOfProcess = 2
                 pool = mp.Pool(processes = numOfProcess)
-                arguments = [[curval, initial/numOfProcess, self.z, self.floor, self.floor_variable]]
-                arguments.append([curval, initial/numOfProcess, self.z,self.floor, self.floor_variable])
+                id1 = copy.copy(self.w.id_order)
+                id2 = copy.copy(self.w.id_order)
+                neighbor1 = copy.copy(self.w.neighbors)
+                neighbor2 = copy.copy(self.w.neighbors)
+                arguments = [[curval, initial/numOfProcess, self.z, self.floor, self.floor_variable, id1, neighbor1]]
+                arguments.append([curval, initial/numOfProcess, self.z,self.floor, self.floor_variable, id2, neighbor2])
                 results = pool.map(pickBest, arguments)
                 
                 winVal = 100000
@@ -524,8 +525,7 @@ class GlobalMaxp:
                 wss+=sum(np.transpose(var))*len(region)
             return wss
       
-def initial_solution(floor_variable, floor, preseeds = []):
-        print globalW[0].n, "initial_solution"
+def initial_solution(floor_variable, floor, id_order, neighbors, preseeds = []):
         new_p=0
         solving=True
         attempts=0
@@ -533,12 +533,12 @@ def initial_solution(floor_variable, floor, preseeds = []):
             regions=[]
             enclaves=[]
             if not preseeds:
-                candidates=copy.copy(globalW[0].id_order)
+                candidates=copy.copy(id_order)
                 candidates=np.random.permutation(candidates)
                 candidates=candidates.tolist()
             else:
                 seeds = copy.copy(preseeds)
-                nonseeds=[ i for i in globalW[0].id_order if i not in seeds]
+                nonseeds=[ i for i in id_order if i not in seeds]
                 candidates=seeds
                 candidates.extend(nonseeds)
             while candidates:
@@ -554,7 +554,7 @@ def initial_solution(floor_variable, floor, preseeds = []):
                     else:
                         potential=[] 
                         for area in region:
-                            neighbors=globalW[0].neighbors[area]
+                            neighbors=neighbors[area]
                             neighbors=[neigh for neigh in neighbors if neigh in candidates]
                             neighbors=[neigh for neigh in neighbors if neigh not in region]
                             neighbors=[neigh for neigh in neighbors if neigh not in potential]
@@ -586,7 +586,7 @@ def initial_solution(floor_variable, floor, preseeds = []):
             encAttempts=0
             while enclaves and encAttempts!=encCount:
                 enclave=enclaves.pop(0)
-                neighbors=globalW[0].neighbors[enclave]
+                neighbors=neighbors[enclave]
                 neighbors=[neighbor for neighbor in neighbors if neighbor not in enclaves]
                 candidates=[]
                 for neighbor in neighbors:
@@ -620,23 +620,21 @@ def initial_solution(floor_variable, floor, preseeds = []):
                 attempts+=1
         return new_regions, new_area2region, new_p
 
-def check_floor(floor_variable, floor, region):
-            print globalW[0].n, "check_floor"             
-            selectionIDs = [globalW[0].id_order.index(i) for i in region]
+def check_floor(floor_variable, floor, region, id_order):        
+            selectionIDs = [id_order.index(i) for i in region]
             cv=sum(floor_variable[selectionIDs])
             if cv >= floor:
                 return True
             else:
                 return False
 
-def objective_function(z, solution):
-            print globalW[0].n, "objective_function"
+def objective_function(z, solution, id_order):
             # solution is a list of lists of region ids [[1,7,2],[0,4,3],...] such
             # that the first region has areas 1,7,2 the second region 0,4,3 and so
             # on. solution does not have to be exhaustive
             wss=0
             for region in solution:
-                selectionIDs = [globalW[0].id_order.index(i) for i in region]
+                selectionIDs = [id_order.index(i) for i in region]
                 m=z[selectionIDs,:]
                 var=m.var(axis=0)
                 wss+=sum(np.transpose(var))*len(region)
@@ -648,12 +646,14 @@ def pickBest(argu):
             z = argu[2]
             floor = argu[3]
             floor_var = argu[4]
+            id_orders = argu[5]
+            neighbor = argu[6]
             initial_wss=[]
             attempts=0
             for i in range(initial):
-                tmp_regions, tmp_area2region, p = initial_solution(floor_var, floor)
+                tmp_regions, tmp_area2region, p = initial_solution(floor_var, floor, id_orders, neighbor)
                 if p:
-                    val = objective_function(z, tmp_regions)
+                    val = objective_function(z, tmp_regions, id_orders)
                     initial_wss.append(val)
                     if val < curval:
                         current_regions=copy.copy(tmp_regions)
@@ -676,8 +676,6 @@ if __name__ == '__main__':
     z=np.random.random_sample((w.n,2))
     p=np.random.random(w.n)*100
     p=np.ones((w.n,1),float)
-    global globalW
-    globalW[0] = w
     floor=3
     time0 = time.clock()
     solution=GlobalMaxp(w,z,floor,floor_variable=p,initial=100)
