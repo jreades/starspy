@@ -1,0 +1,47 @@
+All tests based on Lattice data 30*30
+
+Maxp unparalleled 1:
+The Ordinary stuff took 11.576 seconds
+Best Initial Solution's Obj Value: 99.8144249066
+Region Num: 260
+Final Best Obj Value: 97.098240967
+This swap took  0.313961970027
+
+Maxp unparalleled 2:
+The Ordinary stuff took 11.362 seconds
+Best Initial Solution's Obj Value: 99.8144249066
+Region Num: 260
+Final Best Obj Value: 97.098240967
+This swap took  0.244757085049
+
+Maxp paralleled 1(processes = 4):
+The preparation for parallel took 0.418 seconds
+The parallel part took 15.862 seconds
+Best Initial Solution's Obj Value: 98.3089947554
+Region Num: 265
+Final Best Obj Value: 96.6581036825
+This swap took  0.233881680493
+
+Maxp paralleled 2(processes = 4):
+The preparation for parallel took 0.382 seconds
+The parallel part took 15.162 seconds
+Best Initial Solution's Obj Value: 98.1995492262
+Region Num: 265
+Final Best Obj Value: 93.8655486267
+This swap took  0.324767812669
+
+Maxp paralleled 3(processes = 2):
+The preparation for parallel took 0.134 seconds
+The parallel part took 12.783 seconds
+Best Initial Solution's Obj Value: 98.7008563662
+Region Num: 265
+Final Best Obj Value: 95.3468996981
+This swap took  0.282045902482
+
+Maxp paralleled 4(processes = 2):
+The preparation for parallel took 0.234 seconds
+The parallel part took 12.929 seconds
+Best Initial Solution's Obj Value: 99.1809910346
+Region Num: 265
+Final Best Obj Value: 94.4684081875
+This swap took  0.291215224281

@@ -49,18 +49,18 @@ class GlobalMaxp:
                 self.initial_wss=[]
                 self.attempts=0
                 
+                time2 = time.clock()
                 numOfProcess = 2
                 pool = mp.Pool(processes = numOfProcess)
-                id1 = copy.copy(self.w.id_order)
-                id2 = copy.copy(self.w.id_order)
-
-                neighbor1 = copy.copy(self.w.neighbors)
-                neighbor2 = copy.copy(self.w.neighbors)
-
-                neighbor1=dict(self.w.neighbors.items())
-                arguments = [[curval, initial/numOfProcess, self.z, self.floor, self.floor_variable, id1, neighbor1]]
-                arguments.append([curval, initial/numOfProcess, self.z,self.floor, self.floor_variable, id2, neighbor2])
+                id1 = self.w.id_order
+                neighbor1 = dict(self.w.neighbors)
+                arguments = []
+                for i in range(numOfProcess):
+                    arguments.append([curval, initial/numOfProcess, self.z, self.floor, self.floor_variable, id1, neighbor1])
+                time3 = time.clock()
+                print "The preparation for parallel took %.3f seconds" % (time3 - time2)
                 results = pool.map(pickBest, arguments)
+                pool.terminate()
                 
                 winVal = 100000
                 winNum = 0
@@ -69,8 +69,13 @@ class GlobalMaxp:
                         winVal = results[i][2]
                         winNum = i
                 
-                self.regions = copy.copy(results[winNum][0])
+                self.regions = results[winNum][0]
                 self.area2region = results[winNum][1]
+                
+                time3 = time.clock()
+                print "The parallel part took %.3f seconds" % (time3 - time2)
+                print self.regions
+                print winVal
                 # print len(results)
                 # print results
                 """
@@ -528,7 +533,7 @@ class GlobalMaxp:
                 wss+=sum(np.transpose(var))*len(region)
             return wss
       
-def initial_solution(floor_variable, floor, id_order, neighbors, preseeds = []):
+def initial_solution(floor_variable, floor, id_order, _neighbor, preseeds = []):
         new_p=0
         solving=True
         attempts=0
@@ -551,13 +556,13 @@ def initial_solution(floor_variable, floor, id_order, neighbors, preseeds = []):
                 building_region=True
                 while building_region:
                     # check if floor is satisfied
-                    if check_floor(floor_variable, floor, region):
+                    if check_floor(floor_variable, floor, region, id_order):
                         regions.append(region)
                         building_region=False
                     else:
                         potential=[] 
                         for area in region:
-                            neighbors=neighbors[area]
+                            neighbors=_neighbor[area]
                             neighbors=[neigh for neigh in neighbors if neigh in candidates]
                             neighbors=[neigh for neigh in neighbors if neigh not in region]
                             neighbors=[neigh for neigh in neighbors if neigh not in potential]
@@ -589,7 +594,7 @@ def initial_solution(floor_variable, floor, id_order, neighbors, preseeds = []):
             encAttempts=0
             while enclaves and encAttempts!=encCount:
                 enclave=enclaves.pop(0)
-                neighbors=neighbors[enclave]
+                neighbors=_neighbor[enclave]
                 neighbors=[neighbor for neighbor in neighbors if neighbor not in enclaves]
                 candidates=[]
                 for neighbor in neighbors:
@@ -663,9 +668,7 @@ def pickBest(argu):
                         current_area2region=copy.copy(tmp_area2region)
                         curval=val
                     attempts += 1
-            new_regions=copy.copy(current_regions)
-            new_area2region=current_area2region
-            return new_regions, new_area2region, curval, initial_wss
+            return current_regions, current_area2region, curval, initial_wss
 
 if __name__ == '__main__':
     
@@ -675,16 +678,16 @@ if __name__ == '__main__':
     
     random.seed(100)
     np.random.seed(100)
-    w=pysal.lat2W(20,20)
+    w=pysal.lat2W(30,30)
     z=np.random.random_sample((w.n,2))
     p=np.random.random(w.n)*100
     p=np.ones((w.n,1),float)
     floor=3
-    time0 = time.clock()
     solution=GlobalMaxp(w,z,floor,floor_variable=p,initial=100)
+    time0 = time.clock()
     solution.globalSwap()
     time1 = time.clock()
     print solution.p
     print solution.objective_function()
     print solution.regions[0]
-    print "This took ", time1 - time0
+    print "This globalSwap took ", time1 - time0
