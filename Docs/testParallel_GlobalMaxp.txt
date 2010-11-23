@@ -1,0 +1,61 @@
+All tests based on Lattice data 30*30
+
+GlobalMaxp unparalleled 1:
+The Ordinary stuff took 12.676 seconds
+Best Initial Solution's Obj Value: 99.8144249066
+Region Num: 260
+Final Best Obj Value: 88.3775277665
+This globalSwap took  25.083134309
+
+GlobalMaxp unparalleled 2:
+The Ordinary stuff took 12.706 seconds
+Best Initial Solution's Obj Value: 99.8144249066
+Region Num: 260
+Final Best Obj Value: 88.3775277665
+This globalSwap took  25.0784680735
+
+GlobalMaxp unparalleled 3:
+The Ordinary stuff took 12.942 seconds
+Best Initial Solution's Obj Value: 99.8144249066
+Region Num: 260
+Final Best Obj Value: 88.3775277665
+This globalSwap took  26.1746724793
+
+GlobalMaxp unparalleled 4:
+The Ordinary stuff took 12.630 seconds
+Best Initial Solution's Obj Value: 99.8144249066
+Region Num: 260
+Final Best Obj Value: 88.3775277665
+This globalSwap took  25.2828937756
+
+GlobalMaxp paralleled 1(4 processes):
+The preparation for parallel took 0.220 seconds
+The parallel part took 13.306 seconds
+Best Initial Solution's Obj Value: 97.9587418694
+Region Num: 265
+Final Best Obj Value: 84.7336785437
+This globalSwap took  30.1856023601
+
+GlobalMaxp paralleled 2(4 processes):
+The preparation for parallel took 0.384 seconds
+The parallel part took 13.619 seconds
+Best Initial Solution's Obj Value: 97.9853942051
+Region Num: 265
+Final Best Obj Value: 66.463396001
+This globalSwap took  103.863173392
+
+GlobalMaxp paralleled 3(2 processes):
+The preparation for parallel took 0.133 seconds
+The parallel part took 11.514 seconds
+Best Initial Solution's Obj Value: 98.5264038357
+Region Num: 265
+Final Best Obj Value: 91.1514404183
+This globalSwap took  16.2819327596
+
+GlobalMaxp paralleled 4(2 processes):
+The preparation for parallel took 0.134 seconds
+The parallel part took 11.545 seconds
+Best Initial Solution's Obj Value: 99.2890540335
+Region Num: 265
+Final Best Obj Value: 55.8898613453
+This globalSwap took  195.123623533
