@@ -357,7 +357,7 @@ class Scatter(View):
         if y.ndim==1:
             y.shape=(len(y),1)
         self.n,self.k=y.shape
-        if x:
+        if x is not None:
             self.x=x
         else:
             self.x=np.arange(1,self.n+1)
@@ -788,6 +788,8 @@ if __name__ == '__main__':
 
     p=(250,250,280,280)
     p=Point(can,coords=p,fill='blue')
+    l=(200,200,400,400)
+    l=Line(can,coords=l,fill='green')
     s=Scatter(np.arange(10))
     s.title='scatter'
 
