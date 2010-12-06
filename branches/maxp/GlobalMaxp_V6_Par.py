@@ -50,7 +50,7 @@ class GlobalMaxp:
                 self.attempts=0
                 
                 time2 = time.clock()
-                numOfProcess = 2
+                numOfProcess = 4
                 pool = mp.Pool(processes = numOfProcess)
                 id1 = self.w.id_order
                 neighbor1 = dict(self.w.neighbors)
@@ -74,7 +74,6 @@ class GlobalMaxp:
                 
                 time3 = time.clock()
                 print "The parallel part took %.3f seconds" % (time3 - time2)
-                print self.regions
                 print winVal
                 # print len(results)
                 # print results

@@ -121,7 +121,6 @@ class Maxp:
             self.area2region=self.current_area2region
             time3 = time.clock()
             print "The Ordinary stuff took %.3f seconds" % (time3 - time2)
-            print self.regions
             print best_val
         
     def bestInit(self, initial):
@@ -666,7 +665,7 @@ if __name__ == '__main__':
     import numpy as np
     random.seed(100)
     np.random.seed(100)
-    w=pysal.lat2W(30,30)
+    w=pysal.lat2W(20,20)
     z=np.random.random_sample((w.n,2))
     p=np.random.random(w.n)*100
     p=np.ones((w.n,1),float)
