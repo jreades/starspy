@@ -129,7 +129,6 @@ class GlobalMaxp:
             self.area2region=self.current_area2region
             time3 = time.clock()
             print "The Ordinary stuff took %.3f seconds" % (time3 - time2)
-            print self.regions
             print curval
             
     def globalSwap(self):

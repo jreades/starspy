@@ -1,0 +1,51 @@
+Testing Environment: Intel Core i5 CPU Quadcore, Win7 64-bit
+
+Unparalleled:
+    
+1.
+Initialization time(sec): 3.14
+Initial Best Obj:         43.858
+Origin Swap time(sec):    0.079
+Final Best Obj:           43.343
+
+2.
+Initialization time(sec): 3.135
+Initial Best Obj:         43.858
+Global Swap time(sec):    0.079
+Final Best Obj:           43.343
+
+3.
+Initialization time(sec): 3.168
+Initial Best Obj:         43.858
+Global Swap time(sec):    0.082
+Final Best Obj:           43.343
+
+Paralleled:
+  
+1. 4 cores are used
+Initialization time(sec): 2.711
+Initial Best Obj:         42.282
+Global Swap time(sec):    32.644
+Final Best Obj:           40.426
+Final Worst Obj:          41.259
+
+2. 4 cores are used
+Initialization time(sec): 2.720
+Initial Best Obj:         43.872
+Global Swap time(sec):    38.189
+Final Best Obj:           40.877
+Final Worst Obj:          42.465
+
+3. 4 cores are used
+Initialization time(sec): 2.863
+Initial Best Obj:         43.464
+Global Swap time(sec):    36.509
+Final Best Obj:           41.97
+Final Worst Obj:          42.285
+
+4. 4 cores are used
+Initialization time(sec): 2.818
+Initial Best Obj:         43.764
+Global Swap time(sec):    40.152
+Final Best Obj:           41.292 
+Final Worst Obj:          41.849

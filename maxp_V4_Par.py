@@ -9,7 +9,7 @@ __author__ = "Serge Rey <srey@asu.edu>, David Folch <david.folch@asu.edu>"
 
 
 import pysal
-from components_V2 import check_contiguity, check_contiguity_breadth
+from components_V2 import check_contiguity, check_contiguity_breadth, check_contiguity_par
 from pysal.common import *
 from pysal.region import randomregion as RR
 import multiprocessing as mp
@@ -125,7 +125,7 @@ class Maxp:
             self.attempts=0
                 
             time2 = time.clock()
-            numOfProcess = 2
+            numOfProcess = 4
             pool = mp.Pool(processes = numOfProcess)
             id1 = self.w.id_order
             neighbor1 = dict(self.w.neighbors)
@@ -146,10 +146,10 @@ class Maxp:
                 
             self.regions = results[winNum][0]
             self.area2region = results[winNum][1]
-                
+            self.p = len(self.regions)
+            
             time3 = time.clock()
             print "The parallel part took %.3f seconds" % (time3 - time2)
-            print self.regions
             print winVal
         
     def pickBest(self, initial):
@@ -465,6 +465,97 @@ class Maxp:
             wss+=sum(np.transpose(var))*len(region)
         return wss
 
+def Swap(argu):
+        regionID = argu[0]
+        target_regions = argu[1]
+        target_area2region = argu[2]
+        floor_var = argu[3]
+        floor = argu[4]
+        id_order = argu[5]
+        neighborDict = argu[6]
+        zObj = argu[7]
+        swapping=True
+        swap_iteration=0
+        total_moves=0
+        target_k=len(target_regions)
+        changed_regions=[1]*target_k
+        nr=range(target_k)
+        while swapping:
+            moves_made=0
+            regionIds=[r for r in nr if changed_regions[r]] 
+            np.random.permutation(regionIds)
+            changed_regions=[0]*target_k
+            swap_iteration+=1
+            index = 0
+            isFirst = True
+            while index < len(regionIds):
+                local_swapping=True
+                local_attempts=0
+                seed = 0
+                if isFirst:
+                    seed = regionID
+                    isFirst = False
+                else:
+                    seed = regionIds[index]
+                    index = index + 1
+                while local_swapping:
+                    local_moves=0
+                    # get neighbors
+                    members=target_regions[seed]
+                    neighbors=[]
+                    for member in members:
+                        candidates=neighborDict[member]
+                        candidates=[candidate for candidate in candidates if candidate not in members]
+                        candidates=[candidate for candidate in candidates if candidate not in neighbors]
+                        neighbors.extend(candidates)
+                    candidates=[]
+                    for neighbor in neighbors:
+                        block=copy.copy(target_regions[target_area2region[neighbor]])
+                        if check_contiguity_par(neighborDict,block,neighbor):
+                            fv=check_floor_Move(floor_var, floor, block, id_order)
+                            if fv:
+                                candidates.append(neighbor)
+                    # find the best local move 
+                    if not candidates:
+                        local_swapping=False
+                    else:
+                        nc=len(candidates)
+                        moves=np.zeros([nc,1],float)
+                        best=None
+                        cv=0.0
+                        for area in candidates:
+                            current_internal=target_regions[seed]
+                            current_outter=target_regions[target_area2region[area]]
+                            current=objective_function(zObj, [current_internal,current_outter], id_order)
+                            new_internal=copy.copy(current_internal)
+                            new_outter=copy.copy(current_outter)
+                            new_internal.append(area)
+                            new_outter.remove(area)
+                            new=objective_function(zObj, [new_internal,new_outter], id_order)
+                            change=new-current
+                            if change < cv:
+                                best=area
+                                cv=change
+                        if best:
+                            # make the move
+                            area=best
+                            old_region=target_area2region[area]
+                            target_regions[old_region].remove(area)
+                            target_area2region[area]=seed
+                            target_regions[seed].append(area)
+                            moves_made+=1
+                            changed_regions[seed]=1
+                            changed_regions[old_region]=1
+                        else:
+                            # no move improves the solution
+                            local_swapping=False
+                    local_attempts+=1
+            total_moves+=moves_made
+            if moves_made==0:
+                swapping=False
+        objVal = objective_function(zObj, target_regions, id_order)
+        return target_regions, target_area2region, objVal
+
 def initial_solution(floor_variable, floor, id_order, _neighbor, preseeds = []):
         new_p=0
         solving=True
@@ -568,6 +659,14 @@ def check_floor(floor_variable, floor, region, id_order):
             else:
                 return False
 
+def check_floor_Move(floor_variable, floor, region, id_order):                
+        selectionIDs = [id_order.index(i) for i in region]
+        cv=sum(floor_variable[selectionIDs])
+        if cv > floor:
+            return True
+        else:
+            return False
+
 def objective_function(z, solution, id_order):
             # solution is a list of lists of region ids [[1,7,2],[0,4,3],...] such
             # that the first region has areas 1,7,2 the second region 0,4,3 and so
@@ -590,6 +689,7 @@ def pickBest(argu):
             neighbor = argu[6]
             initial_wss=[]
             attempts=0
+            best_p = 0
             for i in range(initial):
                 tmp_regions, tmp_area2region, p = initial_solution(floor_var, floor, id_orders, neighbor)
                 if p:
@@ -599,8 +699,9 @@ def pickBest(argu):
                         current_regions=copy.copy(tmp_regions)
                         current_area2region=copy.copy(tmp_area2region)
                         curval=val
+                        best_p = p
                     attempts += 1
-            return current_regions, current_area2region, curval, initial_wss
+            return current_regions, current_area2region, curval, initial_wss, best_p
 
 if __name__ == '__main__':
     
@@ -608,15 +709,48 @@ if __name__ == '__main__':
     import numpy as np
     random.seed(100)
     np.random.seed(100)
-    w=pysal.lat2W(30,30)
+    w=pysal.lat2W(20,20)
     z=np.random.random_sample((w.n,2))
     p=np.random.random(w.n)*100
     p=np.ones((w.n,1),float)
     floor=3
     solution=Maxp(w,z,floor,floor_variable=p,initial=100)
+    # time0 = time.clock()
+    # solution.swap()
+    # time1 = time.clock()
+    # print solution.p
+    # print solution.objective_function()
+    # print "This swap took ", time1 - time0
+    time2 = time.clock()
+    numProcess = solution.p
+    
+    _id_order = w.id_order
+    _neighborDict = dict(w.neighbors)
+    
+    arguments = []
+    for i in range(numProcess):
+        arguments.append([i, copy.copy(solution.regions), copy.copy(solution.area2region),
+                            p, floor, _id_order, _neighborDict, z])
+    time3 = time.clock()
+    print "The preparation for parallel Swap took %.3f seconds" % (time3 - time2)
+    
     time0 = time.clock()
-    solution.swap()
+    swapPool = mp.Pool(processes = numProcess)
+    results = swapPool.map(Swap, arguments)
+    swapPool.terminate()
+                
+    winVal = 100000
+    winNum = 0
+    for i in range(len(results)):
+        if results[i][2] < winVal:
+            winVal = results[i][2]
+            winNum = i
+                
+    solution.regions = results[winNum][0]
+    solution.area2region = results[winNum][1]
+                
     time1 = time.clock()
-    print solution.p
-    print solution.objective_function()
-    print "This swap took ", time1 - time0
+    print "The parallel Swap took %.3f seconds" % (time1 - time0)
+    print winVal
+    for i in results:
+        print i[2]
