@@ -4,7 +4,10 @@ subclass of the numpy ndarray."""
 
 from __future__ import with_statement
 import numpy as np
-import threading
+#import threading
+import sqlite3
+
+#globals
 
 __all__ = ['DataStructures']
 
@@ -45,7 +48,7 @@ class StarsArray(np.ndarray):
         --------
 
         >>> arr = np.arange(50)
-        >>> obj = StarsArray(arr)
+        >>> obj = StarsArray(arr, info=None)
         >>> slice = StarsArray(obj[:10], info=['1st Quantile'])
         >>> slice.info
         ['1st Quantile']
@@ -86,6 +89,7 @@ class StarsArray(np.ndarray):
         if obj is None: 
             return
         self.info = getattr(obj, 'info', None)
+        self.tagdb = TagDb('/tmp/example')
 
 
     def __array_wrap__(self, out_arr, context=None):
@@ -95,7 +99,7 @@ class StarsArray(np.ndarray):
         print '   arr is %s' % repr(out_arr)
         # then just call the parent
         return np.ndarray.__array_wrap__(self, out_arr, context)
-    
+
     def _clear_tags_(self, obj):
         """
         This provides a way to remove all tags from the info attr.
@@ -140,16 +144,64 @@ class StarsArray(np.ndarray):
         """
         return self.info
 
+class TagDb(object):
+    """Class for storage and retrieval of Tag objects using python built-in
+    sqlite."""
+
+    def __init__(self, path):
+        """Instantiate the sqlite3 tag database object."""
+        self.connection = sqlite3.connect(path)
+        self.cursor = self.__connect__()
+        self.table = self.__create_table__()
+        
+
+    def __connect__(self):
+        """Create cursor object."""
+        cursor = self.connection.cursor()
+        return cursor
+
+    def __create_table__(self):
+        """Set up the initial table."""
+        self.cursor.execute('''create table Tags (row, col, dim, text)''')
+        self.connection.commit()
+
+    def close(self):
+        """Close the sqlite cursor connection. Call on closing STARS."""
+        self.cursor.close()
+
+    def add_tag(self, tag):
+        """Add a tag to the table."""
+        if not tag in self.table:
+            self.cursor.execute("""insert into self.table values 
+                    ("""+tag+""")""")
+            self.connection.commit()
+
+    def get_tags(self):
+        """Retrieve tags."""
+        taglist = self.cursor.execute('select * from'+ self.table)
+        return taglist
+
+    def remove_tag(self, tag):
+        """Remove a tag from the table."""
+        self.cursor.execute("""delete from table ("""+tag+""")""")
+        self.connection.commit()
+
 class Dimension:
     """
     Dimension has tags associated with it
-    == Isn't a dimension just another tag? ==
 
     eg. states - al, cal, ...wy
     eg. time 1941Q1....2001Q4
     """
     def __init__(self):
         self.tags = []
+
+    def open(self):
+        """Phony method."""
+        pass
+    def close(self):
+        """Phony method."""
+        pass
 
     
 def _test():
