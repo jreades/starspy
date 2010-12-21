@@ -34,4 +34,12 @@ def embed_ipython():
 if __name__ == '__main__':
 
     _test()
+'''
+    #Not ready for prime-time
+    try:
+        from IPython import appstart_tk
+        appstart_tk(app)
+    except ImportError:
+        app.MainLoop()
 
+'''
