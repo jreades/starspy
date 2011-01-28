@@ -636,7 +636,7 @@ class Choropleth(View):
 
 class PlotShapeFile:
     """exploring shapefiles """
-    def __init__(self,shapefile="examples/us48join.shp",variable=None,classifier='quantiles',
+    def __init__(self,shapefile="../examples/us48join.shp",variable=None,classifier='quantiles',
             k=5,scheme='sequential', projection='unproj'):
 
         if projection=='unproj':
@@ -644,7 +644,7 @@ class PlotShapeFile:
         elif projection=='mercator':
             proj=projections.mercator
 
-        head,tail=shapefile.split(".")
+        head,tail = shapefile.rsplit(".", 1)
         f=ps.open(shapefile)
         bb=f.bbox
         polygons=[]
@@ -778,7 +778,7 @@ if __name__ == '__main__':
     import numpy as np
     import color
 
-    m=PlotShapeFile('examples/us48join.shp')
+    m=PlotShapeFile('../examples/us48join.shp')
 
 
     # prototyping Marks
