@@ -778,7 +778,7 @@ if __name__ == '__main__':
     import numpy as np
     import color
 
-    m=PlotShapeFile('../examples/us48join.shp')
+    m=PlotShapeFile('../examples/us48join.shp', 'N70')
 
 
     # prototyping Marks
