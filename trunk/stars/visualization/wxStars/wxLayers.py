@@ -4,7 +4,7 @@ wxLayers
 wxLayers implement drawing of stars layers in wx
 """
 import wx
-import layers
+import stars.visualization.layers as layers
 
 class wxPointLayer:
     def __init__(self,layer):

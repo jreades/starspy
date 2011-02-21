@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxFrame" name="MapFrame">
+    <object class="wxToolBar" name="mapToolBar">
+      <object class="tool" name="openTool">
+        <bitmap stock_id="wxART_FILE_OPEN"/>
+        <tooltip>Open a Shapefile...</tooltip>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="panTool">
+        <bitmap>icons/tbpan.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Pan</tooltip>
+        <label>This is a Label</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="zoomTool">
+        <bitmap>icons/tbzoomin.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Zoom</tooltip>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="extentTool">
+        <bitmap>icons/tbzoomout.png</bitmap>
+        <tooltip>Zoom to Extent</tooltip>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxPanel" name="mapPanelHolder">
+          <size>500,500</size>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+      </object>
+    </object>
+    <title>STARS -- Map View</title>
+    <object class="wxMenuBar" name="mapMenuBar">
+      <object class="wxMenu" name="FileMenu">
+        <object class="wxMenuItem" name="FileOpen">
+          <label>Open...</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>File</label>
+      </object>
+      <object class="wxMenu" name="ToolMenu">
+        <label>Tools</label>
+        <object class="wxMenuItem" name="MenuToolPan">
+          <label>Pan Tool</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="MenuToolZoom">
+          <label>Zoom Tool</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="MenuToolExtent">
+          <label>Zoom to Extent</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+      </object>
+    </object>
+  </object>
+
+</resource>
