@@ -3,6 +3,7 @@ from stars.visualization.layers import BaseLayer, PointLayer, PolygonLayer
 from stars.visualization.mapModels import MapModel
 import pysal
 import wx
+import wxLayers
 
 class wxMapPanel(wx.Panel):
     """ Display a MapModel in a wxPanel """
@@ -38,6 +39,9 @@ class wxMapPanel(wx.Panel):
                 self.layers[layer][1] = None
                 self.layers[layer][2] = None
             self.draw()
+        elif tag == 'layers':
+            self._updateLayers()
+            self.mapObj.zoom_to_world()
     def onSize(self,evt):
         w,h = self.GetSize()
         self.buffer = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
@@ -99,7 +103,6 @@ class wxMapPanel(wx.Panel):
         self.mapObj.pan(dx,dy)
 
 if __name__=="__main__":
-    import wxLayers
     from wxMapTools import panTool,randomSelction,zoomWorld,zoomTool,randomClassification,randomPalette
     import pysal
     import numpy
