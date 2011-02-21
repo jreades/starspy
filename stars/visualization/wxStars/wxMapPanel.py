@@ -1,7 +1,6 @@
 import random
-from model import AbstractModel
-from layers import BaseLayer, PointLayer, PolygonLayer
-from mapModels import MapModel
+from stars.visualization.layers import BaseLayer, PointLayer, PolygonLayer
+from stars.visualization.mapModels import MapModel
 import pysal
 import wx
 
