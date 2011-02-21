@@ -41,6 +41,7 @@ class xrcMapFrame(wx.Frame):
         self.panTool = self.GetToolBar().FindById(xrc.XRCID("panTool"))
         self.zoomTool = self.GetToolBar().FindById(xrc.XRCID("zoomTool"))
         self.extentTool = self.GetToolBar().FindById(xrc.XRCID("extentTool"))
+        self.mapPanelHolder = xrc.XRCCTRL(self, "mapPanelHolder")
         self.FileOpen = self.GetMenuBar().FindItemById(xrc.XRCID("FileOpen"))
         self.MenuToolPan = self.GetMenuBar().FindItemById(xrc.XRCID("MenuToolPan"))
         self.MenuToolZoom = self.GetMenuBar().FindItemById(xrc.XRCID("MenuToolZoom"))
@@ -163,6 +164,9 @@ def __init_resources():
       <object class="sizeritem">
         <object class="wxPanel" name="mapPanelHolder">
           <size>500,500</size>
+          <XRCED>
+            <assign_var>1</assign_var>
+          </XRCED>
         </object>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>
@@ -206,7 +210,6 @@ def __init_resources():
       </object>
     </object>
   </object>
-
 </resource>'''
 
     icons_tbpan_png = '''\

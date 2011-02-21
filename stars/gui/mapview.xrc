@@ -47,6 +47,9 @@
       <object class="sizeritem">
         <object class="wxPanel" name="mapPanelHolder">
           <size>500,500</size>
+          <XRCED>
+            <assign_var>1</assign_var>
+          </XRCED>
         </object>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>
@@ -90,5 +93,4 @@
       </object>
     </object>
   </object>
-
 </resource>

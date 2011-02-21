@@ -20,7 +20,7 @@ class wxMapControl(object):
     def onEvent(self,evt):
         if self._enabled:
             self._onEvent(evt)
-            evt.Skip()
+        evt.Skip()
 class panTool(wxMapControl):
     """
     Mouse tool for panning the map Canvas.
@@ -45,6 +45,46 @@ class panTool(wxMapControl):
         self._prev_position = evt.Position
 class zoomTool(wxMapControl):
     """
+    Mouse tool for zooming the map Canvas.
+    When Active,
+        clicking and draging will draw a zoom box.
+        on release the map extent will be set to the extent of the box.
+    """
+    def __init__(self):
+        wxMapControl.__init__(self)
+        self._prev_position = None
+        self.__start = None
+        self.__end = None
+    def _onEvent(self,evt):
+        if evt.Dragging() and evt.LeftIsDown():
+            if self.__start:
+                self.mapObj.drawBoxOutline(self.__start,evt.Position)
+        if evt.LeftDown(): #state changed to left down
+            self.mapObj.CaptureMouse() #capture mouse events even when it leaves the frame.
+            self.__start = evt.Position
+            self.__end = None
+        if evt.LeftUp():
+            if self.mapObj.HasCapture():
+                self.mapObj.ReleaseMouse()
+            self.__end = evt.Position
+            transform = self.mapObj.mapObj
+            dx,dy = self.mapObj.pan_offset
+            x,y = self.__start
+            x-=dx
+            y-=dy
+            X,Y = self.__end
+            X-=dx
+            Y-=dy
+            x,y = transform.pixel_to_world(x,y)
+            X,Y = transform.pixel_to_world(X,Y)
+            left = min(x,X)
+            right = max(x,X)
+            lower = min(y,Y)
+            upper = max(y,Y)
+            self.mapObj.mapObj.extent = [left,lower,right,upper]
+class zoomTool2(wxMapControl):
+    """
+    Same as zoomTool, but bound to the right mouse button.
     Mouse tool for zooming the map Canvas.
     When Active,
         clicking and draging will draw a zoom box.
