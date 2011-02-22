@@ -3,13 +3,24 @@
 subclass of the numpy ndarray."""
 
 from __future__ import with_statement
+import pysal
 import numpy as np
-#import threading
-import sqlite3
+import threading
+
+# <-- which pysqlite? -->
+import sqlite3.dbapi2  as sqlite   # built-in sqlite api
+#from pysqlite2 import dbapi2 as sqlite  # for use with Spatialite
+
+# pysqlite2 supplies the buit-in sqlite3 api for python. The same source must be
+# compiled differently for use with spatialite, and called in this manner to
+# overwrite the built-in.
+# Note as well that sqlite3 has a built-in Rtree implementation, but must be
+# specially compiled to access it.
+# <-- /which pysqlite? -->
 
 #globals
 
-__all__ = ['DataStructures']
+__all__ = ['StarsArray', 'TagDb' ]
 
 class StarsArray(np.ndarray):
     """
@@ -17,12 +28,15 @@ class StarsArray(np.ndarray):
 
     support our tagging scheme
     support regular numpy functions
+    support time interval tagging
 
     Scipy docs on subclassing ndarray:
     http://docs.scipy.org/doc/numpy/user/basics.subclassing.html
     """
-    #lock = threading.Lock()
-    #instance_count = 0
+    # <-- keeping track of instances --> 
+    lock = threading.Lock()
+    instance_count = 0
+    # <-- /keeping track of instances --> 
 
     def __new__(cls, input_array, info=None ):
         """
@@ -75,8 +89,8 @@ class StarsArray(np.ndarray):
 
 
         """
-        #with StarsArray.lock:
-        #    StarsArray.instance_count += 1
+        with StarsArray.lock:
+            StarsArray.instance_count += 1
         obj = np.asarray(input_array).view(cls)
         obj.info = info
         return obj
@@ -115,12 +129,9 @@ class StarsArray(np.ndarray):
         """
         #what dtype is a tag? it should be a string
 
-    def add_row_tag(self):
-        """
-        apply a tag to all cells in a row of the array
-        """
+    def add_row_tag(self):    
+        "apply tag to all elements of row. look at row_factory method of sqlite instead" 
         pass
-
     def add_cell_tag(self, row, col, tag):
         """
         apply a tag to specific cell
@@ -144,47 +155,116 @@ class StarsArray(np.ndarray):
         """
         return self.info
 
-class TagDb(object):
+
+class TagDb:
     """Class for storage and retrieval of Tag objects using python built-in
-    sqlite."""
+    sqlite or spatialite. 
 
-    def __init__(self, path):
-        """Instantiate the sqlite3 tag database object."""
-        self.connection = sqlite3.connect(path)
-        self.cursor = self.__connect__()
-        self.table = self.__create_table__()
+    Use composition in the StarsArray class to create a TagDb associated
+    with the StarsArray, or we might want to make this class part of the 
+    larger Data Structure (StarsArray) instead of a separate class.
+    """
+    import datetime, dateutil 
+
+    def __init__(self, datafile):
+        """Instantiate the sqlite3 tag database object.
         
+        Parameters
+        ----------
+        datafile : a source of data that pysal.open() can handle
 
-    def __connect__(self):
-        """Create cursor object."""
-        cursor = self.connection.cursor()
-        return cursor
+        Attributes
+        ----------
+        TBD
 
-    def __create_table__(self):
-        """Set up the initial table."""
-        self.cursor.execute('''create table Tags (row, col, dim, text)''')
-        self.connection.commit()
+        Examples
+        --------
 
-    def close(self):
-        """Close the sqlite cursor connection. Call on closing STARS."""
-        self.cursor.close()
+        >>> import pysal
+        >>> data = pysal.open('NIJ/Final_Data/Tempe_Crime_Clipped.dbf')
+        >>> dates = data.by_col['RPTDATE']  
+        >>> dates[1]
+        datetime.date(2007, 1, 31)
+        >>> 
+
+        """
+        # Read in a data file
+        data = pysal.open(datafile)
+        sqlite.enable_callback_tracebacks(flag=True)    #for dev, set to False to turn off
+
+        sqlite.PARSE_COLNAMES = True   #returns 2 for detect_types option to connection creation
+        self.con = sqlite.connect(":memory:", detect_types = 2 )    # always remains in memory
+        #self.con_alt = sqlite.connect("", detect_types = 2 )  # temp db may be flushed to disk if db becomes too large
+        #see http://www.sqlite.org/inmemorydb.html for more info 
+
+        #NO need to create cursor --> execute(), executemany(), and executescript() methods of the Connection object creates the cursor implicitly.
+        #self.cursor = self.cxn.cursor()
+        
+        self.dates = self.data.by_col[datecol]
+        
+    def week(x):
+        """
+        Returns the calendar week of a given datetime.date object.
+
+        Parameters
+        ----------
+        x : datetime.date object
+
+        """
+        calweek = x.isocalendar()[1]
+        return calweek
+
+    def quarter(x):
+        """Map a datetime.date object to its quarter.
+        Given an instance x of datetime.date, (x.month-1)//3 will give you the quarter 
+        (0 for first quarter, 1 for second quarter, etc -- add 1 if you need to count from 1 instead
+        
+        Parameters
+        ----------
+        x : datetime.date object
+        
+        """
+        Q = (x.month - 1)//3 + 1  
+        return Q
+        
 
     def add_tag(self, tag):
         """Add a tag to the table."""
         if not tag in self.table:
-            self.cursor.execute("""insert into self.table values 
+            self.con.execute("""insert into self.table values 
                     ("""+tag+""")""")
-            self.connection.commit()
+            self.con.commit()
 
     def get_tags(self):
-        """Retrieve tags."""
-        taglist = self.cursor.execute('select * from'+ self.table)
+        """Retrieve tags matching query."""
+        taglist = self.con.execute('select * from'+ self.table)
         return taglist
+    
+    def make_timeslice(self):
+        """Create tags matching time query."""
+        pass
+
+    def index_datetimes(self):
+        """Read the date time fields and create an index for quick lookup."""
+        # use sql.datetime
+
+
+    def get_timetags(self):
+        """Retrieve tags matching time query."""
+        pass
+
 
     def remove_tag(self, tag):
         """Remove a tag from the table."""
-        self.cursor.execute("""delete from table ("""+tag+""")""")
-        self.connection.commit()
+        self.con.execute("""delete from table ("""+tag+""")""")
+        self.con.commit()
+
+    def close(self):
+        """Close the sqlite cursor connection. Call on closing STARS. If using
+        in-memory databases, this may not be needed as they're automatically closed."""
+        self.con.close()
+
+
 
 class Dimension:
     """
@@ -203,13 +283,15 @@ class Dimension:
         """Phony method."""
         pass
 
-    
+
 def _test():
-    """ This is a test."""
+    "Doc test"
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose=True)    
 
 if __name__ == '__main__':
+    #open your example data with pysal
+    
     _test()
 
 
