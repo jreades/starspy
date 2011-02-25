@@ -43,16 +43,16 @@ class panTool(wxMapControl):
             if self.mapObj.HasCapture():
                 self.mapObj.ReleaseMouse()
         self._prev_position = evt.Position
-class zoomTool(wxMapControl):
+class rectangleTool(wxMapControl):
     """
-    Mouse tool for zooming the map Canvas.
+    A Generic Rectangle Tool.
+
     When Active,
-        clicking and draging will draw a zoom box.
-        on release the map extent will be set to the extent of the box.
+        clicking and draging will draw a box.
+        on release the tool's 'onRectangle' method will be called.
     """
     def __init__(self):
         wxMapControl.__init__(self)
-        self._prev_position = None
         self.__start = None
         self.__end = None
     def _onEvent(self,evt):
@@ -63,36 +63,35 @@ class zoomTool(wxMapControl):
             self.mapObj.CaptureMouse() #capture mouse events even when it leaves the frame.
             self.__start = evt.Position
             self.__end = None
-        if evt.LeftUp():
+        elif evt.LeftUp():
             if self.mapObj.HasCapture():
                 self.mapObj.ReleaseMouse()
             self.__end = evt.Position
             transform = self.mapObj.mapObj
-            dx,dy = self.mapObj.pan_offset
             x,y = self.__start
-            x-=dx
-            y-=dy
             X,Y = self.__end
-            X-=dx
-            Y-=dy
             x,y = transform.pixel_to_world(x,y)
             X,Y = transform.pixel_to_world(X,Y)
             left = min(x,X)
             right = max(x,X)
             lower = min(y,Y)
             upper = max(y,Y)
-            self.mapObj.mapObj.extent = [left,lower,right,upper]
-class zoomTool2(wxMapControl):
+            self.onRectangle([left,lower,right,upper])
+    def onRectangle(self,rect):
+        """ Called when the user releases the Mouse Button
+        rect -- list -- [left, lower, right, upper] in World Coordinates
+        """
+        print "onRectangle(%r)"%rect
+class rectangleTool2(wxMapControl):
     """
-    Same as zoomTool, but bound to the right mouse button.
-    Mouse tool for zooming the map Canvas.
+    A Generic Rectangle Tool, bound to the right mouse button.
+
     When Active,
-        clicking and draging will draw a zoom box.
-        on release the map extent will be set to the extent of the box.
+        clicking and draging will draw a box.
+        on release the tool's 'onRectangle' method will be called.
     """
     def __init__(self):
         wxMapControl.__init__(self)
-        self._prev_position = None
         self.__start = None
         self.__end = None
     def _onEvent(self,evt):
@@ -103,25 +102,116 @@ class zoomTool2(wxMapControl):
             self.mapObj.CaptureMouse() #capture mouse events even when it leaves the frame.
             self.__start = evt.Position
             self.__end = None
-        if evt.RightUp():
+        elif evt.RightUp():
             if self.mapObj.HasCapture():
                 self.mapObj.ReleaseMouse()
             self.__end = evt.Position
             transform = self.mapObj.mapObj
-            dx,dy = self.mapObj.pan_offset
             x,y = self.__start
-            x-=dx
-            y-=dy
             X,Y = self.__end
-            X-=dx
-            Y-=dy
             x,y = transform.pixel_to_world(x,y)
             X,Y = transform.pixel_to_world(X,Y)
             left = min(x,X)
             right = max(x,X)
             lower = min(y,Y)
             upper = max(y,Y)
-            self.mapObj.mapObj.extent = [left,lower,right,upper]
+            self.onRectangle([left,lower,right,upper])
+    def onRectangle(self,rect):
+        """ Called when the user releases the Mouse Button
+        rect -- list -- [left, lower, right, upper] in World Coordinates
+        """
+        print "onRectangle(%r)"%rect
+class rectangleTool_Persistent(wxMapControl):
+    """
+    A Generic Rectangle Tool, where the rectangle persists after button release
+
+    When Active,
+        clicking and draging will draw a box.
+        on release the tool's 'onRectangle' method will be called,
+            repeatedly as the mouse is moved.
+        right click to cancel.
+    """
+    def __init__(self):
+        wxMapControl.__init__(self)
+        self.__start = None
+        self.__end = None
+    def _onEvent(self,evt):
+        if evt.LeftDown(): #state changed to left down
+            self.mapObj.CaptureMouse() #capture mouse events even when it leaves the frame.
+            self.__start = evt.Position
+            self.__end = None
+        elif evt.Dragging() and evt.LeftIsDown():
+            self.__end = evt.Position
+        elif evt.LeftUp():
+            self.__end = evt.Position
+        elif evt.RightDown() or self.__start == self.__end: #single click with no movement.
+            self.__start = None
+            self.__end = None
+            if self.mapObj.HasCapture():
+                self.mapObj.ReleaseMouse()
+            self.mapObj.drawBoxOutline()
+        if self.__start and self.__end:
+            if not self.mapObj.HasCapture():
+                self.mapObj.CaptureMouse()
+            x,y = evt.Position
+            w,h = (self.__start[0]-self.__end[0], self.__start[1]-self.__end[1])
+            X,Y = x+w,y+h
+            self.mapObj.drawBoxOutline((x,y),(X,Y))
+            transform = self.mapObj.mapObj
+            x,y = transform.pixel_to_world(x,y)
+            X,Y = transform.pixel_to_world(X,Y)
+            left = min(x,X)
+            right = max(x,X)
+            lower = min(y,Y)
+            upper = max(y,Y)
+            self.onRectangle([left,lower,right,upper])
+
+    def onRectangle(self,rect):
+        """ Called when the user releases the Mouse Button
+        rect -- list -- [left, lower, right, upper] in World Coordinates
+        """
+        print "onRectangle(%r)"%rect
+class zoomTool(rectangleTool):
+    """
+    Mouse tool for zooming the map Canvas.
+    When Active,
+        clicking and draging will draw a zoom box.
+        on release the map extent will be set to the extent of the box.
+    """
+    def onRectangle(self,rect):
+        self.mapObj.mapObj.extent = rect #[left,lower,right,upper]
+class zoomTool2(rectangleTool2):
+    """
+    Same as zoomTool, but bound to the right mouse button.
+    Mouse tool for zooming the map Canvas.
+    When Active,
+        clicking and draging will draw a zoom box.
+        on release the map extent will be set to the extent of the box.
+    """
+    def onRectangle(self,rect):
+        self.mapObj.mapObj.extent = rect #[left,lower,right,upper]
+class animateKD(wxMapControl):
+    """
+    For Demo Purposes only.
+    
+    Keyboard tool for animating KernelDensity layers.
+    When Active,
+        When the 'A' Key is pressed first KernelDensity Layer found will be animated.
+    """
+    evtType = wx.EVT_CHAR
+    def __init__(self):
+        wxMapControl.__init__(self)
+        self.step = 0
+    def _onEvent(self,evt):
+        if chr(evt.GetKeyCode()).lower() == 'a':
+            for layer in self.mapObj.layers:
+                if layer.type == "KernelDensityLayer":
+                    if self.step == 0:
+                        layer.animate()
+                        self.step = layer.animate2()
+                    else:
+                        self.step = layer.animate2()
+                    break
 class randomSelction(wxMapControl):
     """
     For Demo Purposes only.

@@ -1,5 +1,8 @@
+import wx
 import pysal
 from model import AbstractModel
+from kernelDensityTime import KernelDensity
+import random
 
 class BaseLayer(AbstractModel):
     """
@@ -115,6 +118,33 @@ class PolygonLayer(BaseLayer):
         self._data['type'] = 'PolygonLayer'
         self._data['data'] = polys
         self._data['extent'] = pysal.cg.get_bounding_box(polys)
+class KernelDensityLayer(BaseLayer):
+    """
+    Represents a Kernal Density Raster
+    """
+    def __init__(self,points):
+        BaseLayer.__init__(self)
+        self._data['type'] = 'KernelDensityLayer'
+        self._data['extent'] = pysal.cg.get_bounding_box(points)
+        kd = KernelDensity(self._data['extent'],400,3500)
+        self._points = points
+        random.shuffle(self._points)
+        for x,y in points:
+            kd.update(x,y)
+        self._data['data'] = kd
+        self._cur = 0
+    def animate(self):
+        kd = KernelDensity(self._data['extent'],400,3500)
+        self._data['data'] = kd
+    def animate2(self):
+        if self._cur >= len(self._points):
+            self._cur = 0
+            return 0
+        x,y = self._points[self._cur]
+        self._cur+=1
+        self.data.update(x,y)
+        self.update('data')
+        return self._cur
 
 if __name__=='__main__':
     import pysal
