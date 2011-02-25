@@ -4,7 +4,9 @@ wxLayers
 wxLayers implement drawing of stars layers in wx
 """
 import wx
+import numpy
 import stars.visualization.layers as layers
+from kernelDensityTime import KernelDensity
 
 class wxPointLayer:
     def __init__(self,layer):
@@ -40,7 +42,7 @@ class wxPointLayer:
         dc = wx.MemoryDC()
         dc.SelectObject(buff)
         gc = wx.GraphicsContext.Create(dc)
-        gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,255),1)) )
+        gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,128),1)) )
         matrix = gc.CreateMatrix()
         matrix.Scale(1./transform.scale,1./-transform.scale) #first transform is applied last
         matrix.Translate(*transform.offset)                   #last transform is applied first
@@ -54,7 +56,7 @@ class wxPointLayer:
             cs = {0:(255,0,0)}
         for i,cls in enumerate(cl.classes):
             r,g,b = cs[i]
-            gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(r,g,b,255))) )
+            gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(r,g,b,128))) )
             gc = self.draw_set(gc,matrix,cls)
         return buff
     def draw_selection(self,transform):
@@ -64,8 +66,8 @@ class wxPointLayer:
         dc = wx.MemoryDC()
         dc.SelectObject(buff)
         gc = wx.GraphicsContext.Create(dc)
-        gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,255),1)) )
-        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255))) )
+        gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,128),1)) )
+        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,128))) )
         matrix = gc.CreateMatrix()
         matrix.Scale(1./transform.scale,1./-transform.scale) #first transform is applied last
         matrix.Translate(*transform.offset)                   #last transform is applied first
@@ -135,5 +137,37 @@ class wxPolygonLayer:
         gc.FillPath(pth)
         gc.StrokePath(pth)
         return buff
+class wxKernelDensityLayer:
+    def __init__(self,layer):
+        if not isinstance(layer,layers.KernelDensityLayer):
+            raise TypeError, "Layer must be instance of KernelDensityLayer"
+        self.layer = layer
+        self.trns = 0
+    def draw_selection(self,transform):
+        w,h = transform.pixel_size
+        buff = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
+        return buff
+    def draw(self,transform):
+        kd = self.layer.data
 
-wxLayers = {'PolygonLayer':wxPolygonLayer,'PointLayer':wxPointLayer}
+        raster = kd.raster
+        img = numpy.zeros((kd.rows,kd.cols,3),numpy.uint8)
+        scaled = (raster-raster.min())/(raster.max()-raster.min())
+        img[:,:,0] = (scaled*255).astype("B") #red
+        img[:,:,2] = ((1+(scaled*-1))*255).astype("B") #blue
+        image = wx.EmptyImage(kd.cols,kd.rows)
+        image.SetData(img.tostring())
+        bitmap = image.ConvertToBitmap()
+
+        w,h = transform.pixel_size
+        buff = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
+        dc = wx.MemoryDC()
+        dc.SelectObject(buff)
+        gc = wx.GraphicsContext.Create(dc)
+        gc.Scale(1./transform.scale,1./-transform.scale)
+        gc.Translate(*transform.offset)
+        left,lower,right,upper = kd.extent
+        gc.DrawBitmap(bitmap,left,lower,right-left,upper-lower)
+        return buff
+
+wxLayers = {'PolygonLayer':wxPolygonLayer,'PointLayer':wxPointLayer,'KernelDensityLayer':wxKernelDensityLayer}

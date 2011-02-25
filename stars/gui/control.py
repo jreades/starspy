@@ -58,7 +58,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
             if shp.type == pysal.cg.Polygon:
                 layer = layers.PolygonLayer(shp.read())
             elif shp.type == pysal.cg.Point:
-                layer = layers.PolygonLayer(shp.read())
+                layer = layers.PointLayer(shp.read())
             else:
                 print "Unsupported Layer"
                 return
