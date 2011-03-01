@@ -136,6 +136,7 @@ class rectangleTool_Persistent(wxMapControl):
         wxMapControl.__init__(self)
         self.__start = None
         self.__end = None
+        self.__brushing = True
     def _onEvent(self,evt):
         evt_type = evt.GetEventType()
         if evt_type == wx.EVT_CHAR.typeId:
@@ -149,6 +150,16 @@ class rectangleTool_Persistent(wxMapControl):
             if self.mapObj.HasCapture():
                 self.mapObj.ReleaseMouse()
             self.mapObj.drawBoxOutline()
+    def isBrushing(self):
+        return self.__brushing
+    def enableBrushing(self):
+        self.__brushing = True
+        self.__start = None
+        self.__end = None
+    def disableBrushing(self):
+        self.__brushing = False
+        self.__start = None
+        self.__end = None
     def onMouse(self,evt):
         if evt.LeftDown(): #state changed to left down
             self.mapObj.CaptureMouse() #capture mouse events even when it leaves the frame.
@@ -156,18 +167,25 @@ class rectangleTool_Persistent(wxMapControl):
             self.__end = None
         elif evt.Dragging() and evt.LeftIsDown():
             self.__end = evt.Position
+            self.action(*evt.Position)
         elif evt.LeftUp():
             self.__end = evt.Position
+            self.action(*evt.Position)
+            if not self.__brushing:
+                self.mapObj.drawBoxOutline()
         elif evt.RightDown() or self.__start == self.__end: #single click with no movement.
             self.__start = None
             self.__end = None
             if self.mapObj.HasCapture():
                 self.mapObj.ReleaseMouse()
             self.mapObj.drawBoxOutline()
-        if self.__start and self.__end:
+        elif self.__start and self.__end and self.__brushing:
             if not self.mapObj.HasCapture():
                 self.mapObj.CaptureMouse()
             x,y = evt.Position
+            self.action(x,y)
+    def action(self,x,y):
+        if self.__start and self.__end:
             w,h = (self.__start[0]-self.__end[0], self.__start[1]-self.__end[1])
             X,Y = x+w,y+h
             self.mapObj.drawBoxOutline((x,y),(X,Y))

@@ -4,11 +4,10 @@ from control import mapFrame
 
 class MapFrameApp(wx.App):
     def OnInit(self):
-        self.frame = mapFrame()
-        self.frame.Show()
         shellFrame = wx.Frame(None)
         sh = Shell(shellFrame)
-        shellFrame.Show()
+        self.frame = mapFrame(None,shellFrame)
+        self.frame.Show()
         return True
 
 if __name__=='__main__':
