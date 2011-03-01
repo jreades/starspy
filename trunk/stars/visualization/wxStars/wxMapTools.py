@@ -131,11 +131,25 @@ class rectangleTool_Persistent(wxMapControl):
             repeatedly as the mouse is moved.
         right click to cancel.
     """
+    evtType = [wx.EVT_MOUSE_EVENTS,wx.EVT_CHAR]
     def __init__(self):
         wxMapControl.__init__(self)
         self.__start = None
         self.__end = None
     def _onEvent(self,evt):
+        evt_type = evt.GetEventType()
+        if evt_type == wx.EVT_CHAR.typeId:
+            self.onChar(evt)
+        elif evt_type in wx.EVT_MOUSE_EVENTS.evtType:
+            self.onMouse(evt)
+    def onChar(self,evt):
+        if evt.GetKeyCode() == wx.WXK_ESCAPE:
+            self.__start = None
+            self.__end = None
+            if self.mapObj.HasCapture():
+                self.mapObj.ReleaseMouse()
+            self.mapObj.drawBoxOutline()
+    def onMouse(self,evt):
         if evt.LeftDown(): #state changed to left down
             self.mapObj.CaptureMouse() #capture mouse events even when it leaves the frame.
             self.__start = evt.Position
