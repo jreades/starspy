@@ -15,7 +15,6 @@ class wxMapPanel(wx.Panel):
         self.mapObj.addListener(self._mapListener)
         self.layers = {}
         self._updateLayers()
-        self.pan_offset = 0,0
         self.background = (255,255,255,255)
         self.trns = 0
         w,h = self.GetSize()
@@ -82,30 +81,27 @@ class wxMapPanel(wx.Panel):
         dc.SelectObject(self.buffer)
         dc.SetBackground(wx.Brush(wx.Colour(*self.background)))
         dc.Clear()
-        px,py = self.pan_offset
         for layer in self.mapObj.layers:
             bitmap = self.layers[layer][1]
             if not bitmap:
-                print "redraw:",layer
                 bitmap = self.cacheLayer(layer)
             sbitmap = self.layers[layer][2]
             if not sbitmap:
                 sbitmap = self.cacheLayerSelectin(layer)
-            dc.DrawBitmap(bitmap,px,py)
-            dc.DrawBitmap(sbitmap,px,py)
+            dc.DrawBitmap(bitmap,0,0)
+            dc.DrawBitmap(sbitmap,0,0)
         # double buffered to prevent screen flicker on windows.
         dc.SelectObject(wx.NullBitmap)
         cdc = wx.ClientDC(self)
         cdc.DrawBitmap(self.buffer,0,0)
     def addControl(self,control):
         control.setMap(self)
-        self.Bind(control.evtType,control.onEvent)
+        if type(control.evtType) == wx._core.PyEventBinder:
+            self.Bind(control.evtType,control.onEvent)
+        else:
+            for evt in control.evtType:
+                self.Bind(evt, control.onEvent)
     def pan(self,dx,dy):
-        #px,py = self.pan_offset
-        #px+=dx
-        #py+=dy
-        #self.pan_offset = px,py
-        #self.draw()
         self.mapObj.pan(dx,dy)
 
 if __name__=="__main__":
