@@ -23,6 +23,7 @@
       </object>
       <object class="tool" name="zoomTool">
         <bitmap>icons/tbzoomin.png</bitmap>
+        <bitmap2>icons/tbzoomin.png</bitmap2>
         <toggle>1</toggle>
         <tooltip>Zoom</tooltip>
         <XRCED>
@@ -31,8 +32,39 @@
         </XRCED>
       </object>
       <object class="tool" name="extentTool">
-        <bitmap>icons/tbzoomout.png</bitmap>
+        <bitmap>icons/mActionZoomFullExtent.png</bitmap>
         <tooltip>Zoom to Extent</tooltip>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="selectTool">
+        <bitmap>icons/mActionSelectRectangle.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Rectangle Select</tooltip>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="brushTool">
+        <bitmap>icons/brushing.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Enable Brushing</tooltip>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      
+      
+      <object class="separator"/>
+      <object class="tool" name="promptTool">
+        <bitmap>icons/python-export.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Show the Command Prompt</tooltip>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
@@ -68,21 +100,23 @@
         <label>File</label>
       </object>
       <object class="wxMenu" name="ToolMenu">
-        <label>Tools</label>
-        <object class="wxMenuItem" name="MenuToolPan">
+        <object class="wxMenuItem" name="menuToolPan">
           <label>Pan Tool</label>
+          <checkable>1</checkable>
           <XRCED>
             <events>EVT_MENU</events>
             <assign_var>1</assign_var>
           </XRCED>
         </object>
-        <object class="wxMenuItem" name="MenuToolZoom">
+        <object class="wxMenuItem" name="menuToolZoom">
           <label>Zoom Tool</label>
+          <checkable>1</checkable>
           <XRCED>
             <events>EVT_MENU</events>
             <assign_var>1</assign_var>
           </XRCED>
         </object>
+        
         <object class="wxMenuItem" name="MenuToolExtent">
           <label>Zoom to Extent</label>
           <XRCED>
@@ -90,6 +124,34 @@
             <assign_var>1</assign_var>
           </XRCED>
         </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="menuToolSelect">
+          <label>Select Tool</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuToolBrush">
+          <label>Brushing</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        
+        <object class="separator"/>
+        <object class="wxMenuItem" name="menuToolPrompt">
+          <label>Command Prompt</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>Tools</label>
       </object>
     </object>
   </object>

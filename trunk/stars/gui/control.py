@@ -9,9 +9,10 @@ import pysal
 DEBUG = True
 
 class mapFrame(mapview_xrc.xrcMapFrame):
-    def __init__(self,parent=None):
+    def __init__(self,parent=None,shell=None):
         stars.remapEvtsToDispatcher(self,self.evtDispatch)
         mapview_xrc.xrcMapFrame.__init__(self,parent)
+        self.__shell = shell
         self.tools = {}
 
         #Add Map Panel
@@ -22,24 +23,34 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         sizer.Layout()
         #setup pan tool
         panTool = wxMapTools.panTool()
-        panTool.disable()
         self.mapPanel.addControl(panTool)
-        self.tools['panTool'] = panTool
+        self.tools['panTool'] = panTool,self.panTool.GetId(),self.menuToolPan.GetId()
         #setup zoom tool
         zoomTool = wxMapTools.zoomTool()
-        zoomTool.disable()
         self.mapPanel.addControl(zoomTool)
-        self.tools['zoomTool'] = zoomTool
+        self.tools['zoomTool'] = zoomTool,self.zoomTool.GetId(),self.menuToolZoom.GetId()
+        #setup select tool
+        selectTool = wxMapTools.rectangleTool_Persistent()
+        selectTool.disableBrushing()
+        self.mapPanel.addControl(selectTool)
+        self.tools['selectTool'] = selectTool,self.selectTool.GetId(),self.menuToolSelect.GetId()
+        self.setTool('panTool',True)
 
         self.dispatch = d = {}
         d['FileOpen'] = self.open
         d['openTool'] = self.open
-        d['MenuToolPan'] = self.toggle_pan
+        d['menuToolPan'] = self.toggle_pan
         d['panTool'] = self.toggle_pan
-        d['MenuToolZoom'] = self.toggle_zoom
+        d['menuToolZoom'] = self.toggle_zoom
         d['zoomTool'] = self.toggle_zoom
+        d['selectTool'] = self.toggle_select
+        d['menuToolSelect'] = self.toggle_select
+        d['menuToolBrush'] = self.brushing
+        d['brushTool'] = self.brushing
         d['extentTool'] = self.zoomExtent
         d['MenuToolExtent'] = self.zoomExtent
+        d['promptTool'] = self.shell
+        d['menuToolPrompt'] = self.shell
         #self.SetMenuBar(mapview_xrc.xrcmapMenuBar())
     def evtDispatch(self,evtName,evt):
         evtName,widgetName = evtName.rsplit('_',1)
@@ -63,20 +74,44 @@ class mapFrame(mapview_xrc.xrcMapFrame):
                 print "Unsupported Layer"
                 return
             self.model.addLayer(layer)
+    def setTool(self,toolname,state=None):
+        tool,tid,mid = self.tools[toolname]
+        if state == None:
+            state = tool.enabled^True #Toogle state.
+        self.mapToolBar.ToggleTool(tid,state)
+        self.MenuBar.Check(mid,state)
+        if state:
+            tool.enable()
+        else:
+            tool.disable()
+        for key in self.tools:
+            if key!=toolname:
+                tool,tid,mid = self.tools[key]
+                tool.disable()
+                self.mapToolBar.ToggleTool(tid,False)
+                self.MenuBar.Check(mid,False)
+    def brushing(self,evtName=None,evt=None,value=None):
+        state = self.tools['selectTool'][0].isBrushing()^True
+        self.mapToolBar.ToggleTool(self.brushTool.GetId(),state)
+        self.MenuBar.Check(self.menuToolBrush.GetId(),state)
+        if state:
+            self.tools['selectTool'][0].enableBrushing()
+        else:
+            self.tools['selectTool'][0].disableBrushing()
+    def shell(self,evtName=None,evt=None,value=None):
+        state = self.__shell.IsShown()^True
+        self.mapToolBar.ToggleTool(self.promptTool.GetId(),state)
+        self.MenuBar.Check(self.menuToolPrompt.GetId(),state)
+        if state:
+            self.__shell.Show()
+        else:
+            self.__shell.Hide()
+        
     def toggle_pan(self,evtName=None,evt=None,value=None):
-        self.tools['zoomTool'].disable()
-        tool = self.tools['panTool']
-        if tool.enabled:
-            tool.disable()
-        else:
-            tool.enable()
-        print tool,tool.enabled
+        self.setTool('panTool')
     def toggle_zoom(self,evtName=None,evt=None,value=None):
-        self.tools['panTool'].disable()
-        tool = self.tools['zoomTool']
-        if tool.enabled:
-            tool.disable()
-        else:
-            tool.enable()
+        self.setTool('zoomTool')
+    def toggle_select(self,evtName=None,evt=None,value=None):
+        self.setTool('selectTool')
     def zoomExtent(self,evtName=None,evt=None,value=None):
         self.mapPanel.mapObj.zoom_to_world()
