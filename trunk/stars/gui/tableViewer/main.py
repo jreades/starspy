@@ -1,12 +1,11 @@
+import pysal
 import wx
-from wx.py.shell import Shell
-from control import mapFrame 
+from control import TableViewer 
 
 class MapFrameApp(wx.App):
     def OnInit(self):
-        #shellFrame = wx.Frame(None)
-        #sh = Shell(shellFrame)
-        self.frame = mapFrame(None)#,shellFrame)
+        db = pysal.open('/Users/charlie/Documents/data/stl_hom/stl_hom.dbf')
+        self.frame = TableViewer(None,db)
         self.frame.Show()
         return True
 
