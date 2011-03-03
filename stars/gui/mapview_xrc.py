@@ -36,17 +36,6 @@ class xrcMapFrame(wx.Frame):
         self.PostCreate(pre)
 
         # Define variables for the controls, bind event handlers
-        self.mapToolBar = xrc.XRCCTRL(self, "mapToolBar")
-        self.openTool = self.GetToolBar().FindById(xrc.XRCID("openTool"))
-        self.panTool = self.GetToolBar().FindById(xrc.XRCID("panTool"))
-        self.zoomTool = self.GetToolBar().FindById(xrc.XRCID("zoomTool"))
-        self.extentTool = self.GetToolBar().FindById(xrc.XRCID("extentTool"))
-        self.selectTool = self.GetToolBar().FindById(xrc.XRCID("selectTool"))
-        self.brushTool = self.GetToolBar().FindById(xrc.XRCID("brushTool"))
-        self.consoleTool = self.GetToolBar().FindById(xrc.XRCID("consoleTool"))
-        self.tableTool = self.GetToolBar().FindById(xrc.XRCID("tableTool"))
-        self.mapPanelHolder = xrc.XRCCTRL(self, "mapPanelHolder")
-        self.status = xrc.XRCCTRL(self, "status")
         self.FileOpen = self.GetMenuBar().FindItemById(xrc.XRCID("FileOpen"))
         self.menuEditCopy = self.GetMenuBar().FindItemById(xrc.XRCID("menuEditCopy"))
         self.menuToolPan = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolPan"))
@@ -58,15 +47,17 @@ class xrcMapFrame(wx.Frame):
         self.menuViewText = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewText"))
         self.menuViewConsole = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewConsole"))
         self.menuViewTable = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewTable"))
+        self.mapToolBar = xrc.XRCCTRL(self, "mapToolBar")
+        self.openTool = self.GetToolBar().FindById(xrc.XRCID("openTool"))
+        self.panTool = self.GetToolBar().FindById(xrc.XRCID("panTool"))
+        self.zoomTool = self.GetToolBar().FindById(xrc.XRCID("zoomTool"))
+        self.extentTool = self.GetToolBar().FindById(xrc.XRCID("extentTool"))
+        self.selectTool = self.GetToolBar().FindById(xrc.XRCID("selectTool"))
+        self.brushTool = self.GetToolBar().FindById(xrc.XRCID("brushTool"))
+        self.consoleTool = self.GetToolBar().FindById(xrc.XRCID("consoleTool"))
+        self.tableTool = self.GetToolBar().FindById(xrc.XRCID("tableTool"))
+        self.status = xrc.XRCCTRL(self, "status")
 
-        self.Bind(wx.EVT_TOOL, self.OnTool_openTool, self.openTool)
-        self.Bind(wx.EVT_TOOL, self.OnTool_panTool, self.panTool)
-        self.Bind(wx.EVT_TOOL, self.OnTool_zoomTool, self.zoomTool)
-        self.Bind(wx.EVT_TOOL, self.OnTool_extentTool, self.extentTool)
-        self.Bind(wx.EVT_TOOL, self.OnTool_selectTool, self.selectTool)
-        self.Bind(wx.EVT_TOOL, self.OnTool_brushTool, self.brushTool)
-        self.Bind(wx.EVT_TOOL, self.OnTool_consoleTool, self.consoleTool)
-        self.Bind(wx.EVT_TOOL, self.OnTool_tableTool, self.tableTool)
         self.Bind(wx.EVT_MENU, self.OnMenu_FileOpen, self.FileOpen)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuEditCopy, self.menuEditCopy)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuToolPan, self.menuToolPan)
@@ -78,54 +69,14 @@ class xrcMapFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnMenu_menuViewText, self.menuViewText)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuViewConsole, self.menuViewConsole)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuViewTable, self.menuViewTable)
-
-#!XRCED:begin-block:xrcMapFrame.OnTool_openTool
-    def OnTool_openTool(self, evt):
-        # Replace with event handler code
-        print "OnTool_openTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_openTool        
-
-#!XRCED:begin-block:xrcMapFrame.OnTool_panTool
-    def OnTool_panTool(self, evt):
-        # Replace with event handler code
-        print "OnTool_panTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_panTool        
-
-#!XRCED:begin-block:xrcMapFrame.OnTool_zoomTool
-    def OnTool_zoomTool(self, evt):
-        # Replace with event handler code
-        print "OnTool_zoomTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_zoomTool        
-
-#!XRCED:begin-block:xrcMapFrame.OnTool_extentTool
-    def OnTool_extentTool(self, evt):
-        # Replace with event handler code
-        print "OnTool_extentTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_extentTool        
-
-#!XRCED:begin-block:xrcMapFrame.OnTool_selectTool
-    def OnTool_selectTool(self, evt):
-        # Replace with event handler code
-        print "OnTool_selectTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_selectTool        
-
-#!XRCED:begin-block:xrcMapFrame.OnTool_brushTool
-    def OnTool_brushTool(self, evt):
-        # Replace with event handler code
-        print "OnTool_brushTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_brushTool        
-
-#!XRCED:begin-block:xrcMapFrame.OnTool_consoleTool
-    def OnTool_consoleTool(self, evt):
-        # Replace with event handler code
-        print "OnTool_consoleTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_consoleTool        
-
-#!XRCED:begin-block:xrcMapFrame.OnTool_tableTool
-    def OnTool_tableTool(self, evt):
-        # Replace with event handler code
-        print "OnTool_tableTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_tableTool        
+        self.Bind(wx.EVT_TOOL, self.OnTool_openTool, self.openTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_panTool, self.panTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_zoomTool, self.zoomTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_extentTool, self.extentTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_selectTool, self.selectTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_brushTool, self.brushTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_consoleTool, self.consoleTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_tableTool, self.tableTool)
 
 #!XRCED:begin-block:xrcMapFrame.OnMenu_FileOpen
     def OnMenu_FileOpen(self, evt):
@@ -193,6 +144,54 @@ class xrcMapFrame(wx.Frame):
         print "OnMenu_menuViewTable()"
 #!XRCED:end-block:xrcMapFrame.OnMenu_menuViewTable        
 
+#!XRCED:begin-block:xrcMapFrame.OnTool_openTool
+    def OnTool_openTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_openTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_openTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_panTool
+    def OnTool_panTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_panTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_panTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_zoomTool
+    def OnTool_zoomTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_zoomTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_zoomTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_extentTool
+    def OnTool_extentTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_extentTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_extentTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_selectTool
+    def OnTool_selectTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_selectTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_selectTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_brushTool
+    def OnTool_brushTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_brushTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_brushTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_consoleTool
+    def OnTool_consoleTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_consoleTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_consoleTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_tableTool
+    def OnTool_tableTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_tableTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_tableTool        
+
 
 
 
@@ -207,123 +206,6 @@ def __init_resources():
     mapview_xrc = '''\
 <?xml version="1.0" ?><resource>
   <object class="wxFrame" name="MapFrame">
-    <object class="wxToolBar" name="mapToolBar">
-      <object class="tool" name="openTool">
-        <bitmap stock_id="wxART_FILE_OPEN"/>
-        <tooltip>Open a Shapefile...</tooltip>
-        <label>Add Layer</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="separator"/>
-      <object class="tool" name="panTool">
-        <bitmap>icons_tbpan_png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Pan</tooltip>
-        <label>Pan</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="tool" name="zoomTool">
-        <bitmap>icons_tbzoomin_png</bitmap>
-        <bitmap2>icons/tbzoomin.png</bitmap2>
-        <toggle>1</toggle>
-        <tooltip>Zoom</tooltip>
-        <label>Zoom</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="tool" name="extentTool">
-        <bitmap>icons_mActionZoomFullExtent_png</bitmap>
-        <tooltip>Zoom to Extent</tooltip>
-        <label>Extent</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="separator"/>
-      <object class="tool" name="selectTool">
-        <bitmap>icons_mActionSelectRectangle_png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Rectangle Select</tooltip>
-        <label>Select</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="tool" name="brushTool">
-        <bitmap>icons_brushing_png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Enable Brushing</tooltip>
-        <label>Brush</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="separator"/>
-      <object class="tool" name="consoleTool">
-        <bitmap>icons_python_export_png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Show the Console</tooltip>
-        <label>Console</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="tool" name="tableTool">
-        <bitmap>icons_mActionOpenTable_png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Open Attribute Table</tooltip>
-        <label>Table</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <style>wxTB_DOCKABLE|wxTB_TEXT</style>
-      <XRCED>
-        <assign_var>1</assign_var>
-      </XRCED>
-    </object>
-    <object class="wxBoxSizer">
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <object class="sizeritem">
-            <object class="wxPanel" name="mapPanelHolder">
-              <size>500,500</size>
-              <XRCED>
-                <assign_var>1</assign_var>
-              </XRCED>
-            </object>
-            <option>1</option>
-            <flag>wxALL|wxEXPAND</flag>
-          </object>
-          <orient>wxVERTICAL</orient>
-        </object>
-        <option>1</option>
-        <flag>wxEXPAND</flag>
-      </object>
-      <orient>wxHORIZONTAL</orient>
-      <object class="spacer">
-        <size>0,520</size>
-      </object>
-    </object>
-    <object class="wxStatusBar" name="status">
-      <fields>4</fields>
-      <XRCED>
-        <assign_var>1</assign_var>
-      </XRCED>
-    </object>
     <object class="wxMenuBar" name="mapMenuBar">
       <object class="wxMenu" name="FileMenu">
         <object class="wxMenuItem" name="FileOpen">
@@ -418,7 +300,6 @@ def __init_resources():
         </object>
         <object class="wxMenuItem" name="menuViewTable">
           <label>Show Attribute Table\tCtrl-T</label>
-          <checkable>1</checkable>
           <XRCED>
             <events>EVT_MENU</events>
             <assign_var>1</assign_var>
@@ -427,6 +308,100 @@ def __init_resources():
         <label>View</label>
       </object>
     </object>
+    <object class="wxToolBar" name="mapToolBar">
+      <object class="tool" name="openTool">
+        <bitmap stock_id="wxART_FILE_OPEN"/>
+        <tooltip>Open a Shapefile...</tooltip>
+        <label>Add Layer</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="panTool">
+        <bitmap>icons_tbpan_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Pan</tooltip>
+        <label>Pan</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="zoomTool">
+        <bitmap>icons_tbzoomin_png</bitmap>
+        <bitmap2>icons/tbzoomin.png</bitmap2>
+        <toggle>1</toggle>
+        <tooltip>Zoom</tooltip>
+        <label>Zoom</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="extentTool">
+        <bitmap>icons_mActionZoomFullExtent_png</bitmap>
+        <tooltip>Zoom to Extent</tooltip>
+        <label>Extent</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="selectTool">
+        <bitmap>icons_mActionSelectRectangle_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Rectangle Select</tooltip>
+        <label>Select</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="brushTool">
+        <bitmap>icons_brushing_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Enable Brushing</tooltip>
+        <label>Brush</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="consoleTool">
+        <bitmap>icons_python_export_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Show the Console</tooltip>
+        <label>Console</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="tableTool">
+        <bitmap>icons_mActionOpenTable_png</bitmap>
+        <tooltip>Open Attribute Table</tooltip>
+        <label>Table</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <style>wxTB_DOCKABLE|wxTB_TEXT</style>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <object class="wxStatusBar" name="status">
+      <fields>4</fields>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <size>650,500</size>
     <title>STARS -- Map View</title>
   </object>
 </resource>'''
