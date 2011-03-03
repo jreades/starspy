@@ -30,14 +30,14 @@ class StarsTable:
 
         Use PySAL FileIO to parse the data source
 
-        >>> data = pysal.open(dbf)
-        >>> dates = data.by_col(datecol)  
+        #>>> datecol = ['RPTDATE']
+        #>>> dates = data.by_col(datecol)  
 
         Python / PySAL recognizes common date formats and parses them into
         datetime.date objects
 
-        >>> dates[1]
-        datetime.date(2007, 1, 31)
+        #>>> dates[1]
+        #datetime.date(2007, 1, 31)
         >>> 
 
         """
@@ -79,23 +79,23 @@ class StarsDb:
         --------
 
         >>> import pysal
-        >>> dbf = 'examples/us48join.dbf'
+        >>> dbf = 'examples/tempe/Tempe_Crime_Clipped_subset.dbf'
         >>> data = pysal.open(dbf)
         >>> x = StarsDb(dbf)
         >>> 
 
         """
         #dbf2sql(dbf)
-        self.data = pysal.open(dbf)
         #self.con = sqlite.connect(":memory:", detect_types = 2) #remains in memory 
         #self.con = sqlite.connect("", detect_types = 2)   #flushed to disk if too large
         #self.con = sqlite.connect("/tmp/stars_sqlite.db", detect_types = 2) #r/w to disk
         
         EVENTS_TABLE = "events"
         db = pysal.open(dbf)
+        self.header = db.header
+        self.spec = db.field_spec
         self.con = sqlite.connect(":memory:", detect_types=sqlite.PARSE_DECLTYPES|sqlite.PARSE_COLNAMES)
         self.con.row_factory = sqlite.Row
-        #self.cur = self.con.cursor()
         self.cur = cur = self.con.execute(createTableSQL(EVENTS_TABLE, db.header, db.field_spec, primaryKey = None))
         insert_sql = "insert into %s values (%s)" % (EVENTS_TABLE,','.join(['?'] * len(db.header)))
         for row in db:
@@ -289,7 +289,6 @@ def _test():
     doctest.testmod(verbose=True)
        
 if __name__ == '__main__':
-    #dbf = 'examples/us48join.dbf'
-    dbf = '/home/stephens/Dropbox/stars/trunk/stars/examples/us48join.dbf'
+    dbf = 'examples/tempe/Tempe_Crime_Clipped_subset.dbf'
     x = StarsDb(dbf)
     _test()
