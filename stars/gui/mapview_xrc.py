@@ -43,15 +43,21 @@ class xrcMapFrame(wx.Frame):
         self.extentTool = self.GetToolBar().FindById(xrc.XRCID("extentTool"))
         self.selectTool = self.GetToolBar().FindById(xrc.XRCID("selectTool"))
         self.brushTool = self.GetToolBar().FindById(xrc.XRCID("brushTool"))
-        self.promptTool = self.GetToolBar().FindById(xrc.XRCID("promptTool"))
+        self.consoleTool = self.GetToolBar().FindById(xrc.XRCID("consoleTool"))
+        self.tableTool = self.GetToolBar().FindById(xrc.XRCID("tableTool"))
         self.mapPanelHolder = xrc.XRCCTRL(self, "mapPanelHolder")
+        self.status = xrc.XRCCTRL(self, "status")
         self.FileOpen = self.GetMenuBar().FindItemById(xrc.XRCID("FileOpen"))
+        self.menuEditCopy = self.GetMenuBar().FindItemById(xrc.XRCID("menuEditCopy"))
         self.menuToolPan = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolPan"))
         self.menuToolZoom = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolZoom"))
         self.MenuToolExtent = self.GetMenuBar().FindItemById(xrc.XRCID("MenuToolExtent"))
         self.menuToolSelect = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolSelect"))
         self.menuToolBrush = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolBrush"))
-        self.menuToolPrompt = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolPrompt"))
+        self.menuViewIcons = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewIcons"))
+        self.menuViewText = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewText"))
+        self.menuViewConsole = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewConsole"))
+        self.menuViewTable = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewTable"))
 
         self.Bind(wx.EVT_TOOL, self.OnTool_openTool, self.openTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_panTool, self.panTool)
@@ -59,14 +65,19 @@ class xrcMapFrame(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.OnTool_extentTool, self.extentTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_selectTool, self.selectTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_brushTool, self.brushTool)
-        self.Bind(wx.EVT_TOOL, self.OnTool_promptTool, self.promptTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_consoleTool, self.consoleTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_tableTool, self.tableTool)
         self.Bind(wx.EVT_MENU, self.OnMenu_FileOpen, self.FileOpen)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuEditCopy, self.menuEditCopy)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuToolPan, self.menuToolPan)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuToolZoom, self.menuToolZoom)
         self.Bind(wx.EVT_MENU, self.OnMenu_MenuToolExtent, self.MenuToolExtent)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuToolSelect, self.menuToolSelect)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuToolBrush, self.menuToolBrush)
-        self.Bind(wx.EVT_MENU, self.OnMenu_menuToolPrompt, self.menuToolPrompt)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewIcons, self.menuViewIcons)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewText, self.menuViewText)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewConsole, self.menuViewConsole)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewTable, self.menuViewTable)
 
 #!XRCED:begin-block:xrcMapFrame.OnTool_openTool
     def OnTool_openTool(self, evt):
@@ -104,17 +115,29 @@ class xrcMapFrame(wx.Frame):
         print "OnTool_brushTool()"
 #!XRCED:end-block:xrcMapFrame.OnTool_brushTool        
 
-#!XRCED:begin-block:xrcMapFrame.OnTool_promptTool
-    def OnTool_promptTool(self, evt):
+#!XRCED:begin-block:xrcMapFrame.OnTool_consoleTool
+    def OnTool_consoleTool(self, evt):
         # Replace with event handler code
-        print "OnTool_promptTool()"
-#!XRCED:end-block:xrcMapFrame.OnTool_promptTool        
+        print "OnTool_consoleTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_consoleTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_tableTool
+    def OnTool_tableTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_tableTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_tableTool        
 
 #!XRCED:begin-block:xrcMapFrame.OnMenu_FileOpen
     def OnMenu_FileOpen(self, evt):
         # Replace with event handler code
         print "OnMenu_FileOpen()"
 #!XRCED:end-block:xrcMapFrame.OnMenu_FileOpen        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuEditCopy
+    def OnMenu_menuEditCopy(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuEditCopy()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuEditCopy        
 
 #!XRCED:begin-block:xrcMapFrame.OnMenu_menuToolPan
     def OnMenu_menuToolPan(self, evt):
@@ -146,11 +169,29 @@ class xrcMapFrame(wx.Frame):
         print "OnMenu_menuToolBrush()"
 #!XRCED:end-block:xrcMapFrame.OnMenu_menuToolBrush        
 
-#!XRCED:begin-block:xrcMapFrame.OnMenu_menuToolPrompt
-    def OnMenu_menuToolPrompt(self, evt):
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuViewIcons
+    def OnMenu_menuViewIcons(self, evt):
         # Replace with event handler code
-        print "OnMenu_menuToolPrompt()"
-#!XRCED:end-block:xrcMapFrame.OnMenu_menuToolPrompt        
+        print "OnMenu_menuViewIcons()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuViewIcons        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuViewText
+    def OnMenu_menuViewText(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewText()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuViewText        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuViewConsole
+    def OnMenu_menuViewConsole(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewConsole()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuViewConsole        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuViewTable
+    def OnMenu_menuViewTable(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewTable()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuViewTable        
 
 
 
@@ -170,6 +211,7 @@ def __init_resources():
       <object class="tool" name="openTool">
         <bitmap stock_id="wxART_FILE_OPEN"/>
         <tooltip>Open a Shapefile...</tooltip>
+        <label>Add Layer</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
@@ -180,7 +222,7 @@ def __init_resources():
         <bitmap>icons_tbpan_png</bitmap>
         <toggle>1</toggle>
         <tooltip>Pan</tooltip>
-        <label>This is a Label</label>
+        <label>Pan</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
@@ -191,6 +233,7 @@ def __init_resources():
         <bitmap2>icons/tbzoomin.png</bitmap2>
         <toggle>1</toggle>
         <tooltip>Zoom</tooltip>
+        <label>Zoom</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
@@ -199,6 +242,7 @@ def __init_resources():
       <object class="tool" name="extentTool">
         <bitmap>icons_mActionZoomFullExtent_png</bitmap>
         <tooltip>Zoom to Extent</tooltip>
+        <label>Extent</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
@@ -209,6 +253,7 @@ def __init_resources():
         <bitmap>icons_mActionSelectRectangle_png</bitmap>
         <toggle>1</toggle>
         <tooltip>Rectangle Select</tooltip>
+        <label>Select</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
@@ -218,45 +263,71 @@ def __init_resources():
         <bitmap>icons_brushing_png</bitmap>
         <toggle>1</toggle>
         <tooltip>Enable Brushing</tooltip>
+        <label>Brush</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
         </XRCED>
       </object>
-      
-      
       <object class="separator"/>
-      <object class="tool" name="promptTool">
+      <object class="tool" name="consoleTool">
         <bitmap>icons_python_export_png</bitmap>
         <toggle>1</toggle>
-        <tooltip>Show the Command Prompt</tooltip>
+        <tooltip>Show the Console</tooltip>
+        <label>Console</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
         </XRCED>
       </object>
+      <object class="tool" name="tableTool">
+        <bitmap>icons_mActionOpenTable_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Open Attribute Table</tooltip>
+        <label>Table</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <style>wxTB_DOCKABLE|wxTB_TEXT</style>
       <XRCED>
         <assign_var>1</assign_var>
       </XRCED>
     </object>
     <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxPanel" name="mapPanelHolder">
-          <size>500,500</size>
-          <XRCED>
-            <assign_var>1</assign_var>
-          </XRCED>
+        <object class="wxBoxSizer">
+          <object class="sizeritem">
+            <object class="wxPanel" name="mapPanelHolder">
+              <size>500,500</size>
+              <XRCED>
+                <assign_var>1</assign_var>
+              </XRCED>
+            </object>
+            <option>1</option>
+            <flag>wxALL|wxEXPAND</flag>
+          </object>
+          <orient>wxVERTICAL</orient>
         </object>
         <option>1</option>
-        <flag>wxALL|wxEXPAND</flag>
+        <flag>wxEXPAND</flag>
+      </object>
+      <orient>wxHORIZONTAL</orient>
+      <object class="spacer">
+        <size>0,520</size>
       </object>
     </object>
-    <title>STARS -- Map View</title>
+    <object class="wxStatusBar" name="status">
+      <fields>4</fields>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
     <object class="wxMenuBar" name="mapMenuBar">
       <object class="wxMenu" name="FileMenu">
         <object class="wxMenuItem" name="FileOpen">
-          <label>Open...</label>
+          <label>Open...\tCtrl-O</label>
           <XRCED>
             <events>EVT_MENU</events>
             <assign_var>1</assign_var>
@@ -264,9 +335,19 @@ def __init_resources():
         </object>
         <label>File</label>
       </object>
+      <object class="wxMenu" name="EditMenu">
+        <label>Edit</label>
+        <object class="wxMenuItem" name="menuEditCopy">
+          <label>Copy\tCtrl-C</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+      </object>
       <object class="wxMenu" name="ToolMenu">
         <object class="wxMenuItem" name="menuToolPan">
-          <label>Pan Tool</label>
+          <label>Pan Tool\tCtrl-1</label>
           <checkable>1</checkable>
           <XRCED>
             <events>EVT_MENU</events>
@@ -274,16 +355,15 @@ def __init_resources():
           </XRCED>
         </object>
         <object class="wxMenuItem" name="menuToolZoom">
-          <label>Zoom Tool</label>
+          <label>Zoom Tool\tCtrl-2</label>
           <checkable>1</checkable>
           <XRCED>
             <events>EVT_MENU</events>
             <assign_var>1</assign_var>
           </XRCED>
         </object>
-        
         <object class="wxMenuItem" name="MenuToolExtent">
-          <label>Zoom to Extent</label>
+          <label>Zoom to Extent\tCtrl-3</label>
           <XRCED>
             <events>EVT_MENU</events>
             <assign_var>1</assign_var>
@@ -291,7 +371,7 @@ def __init_resources():
         </object>
         <object class="separator"/>
         <object class="wxMenuItem" name="menuToolSelect">
-          <label>Select Tool</label>
+          <label>Select Tool\tCtrl-4</label>
           <checkable>1</checkable>
           <XRCED>
             <events>EVT_MENU</events>
@@ -299,17 +379,7 @@ def __init_resources():
           </XRCED>
         </object>
         <object class="wxMenuItem" name="menuToolBrush">
-          <label>Brushing</label>
-          <checkable>1</checkable>
-          <XRCED>
-            <events>EVT_MENU</events>
-            <assign_var>1</assign_var>
-          </XRCED>
-        </object>
-        
-        <object class="separator"/>
-        <object class="wxMenuItem" name="menuToolPrompt">
-          <label>Command Prompt</label>
+          <label>Brushing\tCtrl-5</label>
           <checkable>1</checkable>
           <XRCED>
             <events>EVT_MENU</events>
@@ -318,7 +388,46 @@ def __init_resources():
         </object>
         <label>Tools</label>
       </object>
+      <object class="wxMenu" name="ViewMenu">
+        <object class="wxMenuItem" name="menuViewIcons">
+          <label>Show ToolBar Icons</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuViewText">
+          <label>Show Toolbar Names</label>
+          <checkable>1</checkable>
+          <checked>1</checked>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="menuViewConsole">
+          <label>Console\tCtrl-Shift-P</label>
+          <help>help</help>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuViewTable">
+          <label>Show Attribute Table\tCtrl-T</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>View</label>
+      </object>
     </object>
+    <title>STARS -- Map View</title>
   </object>
 </resource>'''
 
@@ -775,6 +884,46 @@ Q (\xae\xc5]\x87:\xef#\xbc\x08\x94\x8e\xabD\x1dGW{\xdb\x1b\xebj)\x9a\x96\
 \x0dM\xe7\xc9\xcd\xaf\x80f\xce\xde\xf5\x0eTU\xc5\xe8f\xe0\xdcT\xe2\x06m\
 \xfe\x1fu\xef2/\xabs\xfdJ\x00\x00\x00\x00IEND\xaeB`\x82'''
 
+    icons_mActionOpenTable_png = '''\
+\x89PNG\x0d
+\x1a
+\x00\x00\x00\x0dIHDR\x00\x00\x00\x16\x00\x00\x00\x16\x08\x06\x00\x00\x00\
+\xc4\xb4l;\x00\x00\x00\x04gAMA\x00\x00\xaf\xc87\x05\x8a\xe9\x00\x00\x00\
+\x19tEXtSoftware\x00Adobe ImageReadyq\xc9e<\x00\x00\x02\xb3IDATx\xdab\xfc\
+\xff\xff?\x03-\x00@\x00\xb1XM{6\x9f\x9b\x839\x81\x9d\x99\x89\xe1\xcf\xef\
+\xbf\x0c~\xfd\x03\xe2\xbf\x0c\xbf\xa14\x88\xff\x9b\x00\x0dR\xf7\xf7\xf7\
+?\x86\x81\xf4\xcf\xcf\x0c\xff~}Z\x00\x10@, C\xdd\x8d\xc4\x19~\xfeb`\xf8\
+\xf9\x83\x81\xe1\xc7O \xfe\x01\xc5\xdf\x19\x18\xbe\x03\xe9\xef\xdf\xa1\x18\
+\x99\x0d\xc4\xff\x98\x18\x18~\x01=\x0c4\x97\xe1?\x13\xc4\xa5\x8c\x8c\x9f\
+\x80\x02\xbb\x12\x00\x02\x88\x89\x93\x8d\x85\xe1\x27\xd0\xb0_ \x0c4\xfc\
+7\x08\xff\x86\xe2?\x0c\x0c\x80\x18\xe8\x10\x08Fb\xffC\xc2(\xa1\xc9\xcc\
+\xca\xc0\xc8\xc0\xc6\x00\x10@,|\xac\xff\x19\xac%\x11\x1a@\x06\xfd\x81\x1a\
+\xf2\x07\x09\xffFf\xffF\xd0\xbf\xff\x07\xeb\x03\xc5\x15\xc8\x82\xbf@/,\
+^\xc7\xc4\x00\x10@,\xfc\xec\x0c\x0c\x0er\xa4G\x0e\xc8\x10\x90a\xff\xfe\x01\
+\xc3\xf6\xdf0\x06\xf1\xfd\xfc\xcf\xb0\xef\x08\x13\x03@\x001\x91\x93*p\
+\x19
+c\x83\x14\x00\x04\x10\x0b\xc3?\x84\xc1\xad\xad\xad@\xaf\xfd\x86\xf3\x1b\
+\x1a\x1a\xc0tcc#\xd4\xc0\xff(\x06\xc3\xbc\x0f\xe4\x81\xe9\x8a\x8aj\xa8%\
+\x0c\x0c\x00\x01\x18\x97\x83#\x00A\x18\x00\x82Ve36@m~m
+~\xc00\x09!\x13NKp\xff{\xa4;\xf3\xd7\x97\x88\xd8\xb8\x07f\x8e\xeaB\xc4\
+\x18c\xd2\xbb\xd2\x9aPJ\xe5\xbc\x1e^\x01DtP \xbc\x0f\x09\x02d>\xcc\xf5\x08\
+\xb9\xff\x0c\x00\x01\xc4\xf2\x1f)(\xda\xda\xda\x80I\xee\x17FP\x80hFFF`\xec\
+\xffC\xf2\xfa\xa4 \x01\xa62ff\x86\xa2\xa22xP\x00\x04\x10\x0b\xb2\x8b\xab\
+\xaa\xaa\xb0\xba\xb6\xae\xae\x1e-\x92\xfeaD\x182\x1fD\x03\x04\x10\xc1\xa0\
+\xc0\xa6\x11\x9f\xa1 KA>\x02\x08 \x94\xa0\x80y\x1d\x04\xf8\xf8\xf8\x18
+
+
+\xc1\x8aA\xa9\x02\xc4\xff\xf8\xf1#Jj@N\x15\\\\<\x0c\x19\x199\xf0\xa0\x00\
+\x08 \x94\xa0@6\x18\xd9%55\xb5H\xfcx]\x0ds(@\x001!\xa7cl\x86\xa2j\xfcG\
+8(\xa0\x0e\x05\x08 \x16\xe4 \x06\xb9\x18\xe6E^^^\x86\xbc\xbc\x02\xb0\xe2\
+\x96\x96& \x1f\x11\x14\xb0\xcc\x82\x1c\x1c\xdc\xdc\xdc\x0c\xa9\xa9\xd9p\
+y\x80\x00\x02\x86\xf1?\x8c\xd8GwMee\x0dJ\x1a\xc5\x17\xa1\xff\xa1\xc6\x01\
+\x04\x10\xcb\xbf\xbf\xff\x81\xd9\xf8\x0fD\xc1_\x88\xe6\xbf\xff a\x85\\\x16\
+\xc0\xd8\x10\xb9po\xff\x87\xd1PCa\xf9\x00 \x80\x18M\xeb\xaf\xfcW\x12b\x06\
+\xd6\x00\xc0\xd2\xff\xcf_\x08\x0d\xb4\x08\xce\x06\xd2\xff\x90\xe5\xa0\xf4\
+\xbf\xbf\xffp&\xd1[O\xbe3\x00\x04\x10#\xad\xea<\x80\x00bb\xa0\x11\x00\x08\
+0\x00\x1b:51\xa8\xe8K\xee\x00\x00\x00\x00IEND\xaeB`\x82'''
+
     wx.MemoryFSHandler.AddFile('XRC/mapview/mapview_xrc', mapview_xrc)
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_tbpan_png', icons_tbpan_png)
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_tbzoomin_png', icons_tbzoomin_png)
@@ -782,5 +931,6 @@ Q (\xae\xc5]\x87:\xef#\xbc\x08\x94\x8e\xabD\x1dGW{\xdb\x1b\xebj)\x9a\x96\
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_mActionSelectRectangle_png', icons_mActionSelectRectangle_png)
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_brushing_png', icons_brushing_png)
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_python_export_png', icons_python_export_png)
+    wx.MemoryFSHandler.AddFile('XRC/mapview/icons_mActionOpenTable_png', icons_mActionOpenTable_png)
     __res.Load('memory:XRC/mapview/mapview_xrc')
 
