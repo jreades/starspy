@@ -121,8 +121,9 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         #tc = wx.TextCtrl(self,-1,'Side Pane', wx.DefaultPosition, wx.Size(200,150), wx.NO_BORDER | wx.TE_MULTILINE)
         self.layers = LayersControl(self,size=(150,400))
         self.layers.mapModel = self.mapPanel.mapObj
-        self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton() )
+        self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton().Hide() )
         self._mgr.Update()
+        self.toggleLayers()
 
 
 
@@ -164,6 +165,8 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         d['menuViewText'] = self.toolbarText
         d['tableTool'] = self.table
         d['menuViewTable'] = self.table
+        d['menuViewLayers'] = self.toggleLayers
+        d['layersTool'] = self.toggleLayers
 
     def evtDispatch(self,evtName,evt):
         evtName,widgetName = evtName.rsplit('_',1)
@@ -245,6 +248,17 @@ class mapFrame(mapview_xrc.xrcMapFrame):
                 tbl = self.__tables[cur_table]
                 tbl.Show()
                 tbl.Raise()
+    def toggleLayers(self,evtName=None,evt=None,value=None):
+        pane = self._mgr.GetPane(self.layers)
+        state = pane.IsShown()^True
+        self.mapToolBar.ToggleTool(self.layersTool.GetId(),state)
+        self.MenuBar.Check(self.menuViewLayers.GetId(),state)
+        if state:
+            pane.Show()
+        else:
+            pane.Hide()
+        self._mgr.Update()
+            
     def toolbarIcons(self,evtName=None,evt=None,value=None):
         self.mapToolBar.ToggleWindowStyle(wx.TB_NOICONS)
         self.MenuBar.Check(self.menuViewIcons.GetId(), self.mapToolBar.HasFlag(wx.TB_NOICONS)^True)
