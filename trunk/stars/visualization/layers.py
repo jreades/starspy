@@ -3,6 +3,9 @@ import pysal
 from model import AbstractModel
 from kernelDensityTime import KernelDensity
 import random
+def rcolor():
+    randint = random.randint
+    return randint(0,255), randint(0,255), randint(0,255)
 
 class BaseLayer(AbstractModel):
     """
@@ -15,7 +18,7 @@ class BaseLayer(AbstractModel):
     def __init__(self):
         AbstractModel.__init__(self)
         self._data = {'type':'BaseLayer', 'extent':pysal.cg.Rectangle(0,0,0,0), 'selection':set(),
-                        'data':None, 'selectable':False, 'classification':None, 'colors':None}
+                        'data':None, 'selectable':False, 'classification':None, 'colors':{0:rcolor()}, 'name':''}
     def __len__(self):
         d = self.data
         if d:
@@ -94,6 +97,12 @@ class BaseLayer(AbstractModel):
         except:
             return
     is_selectable = property(fget=__get_selectable,fset=__set_selectable)
+    def __get_name(self):
+        return self._data['name']
+    def __set_name(self,value):
+        self._data['name'] = str(value)
+        self.update('name')
+    name = property(fget=__get_name,fset=__set_name)
 class PointLayer(BaseLayer):
     """
     Represents a collection of Points

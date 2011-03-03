@@ -1,123 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
   <object class="wxFrame" name="MapFrame">
-    <object class="wxToolBar" name="mapToolBar">
-      <object class="tool" name="openTool">
-        <bitmap stock_id="wxART_FILE_OPEN"/>
-        <tooltip>Open a Shapefile...</tooltip>
-        <label>Add Layer</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="separator"/>
-      <object class="tool" name="panTool">
-        <bitmap>icons/tbpan.png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Pan</tooltip>
-        <label>Pan</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="tool" name="zoomTool">
-        <bitmap>icons/tbzoomin.png</bitmap>
-        <bitmap2>icons/tbzoomin.png</bitmap2>
-        <toggle>1</toggle>
-        <tooltip>Zoom</tooltip>
-        <label>Zoom</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="tool" name="extentTool">
-        <bitmap>icons/mActionZoomFullExtent.png</bitmap>
-        <tooltip>Zoom to Extent</tooltip>
-        <label>Extent</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="separator"/>
-      <object class="tool" name="selectTool">
-        <bitmap>icons/mActionSelectRectangle.png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Rectangle Select</tooltip>
-        <label>Select</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="tool" name="brushTool">
-        <bitmap>icons/brushing.png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Enable Brushing</tooltip>
-        <label>Brush</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="separator"/>
-      <object class="tool" name="consoleTool">
-        <bitmap>icons/python-export.png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Show the Console</tooltip>
-        <label>Console</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <object class="tool" name="tableTool">
-        <bitmap>icons/mActionOpenTable.png</bitmap>
-        <toggle>1</toggle>
-        <tooltip>Open Attribute Table</tooltip>
-        <label>Table</label>
-        <XRCED>
-          <events>EVT_TOOL</events>
-          <assign_var>1</assign_var>
-        </XRCED>
-      </object>
-      <style>wxTB_DOCKABLE|wxTB_TEXT</style>
-      <XRCED>
-        <assign_var>1</assign_var>
-      </XRCED>
-    </object>
-    <object class="wxBoxSizer">
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <object class="sizeritem">
-            <object class="wxPanel" name="mapPanelHolder">
-              <size>500,500</size>
-              <XRCED>
-                <assign_var>1</assign_var>
-              </XRCED>
-            </object>
-            <option>1</option>
-            <flag>wxALL|wxEXPAND</flag>
-          </object>
-          <orient>wxVERTICAL</orient>
-        </object>
-        <option>1</option>
-        <flag>wxEXPAND</flag>
-      </object>
-      <orient>wxHORIZONTAL</orient>
-      <object class="spacer">
-        <size>0,520</size>
-      </object>
-    </object>
-    <object class="wxStatusBar" name="status">
-      <fields>4</fields>
-      <XRCED>
-        <assign_var>1</assign_var>
-      </XRCED>
-    </object>
     <object class="wxMenuBar" name="mapMenuBar">
       <object class="wxMenu" name="FileMenu">
         <object class="wxMenuItem" name="FileOpen">
@@ -212,7 +95,6 @@
         </object>
         <object class="wxMenuItem" name="menuViewTable">
           <label>Show Attribute Table\tCtrl-T</label>
-          <checkable>1</checkable>
           <XRCED>
             <events>EVT_MENU</events>
             <assign_var>1</assign_var>
@@ -221,6 +103,100 @@
         <label>View</label>
       </object>
     </object>
+    <object class="wxToolBar" name="mapToolBar">
+      <object class="tool" name="openTool">
+        <bitmap stock_id="wxART_FILE_OPEN"/>
+        <tooltip>Open a Shapefile...</tooltip>
+        <label>Add Layer</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="panTool">
+        <bitmap>icons/tbpan.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Pan</tooltip>
+        <label>Pan</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="zoomTool">
+        <bitmap>icons/tbzoomin.png</bitmap>
+        <bitmap2>icons/tbzoomin.png</bitmap2>
+        <toggle>1</toggle>
+        <tooltip>Zoom</tooltip>
+        <label>Zoom</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="extentTool">
+        <bitmap>icons/mActionZoomFullExtent.png</bitmap>
+        <tooltip>Zoom to Extent</tooltip>
+        <label>Extent</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="selectTool">
+        <bitmap>icons/mActionSelectRectangle.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Rectangle Select</tooltip>
+        <label>Select</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="brushTool">
+        <bitmap>icons/brushing.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Enable Brushing</tooltip>
+        <label>Brush</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="consoleTool">
+        <bitmap>icons/python-export.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Show the Console</tooltip>
+        <label>Console</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="tableTool">
+        <bitmap>icons/mActionOpenTable.png</bitmap>
+        <tooltip>Open Attribute Table</tooltip>
+        <label>Table</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <style>wxTB_DOCKABLE|wxTB_TEXT</style>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <object class="wxStatusBar" name="status">
+      <fields>4</fields>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <size>650,500</size>
     <title>STARS -- Map View</title>
   </object>
 </resource>

@@ -55,6 +55,21 @@ class MapModel(WorldToViewTransform):
         Zoom the current transform to the extent of the world.
         """
         self.extent = self.world_extent
+    def moveLayer(self,start_pos,end_pos):
+        """
+        Move the layer from the start_pos to the end_pos in the 1 Dimmension layer list
+        
+        Example:
+        >>> m = MapModel(layers=[layerA,layerB])
+        >>> m.layers
+        [layerA,layerB]
+        >>> m.moveLayer(1,0)
+        >>> m.layers
+        [layerB,layerA]
+        """
+        layer = self._data['layers'].pop(start_pos)
+        self._data['layers'].insert(end_pos,layer)
+        self.update('layers')
 
 
 

@@ -1,4 +1,6 @@
 import wx
+import wx.aui
+import wx.lib.mixins.treemixin as treemixin
 from wx.py.shell import Shell
 import mapview_xrc
 import stars
@@ -8,8 +10,77 @@ from stars.visualization.mapModels import MapModel
 from stars.visualization import layers
 from tableViewer import TableViewer
 import pysal
+import os
 DEBUG = True
 
+COLOR_SAMPLE_WIDTH = 20
+COLOR_SAMPLE_HEIGHT = 20
+
+class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
+    __mapModel = None
+    def __get_mapModel(self):
+        return self.__mapModel
+    def __set_mapModel(self,value):
+        self.__mapModel = value
+        self.__mapModel.addListener(self.update)
+        self.__imgList = wx.ImageList(COLOR_SAMPLE_WIDTH,COLOR_SAMPLE_HEIGHT)
+        #self.AssignImageList(self.__imgList)
+        self.update()
+    mapModel = property(fget=__get_mapModel,fset=__set_mapModel)
+    @property
+    def layer(self):
+        try:
+            idx = self.GetIndexOfItem(self.GetSelection())
+            return idx[0]
+        except:
+            return None
+    def update(self,mdl=None,tag=None):
+        if tag=='layers' or not tag:
+            self.__imgList.RemoveAll()
+            self.__layerColor2Image = {}
+            if mdl and mdl.layers:
+                c = 0
+                for i,layer in enumerate(mdl.layers):
+                    for j in xrange(len(layer.colors)):
+                        r,g,b = layer.colors[j]
+                        bitmap = wx.EmptyBitmapRGBA(COLOR_SAMPLE_WIDTH,COLOR_SAMPLE_HEIGHT,r,g,b,255)
+                        self.__imgList.Add(bitmap)
+                        self.__layerColor2Image[(i,j)]=c
+                        c+=1
+            self.SetImageList(self.__imgList)
+            self.RefreshItems()
+    def OnGetChildrenCount(self,index):
+        if index == ():
+            return len(self.mapModel)
+        elif len(index) == 1:
+            return len(self.mapModel.layers[index[0]].colors)
+        return 0
+    def OnGetItemText(self,index,column=0):
+        if len(index) == 1:
+            return self.mapModel.layers[index[0]].name
+        elif len(index) == 2:
+            return "Class %d"%index[1]
+        return ""
+    def OnGetItemImage(self,index,which=0,column=0):
+        if index in self.__layerColor2Image:
+            return self.__layerColor2Image[index]
+        return -1
+    def OnDrop(self,dropItem,dragItem):
+        drop = self.GetIndexOfItem(dropItem)
+        drag = self.GetIndexOfItem(dragItem)
+        #print "dropped ", drag," on ",drop
+        drag = drag[0]
+        if drop == ():
+            self.mapModel.moveLayer(drag,len(self.mapModel.layers))
+        else:
+            self.mapModel.moveLayer(drag,drop[0])
+    def IsValidDragItem(self,dragItem):
+        index = self.GetIndexOfItem(dragItem)
+        if len(index) == 1:
+            return True
+        return False
+    def IsValidDropTarget(self,dropTarget):
+        return True
 class StatusTool(wxMapTools.wxMapControl):
     def __init__(self,wx_status_bar,status_field,enabled=True):
         self.status = wx_status_bar
@@ -23,9 +94,12 @@ class mapFrame(mapview_xrc.xrcMapFrame):
     def __init__(self,parent=None):
         stars.remapEvtsToDispatcher(self,self.evtDispatch)
         mapview_xrc.xrcMapFrame.__init__(self,parent)
+
+        self._mgr = wx.aui.AuiManager(self)
+
         shell = wx.Frame(self)
         shell.Bind(wx.EVT_CLOSE,self.shell)
-        shell.SetTitle("Stars -- Console")
+        shell.SetTitle("STARS -- Console")
         sh = Shell(shell) 
         
         self.__shell = shell
@@ -35,9 +109,23 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         #Add Map Panel
         self.model = MapModel()
         self.mapPanel = wxMapPanel(self,self.model)
-        sizer = self.mapPanelHolder.GetContainingSizer()
-        sizer.Replace(self.mapPanelHolder,self.mapPanel)
-        sizer.Layout()
+        #sizer = self.mapPanelHolder.GetContainingSizer()
+        #sizer.Replace(self.mapPanelHolder,self.mapPanel)
+        #sizer.Layout()
+
+
+        #AUI Setup
+        self._mgr.AddPane(self.mapPanel, wx.CENTER)
+
+
+        #tc = wx.TextCtrl(self,-1,'Side Pane', wx.DefaultPosition, wx.Size(200,150), wx.NO_BORDER | wx.TE_MULTILINE)
+        self.layers = LayersControl(self,size=(150,400))
+        self.layers.mapModel = self.mapPanel.mapObj
+        self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton() )
+        self._mgr.Update()
+
+
+
         #setup status tool
         statusTool = StatusTool(self.status,3)
         self.mapPanel.addControl(statusTool)
@@ -113,6 +201,8 @@ class mapFrame(mapview_xrc.xrcMapFrame):
 
             tbl.model.layer = layer
             layer.dbf = dbf
+            layer.name = os.path.splitext(os.path.basename(pth))[0]
+            tbl.SetTitle("STARS -- Attribute Table for %s"%layer.name)
             self.model.addLayer(layer)
     def setTool(self,toolname,state=None):
         tool,tid,mid = self.tools[toolname]
@@ -150,14 +240,11 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         if not self.__tables:
             state = False
         else:
-            tbl = self.__tables[-1]
-            state = tbl.IsShown()^True
-            if state:
+            cur_table = self.layers.layer
+            if cur_table != None:
+                tbl = self.__tables[cur_table]
                 tbl.Show()
-            else:
-                tbl.Hide()
-        self.mapToolBar.ToggleTool(self.tableTool.GetId(),state)
-        self.MenuBar.Check(self.menuViewTable.GetId(),state)
+                tbl.Raise()
     def toolbarIcons(self,evtName=None,evt=None,value=None):
         self.mapToolBar.ToggleWindowStyle(wx.TB_NOICONS)
         self.MenuBar.Check(self.menuViewIcons.GetId(), self.mapToolBar.HasFlag(wx.TB_NOICONS)^True)

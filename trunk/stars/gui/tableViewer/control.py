@@ -94,6 +94,9 @@ class TableViewer(wx.Frame):
     def __init__(self,parent,dbf):
         wx.Frame.__init__(self,parent)
         self.model = DbfTableList(self,dbf)
+        self.Bind(wx.EVT_CLOSE,self.toggleShown)
+    def toggleShown(self,evt):
+        self.Show(self.IsShown()^True)
         
         
         
