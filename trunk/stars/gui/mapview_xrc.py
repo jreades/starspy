@@ -47,6 +47,7 @@ class xrcMapFrame(wx.Frame):
         self.menuViewText = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewText"))
         self.menuViewConsole = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewConsole"))
         self.menuViewTable = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewTable"))
+        self.menuViewLayers = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewLayers"))
         self.mapToolBar = xrc.XRCCTRL(self, "mapToolBar")
         self.openTool = self.GetToolBar().FindById(xrc.XRCID("openTool"))
         self.panTool = self.GetToolBar().FindById(xrc.XRCID("panTool"))
@@ -56,6 +57,7 @@ class xrcMapFrame(wx.Frame):
         self.brushTool = self.GetToolBar().FindById(xrc.XRCID("brushTool"))
         self.consoleTool = self.GetToolBar().FindById(xrc.XRCID("consoleTool"))
         self.tableTool = self.GetToolBar().FindById(xrc.XRCID("tableTool"))
+        self.layersTool = self.GetToolBar().FindById(xrc.XRCID("layersTool"))
         self.status = xrc.XRCCTRL(self, "status")
 
         self.Bind(wx.EVT_MENU, self.OnMenu_FileOpen, self.FileOpen)
@@ -69,6 +71,7 @@ class xrcMapFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnMenu_menuViewText, self.menuViewText)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuViewConsole, self.menuViewConsole)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuViewTable, self.menuViewTable)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewLayers, self.menuViewLayers)
         self.Bind(wx.EVT_TOOL, self.OnTool_openTool, self.openTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_panTool, self.panTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_zoomTool, self.zoomTool)
@@ -77,6 +80,7 @@ class xrcMapFrame(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.OnTool_brushTool, self.brushTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_consoleTool, self.consoleTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_tableTool, self.tableTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_layersTool, self.layersTool)
 
 #!XRCED:begin-block:xrcMapFrame.OnMenu_FileOpen
     def OnMenu_FileOpen(self, evt):
@@ -144,6 +148,12 @@ class xrcMapFrame(wx.Frame):
         print "OnMenu_menuViewTable()"
 #!XRCED:end-block:xrcMapFrame.OnMenu_menuViewTable        
 
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuViewLayers
+    def OnMenu_menuViewLayers(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewLayers()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuViewLayers        
+
 #!XRCED:begin-block:xrcMapFrame.OnTool_openTool
     def OnTool_openTool(self, evt):
         # Replace with event handler code
@@ -191,6 +201,12 @@ class xrcMapFrame(wx.Frame):
         # Replace with event handler code
         print "OnTool_tableTool()"
 #!XRCED:end-block:xrcMapFrame.OnTool_tableTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnTool_layersTool
+    def OnTool_layersTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_layersTool()"
+#!XRCED:end-block:xrcMapFrame.OnTool_layersTool        
 
 
 
@@ -305,6 +321,14 @@ def __init_resources():
             <assign_var>1</assign_var>
           </XRCED>
         </object>
+        <object class="wxMenuItem" name="menuViewLayers">
+          <label>Show Layers\tCtrl-L</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
         <label>View</label>
       </object>
     </object>
@@ -331,7 +355,6 @@ def __init_resources():
       </object>
       <object class="tool" name="zoomTool">
         <bitmap>icons_tbzoomin_png</bitmap>
-        <bitmap2>icons/tbzoomin.png</bitmap2>
         <toggle>1</toggle>
         <tooltip>Zoom</tooltip>
         <label>Zoom</label>
@@ -385,6 +408,16 @@ def __init_resources():
         <bitmap>icons_mActionOpenTable_png</bitmap>
         <tooltip>Open Attribute Table</tooltip>
         <label>Table</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="layersTool">
+        <bitmap>icons_layer_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Show Layers</tooltip>
+        <label>Layers</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
@@ -899,6 +932,19 @@ y\x80\x00\x02\x86\xf1?\x8c\xd8GwMee\x0dJ\x1a\xc5\x17\xa1\xff\xa1\xc6\x01\
 \xbf\xbf\xffp&\xd1[O\xbe3\x00\x04\x10#\xad\xea<\x80\x00bb\xa0\x11\x00\x08\
 0\x00\x1b:51\xa8\xe8K\xee\x00\x00\x00\x00IEND\xaeB`\x82'''
 
+    icons_layer_png = '''\
+\x89PNG\x0d
+\x1a
+\x00\x00\x00\x0dIHDR\x00\x00\x00\x18\x00\x00\x00\x18\x08\x06\x00\x00\x00\
+\xe0w=\xf8\x00\x00\x00\x04sBIT\x08\x08\x08\x08|\x08d\x88\x00\x00\x00\x09\
+pHYs\x00\x00\x0d\xd7\x00\x00\x0d\xd7\x01B(\x9bx\x00\x00\x00\x19tEXtSoft\
+ware\x00www.inkscape.org\x9b\xee<\x1a\x00\x00\x00bIDATH\x89c\xfc\xff\xff\
+?\x03-\x01\x13MM\x1f\xb5\x80\x18\xc0\x02cL\x9f>\x9d\xa2\xd8\xce\xcc\xcc\
+d\xc4k\x01\x03\x03\x03C@@\x00Y\x86o\xd8\xb0\x01\xa7\xdc\xd0\x8f\x03\xda\
+[@i\xe4\x12\xb4\x80\x96\x86\x8fZ0j\xc1\xa8\x05\x10\x80R\x9a\xe2+\x15)\xb6\
+\x00WyN\x15\x0bp\x95G\xd4\xb0\x94\x91\xd6\xcd\x16\x00L\x8d\x17C6\xba9s\x00\
+\x00\x00\x00IEND\xaeB`\x82'''
+
     wx.MemoryFSHandler.AddFile('XRC/mapview/mapview_xrc', mapview_xrc)
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_tbpan_png', icons_tbpan_png)
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_tbzoomin_png', icons_tbzoomin_png)
@@ -907,5 +953,6 @@ y\x80\x00\x02\x86\xf1?\x8c\xd8GwMee\x0dJ\x1a\xc5\x17\xa1\xff\xa1\xc6\x01\
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_brushing_png', icons_brushing_png)
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_python_export_png', icons_python_export_png)
     wx.MemoryFSHandler.AddFile('XRC/mapview/icons_mActionOpenTable_png', icons_mActionOpenTable_png)
+    wx.MemoryFSHandler.AddFile('XRC/mapview/icons_layer_png', icons_layer_png)
     __res.Load('memory:XRC/mapview/mapview_xrc')
 

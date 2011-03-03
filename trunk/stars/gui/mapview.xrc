@@ -100,6 +100,14 @@
             <assign_var>1</assign_var>
           </XRCED>
         </object>
+        <object class="wxMenuItem" name="menuViewLayers">
+          <label>Show Layers\tCtrl-L</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
         <label>View</label>
       </object>
     </object>
@@ -126,7 +134,6 @@
       </object>
       <object class="tool" name="zoomTool">
         <bitmap>icons/tbzoomin.png</bitmap>
-        <bitmap2>icons/tbzoomin.png</bitmap2>
         <toggle>1</toggle>
         <tooltip>Zoom</tooltip>
         <label>Zoom</label>
@@ -180,6 +187,16 @@
         <bitmap>icons/mActionOpenTable.png</bitmap>
         <tooltip>Open Attribute Table</tooltip>
         <label>Table</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="layersTool">
+        <bitmap>icons/layer.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Show Layers</tooltip>
+        <label>Layers</label>
         <XRCED>
           <events>EVT_TOOL</events>
           <assign_var>1</assign_var>
