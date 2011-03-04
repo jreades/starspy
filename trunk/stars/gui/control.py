@@ -188,7 +188,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
             pth = dlg.GetPath()
             if not pth.endswith('.shp'):
                 pth = pth+'.shp'
-            print pth
+            print "Adding Layer:",pth
             shp = pysal.open(pth)
             if shp.type == pysal.cg.Polygon:
                 layer = layers.PolygonLayer(shp.read())
@@ -197,13 +197,16 @@ class mapFrame(mapview_xrc.xrcMapFrame):
             else:
                 print "Unsupported Layer"
                 return
-            dbf = pysal.open(pth[:-4]+'.dbf')
-            tbl = TableViewer(self,dbf)
-            tbl.model.addListener(self.table_update)
+            if os.path.exists(pth[:-4]+'.dbf'):
+                dbf = pysal.open(pth[:-4]+'.dbf')
+                layer.data_table = dbf
+            else:
+                layer.data_table = None
+            tbl = TableViewer(self,layer)
+            #tbl.model.addListener(self.table_update)
             self.__tables.append(tbl)
 
             tbl.model.layer = layer
-            layer.dbf = dbf
             layer.name = os.path.splitext(os.path.basename(pth))[0]
             tbl.SetTitle("STARS -- Attribute Table for %s"%layer.name)
             self.model.addLayer(layer)

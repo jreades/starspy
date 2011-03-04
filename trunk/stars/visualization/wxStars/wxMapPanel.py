@@ -19,6 +19,7 @@ class wxMapPanel(wx.Panel):
         self.trns = 0
         w,h = self.GetSize()
         self.buffer = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
+        self.boxoutline = None
     def _updateLayers(self):
         for layer in self.mapObj.layers:
             if layer not in self.layers:
@@ -66,16 +67,15 @@ class wxMapPanel(wx.Panel):
         self.layers[layer][2] = sbitmap
         return sbitmap
     def drawBoxOutline(self,pt1=None,pt2=None):
-        self.draw()
         if pt1 and pt2:
-            cdc = wx.ClientDC(self)
-            cdc.SetBrush(wx.Brush(wx.Colour(255,255,255,128)))
-            cdc.SetPen(wx.Pen(wx.Colour(0,0,0,255)))
             x = min(pt1[0],pt2[0])
             y = min(pt1[1],pt2[1])
             w = max(pt1[0],pt2[0]) - x
             h = max(pt1[1],pt2[1]) - y
-            cdc.DrawRectangle(x,y,w,h)
+            self.boxoutline = x,y,w,h
+        else:
+            self.boxoutline = None
+        self.draw()
     def draw(self):
         dc = wx.MemoryDC()
         dc.SelectObject(self.buffer)
@@ -94,6 +94,10 @@ class wxMapPanel(wx.Panel):
         dc.SelectObject(wx.NullBitmap)
         cdc = wx.ClientDC(self)
         cdc.DrawBitmap(self.buffer,0,0)
+        if self.boxoutline:
+            cdc.SetBrush(wx.Brush(wx.Colour(255,255,255,128)))
+            cdc.SetPen(wx.Pen(wx.Colour(0,0,0,255)))
+            cdc.DrawRectangle(*self.boxoutline)
     def addControl(self,control):
         control.setMap(self)
         if type(control.evtType) == wx._core.PyEventBinder:

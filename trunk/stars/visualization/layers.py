@@ -19,12 +19,16 @@ class BaseLayer(AbstractModel):
         AbstractModel.__init__(self)
         self._data = {'type':'BaseLayer', 'extent':pysal.cg.Rectangle(0,0,0,0), 'selection':set(),
                         'data':None, 'selectable':False, 'classification':None, 'colors':{0:rcolor()}, 'name':''}
+        self._locator = None
     def __len__(self):
         d = self.data
         if d:
             return len(d)
         else:
             return 0
+    @property
+    def locator(self):
+        return self._locator
     @property
     def extent(self):
         return self._data['extent']
@@ -127,6 +131,7 @@ class PolygonLayer(BaseLayer):
         self._data['type'] = 'PolygonLayer'
         self._data['data'] = polys
         self._data['extent'] = pysal.cg.get_bounding_box(polys)
+        self._locator = pysal.cg.PolygonLocator(polys)
 class KernelDensityLayer(BaseLayer):
     """
     Represents a Kernal Density Raster

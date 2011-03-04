@@ -202,7 +202,13 @@ class rectangleTool_Persistent(wxMapControl):
         """ Called when the user releases the Mouse Button
         rect -- list -- [left, lower, right, upper] in World Coordinates
         """
-        print "onRectangle(%r)"%rect
+        #print "onRectangle(%r)"%rect
+        rect = pysal.cg.Rectangle(*rect)
+        for layer in self.mapObj.mapObj.layers:
+            if layer.locator:
+                rs = layer.locator.overlapping(rect)
+                rs = [x.id-1 for x in rs]
+                layer.selection = rs
 class zoomTool(rectangleTool):
     """
     Mouse tool for zooming the map Canvas.
@@ -211,6 +217,7 @@ class zoomTool(rectangleTool):
         on release the map extent will be set to the extent of the box.
     """
     def onRectangle(self,rect):
+        self.mapObj.drawBoxOutline() # Clear the zoom box
         self.mapObj.mapObj.extent = rect #[left,lower,right,upper]
 class zoomTool2(rectangleTool2):
     """
@@ -221,6 +228,7 @@ class zoomTool2(rectangleTool2):
         on release the map extent will be set to the extent of the box.
     """
     def onRectangle(self,rect):
+        self.mapObj.drawBoxOutline() # Clear the zoom box
         self.mapObj.mapObj.extent = rect #[left,lower,right,upper]
 class animateKD(wxMapControl):
     """
