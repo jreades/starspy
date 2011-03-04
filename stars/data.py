@@ -79,9 +79,21 @@ class StarsDb:
         --------
 
         >>> import pysal
-        >>> dbf = 'examples/tempe/Tempe_Crime_Clipped_subset.dbf'
+        >>> dbf = 'examples/mesa/Mesa_Crime_Clipped_subset.dbf'
         >>> data = pysal.open(dbf)
         >>> x = StarsDb(dbf)
+        ADD
+        AS
+        EXISTS
+        IF
+        IN
+        IS
+        NO
+        NOT
+        OR
+        PRIMARY
+        <BLANKLINE>
+
         >>> 
 
         """
@@ -94,17 +106,39 @@ class StarsDb:
         db = pysal.open(dbf)
         self.header = db.header
         self.spec = db.field_spec
+        self.info = db.field_info
         self.con = sqlite.connect(":memory:", detect_types=sqlite.PARSE_DECLTYPES|sqlite.PARSE_COLNAMES)
         self.con.row_factory = sqlite.Row
-        self.cur = cur = self.con.execute(createTableSQL(EVENTS_TABLE, db.header, db.field_spec, primaryKey = None))
+        #self.cur = cur = self.con.execute(createTableSQL(EVENTS_TABLE, db.header, db.field_spec, primaryKey = None))
+        self.cur = self.con.cursor()
+        self.cur.execute(createTableSQL(EVENTS_TABLE, db.header, db.field_spec, primaryKey = None))
         insert_sql = "insert into %s values (%s)" % (EVENTS_TABLE,','.join(['?'] * len(db.header)))
         for row in db:
-            cur.execute(insert_sql, row)
+            self.cur.execute(insert_sql, row)
         self.con.commit()
-        print "Database written."
+        #print "Database written."
+
+
+    def build_simple_query(tableName, field_name, filter=None, groupby=None):
+        """Builds queries."""
+        #we need an API for gathering user inputs
+        start = input() #TBD
+        end = input()   #TBD
+
+
+        #self.cur.execute("select
+
+        #Notes: see 11.13.5.4  and 11.13.5.2.2 
+        """Futzing around:
+        this returns one column
+        x.cur.execute('select RPTDATE from events').fetchall()
 
 
 
+
+
+
+        """
 
 
 
@@ -148,7 +182,7 @@ def createTableSQL(tableName,header,field_spec,primaryKey = None):
     return sql
 
 def spec2type(spec):
-    #TODO add datetime and timestamp support here
+    #TODO add date and timestamp support here
     t,s,p = spec
     if t.lower()=='n':
         if p==0:
@@ -157,6 +191,8 @@ def spec2type(spec):
             return "REAL"
     elif t.lower()=='f':
         return "REAL"
+    elif t.lower() == 'd':
+        return "DATE"
     return "TEXT"
 
 
@@ -289,6 +325,7 @@ def _test():
     doctest.testmod(verbose=True)
        
 if __name__ == '__main__':
-    dbf = 'examples/tempe/Tempe_Crime_Clipped_subset.dbf'
+    #dbf = 'examples/mesa/Mesa_Crime_Clipped_subset.dbf'
+    dbf = '/home/stephens/Desktop/Phil_Data/Mesa_Crime_Clipped.dbf'
     x = StarsDb(dbf)
     _test()
