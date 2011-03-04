@@ -8,12 +8,12 @@ from sys import stdout
 import pysal
 import numpy
 from math import exp,pi,ceil,floor,sqrt
-try:
-    from osgeo import gdal, gdal_array
-    from osgeo.gdalconst import GDT_Float64
-except ImportError:
-    import gdal, gdal_array
-    from gdalconst import GDT_Float64
+#try:
+#    from osgeo import gdal, gdal_array
+#    from osgeo.gdalconst import GDT_Float64
+#except ImportError:
+#    import gdal, gdal_array
+#    from gdalconst import GDT_Float64
 
 def triangular(z):
     return 1 - abs(z)
