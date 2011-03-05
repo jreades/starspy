@@ -11,7 +11,7 @@ def spec2str(spec):
     typ = typ.lower()
     value = 0
     if typ == "n": value = str(value).rjust(s, 'x')
-    elif typ == 'd': value = value.strftime('%Y%m%d')
+    elif typ == 'd': value = 'X'*len('YYYY/MM/DD')
     elif typ == 'l': value = str(value)[0].upper()
     else: value = str(value)[:s].ljust(s, 'x')
     return value
