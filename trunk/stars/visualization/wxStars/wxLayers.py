@@ -7,6 +7,7 @@ import wx
 import numpy
 import stars.visualization.layers as layers
 from kernelDensityTime import KernelDensity
+from pysal.cg import bbcommon
 
 class wxPointLayer:
     def __init__(self,layer):
@@ -81,20 +82,25 @@ class wxPolygonLayer:
         self.layer = layer
         self.trns = 0
     def draw_set(self,pth,ids):
+        window = self.transform.extent
         data = self.layer.data
         for i in ids:
             poly = data[i]
-            parts = poly.parts
-            if poly.holes[0]:
-                parts = parts + poly.holes
-            for part in parts:
-                x,y = part[0]
-                pth.MoveToPoint(x,y)
-                for x,y in part[1:]:
-                    pth.AddLineToPoint(x,y)
-                pth.CloseSubpath()
+            # only draw the polygon if it's inside the view window.
+            # for very large shapefiles and small view windows, it would be fast to query an rtree.
+            if bbcommon(window,poly.bounding_box):
+                parts = poly.parts
+                if poly.holes[0]:
+                    parts = parts + poly.holes
+                for part in parts:
+                    x,y = part[0]
+                    pth.MoveToPoint(x,y)
+                    for x,y in part[1:]:
+                        pth.AddLineToPoint(x,y)
+                    pth.CloseSubpath()
         return pth
     def draw(self,transform):
+        self.transform = transform
         w,h = transform.pixel_size
         buff = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
         dc = wx.MemoryDC()
@@ -123,6 +129,7 @@ class wxPolygonLayer:
             gc.StrokePath(pth)
         return buff
     def draw_selection(self,transform):
+        self.transform = transform
         w,h = transform.pixel_size
         buff = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
         dc = wx.MemoryDC()
