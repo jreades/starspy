@@ -84,20 +84,22 @@ class wxPolygonLayer:
     def draw_set(self,pth,ids):
         window = self.transform.extent
         data = self.layer.data
-        for i in ids:
+        inside = set([x.id-1 for x in self.layer.locator.overlapping(window)])
+        to_draw = inside.intersection(set(ids))
+        for i in to_draw:
             poly = data[i]
             # only draw the polygon if it's inside the view window.
             # for very large shapefiles and small view windows, it would be fast to query an rtree.
-            if bbcommon(window,poly.bounding_box):
-                parts = poly.parts
-                if poly.holes[0]:
-                    parts = parts + poly.holes
-                for part in parts:
-                    x,y = part[0]
-                    pth.MoveToPoint(x,y)
-                    for x,y in part[1:]:
-                        pth.AddLineToPoint(x,y)
-                    pth.CloseSubpath()
+            #if bbcommon(window,poly.bounding_box):
+            parts = poly.parts
+            if poly.holes[0]:
+                parts = parts + poly.holes
+            for part in parts:
+                x,y = part[0]
+                pth.MoveToPoint(x,y)
+                for x,y in part[1:]:
+                    pth.AddLineToPoint(x,y)
+                pth.CloseSubpath()
         return pth
     def draw(self,transform):
         self.transform = transform
