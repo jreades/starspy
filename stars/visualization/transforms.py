@@ -1,3 +1,4 @@
+import pysal
 from model import AbstractModel
 
 class WorldToViewTransform(AbstractModel):
@@ -63,7 +64,7 @@ class WorldToViewTransform(AbstractModel):
         """Returns the extent of the current view in World Coordinates."""
         left,upper = self.pixel_to_world(0,0)
         right,lower = self.pixel_to_world(self.__pixel_width,self.__pixel_height)
-        return [left,lower,right,upper]
+        return pysal.cg.Rectangle(left,lower,right,upper)
     def __set_extent(self,value):
         """ Set the extent of the current view in World Coordinates.
             Preserve fixed scale, take the max of (sx,sy).
