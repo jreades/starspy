@@ -191,6 +191,8 @@ class rectangleTool_Persistent(wxMapControl):
             self.mapObj.drawBoxOutline((x,y),(X,Y))
             transform = self.mapObj.mapObj
             x,y = transform.pixel_to_world(x,y)
+            if self.__start == self.__end: #single click.
+                return self.onPoint(x,y)
             X,Y = transform.pixel_to_world(X,Y)
             left = min(x,X)
             right = max(x,X)
@@ -199,16 +201,35 @@ class rectangleTool_Persistent(wxMapControl):
             self.onRectangle([left,lower,right,upper])
 
     def onRectangle(self,rect):
-        """ Called when the user releases the Mouse Button
+        """
+        Called as the user draws a rectangle and/or moves a rectangle
         rect -- list -- [left, lower, right, upper] in World Coordinates
         """
-        #print "onRectangle(%r)"%rect
+        print "onRectangle(%r)"%rect
+    def onPoint(self,x,y):
+        print "onPoint(%f,%f)"%(x,y)
+class selectTool(rectangleTool_Persistent):
+    in_rect = False
+    def onRectangle(self,rect):
+        self.in_rect = True
         rect = pysal.cg.Rectangle(*rect)
         for layer in self.mapObj.mapObj.layers:
             if layer.locator:
                 rs = layer.locator.overlapping(rect)
                 rs = [x.id-1 for x in rs]
                 layer.selection = rs
+    def onPoint(self,x,y):
+        print "onPoint(%f,%f)"%(x,y)
+        if self.in_rect and self.isBrushing():
+            self.in_rect = False # keep the current selection.
+        else:
+            rect = pysal.cg.Rectangle(x,y,x,y)
+            for layer in self.mapObj.mapObj.layers:
+                if layer.locator:
+                    rs = layer.locator.overlapping(rect)
+                    rs = [x.id-1 for x in rs]
+                    layer.selection = rs
+            
 class zoomTool(rectangleTool):
     """
     Mouse tool for zooming the map Canvas.
