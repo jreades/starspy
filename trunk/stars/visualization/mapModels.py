@@ -1,6 +1,7 @@
 import pysal
+import os.path
 from model import AbstractModel
-from layers import BaseLayer, PointLayer, PolygonLayer
+import layers
 from transforms import WorldToViewTransform
 
 class MapModel(WorldToViewTransform):
@@ -27,17 +28,41 @@ class MapModel(WorldToViewTransform):
         """
         lid = self._data['layers'].index(layer)
         self.update('%s:%d'%(tag,lid))
+    def addPath(self,path):
+        """
+        Attempts to add the path as a new layer.
+        Returns the layer if successful, else False
+        """
+        layer = None
+        if os.path.exists(path):
+            f = pysal.open(path,'r')
+            if hasattr(f,'type'):
+                if f.type == pysal.cg.Polygon:
+                    layer = layers.PolygonLayer(f.read())
+                if f.type == pysal.cg.Point:
+                    layer = layers.PointLayer(f.read())
+            if path.endswith('shp') and os.path.exists(path[:-4]+'.dbf'):
+                dbf = pysal.open(path[:-4]+'.dbf','r')
+                layer.data_table = dbf
+            elif layer:
+                layer.data_table = layers.NullDBF(len(layer))
+        if layer:
+            layer.name = os.path.splitext(os.path.basename(path))[0]
+            return self.addLayer(layer)
+        return False
     def addLayer(self,layer):
         """
         Add a layer to the current map.
         Layers are made selectable when added.
         """
-        if issubclass(type(layer),BaseLayer) and layer not in self._data['layers']:
+        if issubclass(type(layer),layers.BaseLayer) and layer not in self._data['layers']:
             layer.is_selectable = True
             self._data['layers'].append(layer)
             layer.addListener(self._layerListener)
             self._data['world_extent'] = pysal.cg.Rectangle(0,0,0,0)
             self.update('layers')
+            return layer
+        return False
     @property
     def layers(self):
         return self._data['layers'][:]
@@ -76,8 +101,8 @@ class MapModel(WorldToViewTransform):
 if __name__=='__main__':
     import pysal
     stl = pysal.open('/Users/charlie/Documents/data/stl_hom/stl_hom.shp').read()
-    polys = PolygonLayer(stl)
-    #pts = PointLayer([p.centroid for p in stl])
+    polys = layers.PolygonLayer(stl)
+    #pts = layers.PointLayer([p.centroid for p in stl])
 
     mapObj = MapModel([polys])
     #mapObj.addLayer(polys)

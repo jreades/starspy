@@ -7,6 +7,52 @@ def rcolor():
     randint = random.randint
     return randint(0,255), randint(0,255), randint(0,255)
 
+class NullDBF(object):
+    """
+    Helper Class for Shapefiles with No DBF, not really a layer.
+
+    TODO: Move this.
+
+    Example:
+    >>> db = NullDBF(60)
+    >>> len(db)
+    60
+    >>> db[:5]
+    [0, 1, 2, 3, 4]
+
+    """
+    def __init__(self,n):
+        self.n = n
+    @property
+    def header(self):
+        return ["ID"]
+    @property
+    def field_spec(self):
+        return [('N',len(str(self.n)),0)]
+    def __len__(self):
+        return self.n
+    def __getitem__(self,key):
+        if issubclass(type(key), basestring):
+            raise TypeError, "index should be int or slice"
+        if issubclass(type(key), int) or isinstance(key, slice):
+            rows = key 
+            cols = None
+        elif len(key) > 2:
+            raise TypeError, "DataTables support two dimmensional slicing,  % d slices provided"% len(key)
+        elif len(key) == 2:
+            rows, cols = key 
+        else:
+            raise TypeError, "Key: % r,  is confusing me.  I don't know what to do"% key 
+        if isinstance(rows, slice):
+            row_start, row_stop, row_step = rows.indices(len(self))
+            if row_stop >= self.n:
+                row_stop = self.n
+            return range(row_start,row_stop,row_step)
+        else:
+            if rows >= self.n:
+                rows = self.n
+            return [rows]
+
 class BaseLayer(AbstractModel):
     """
     Represents a Basic Layer
