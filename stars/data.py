@@ -62,7 +62,7 @@ class StarsTable:
 class StarsDb:
     """Reads PySAL DataTable and writes to a (py)sqlite database. Once written,
     we use the StarsTbl class to query or view the data, so that we don't have
-    the whole db subject to query all the time."""
+    the whole db subject to query all the time. ??? """
     
     def __init__(self, dbf):
         """Create an instance of our Database.
@@ -79,9 +79,9 @@ class StarsDb:
         --------
 
         >>> import pysal
-        >>> dbf = 'examples/mesa/Mesa_Crime_Clipped_subset.dbf'
+        >>> dbf = 'examples/mesa/Export_Output.dbf'
         >>> data = pysal.open(dbf)
-        >>> x = StarsDb(dbf)
+        >>> mesa = StarsDb(dbf)
         ADD
         AS
         EXISTS
@@ -93,31 +93,72 @@ class StarsDb:
         OR
         PRIMARY
         <BLANKLINE>
-
+        Database written.
+        >>> query = mesa.cur.execute('SELECT * FROM events')
+        >>> r = query.fetchone() 
+        >>> len(r)
+        22
+        >>> r[21]
+        datetime.date(2008, 6, 19)
+        >>> query2 = mesa.cur.execute('SELECT DateFix FROM events WHERE DateFix LIKE "2007%"') 
+        >>> query3 = mesa.cur.execute('SELECT * FROM events WHERE DateFix LIKE "2007%"') 
+        >>> s = query2.fetchall()
+        >>> type(s)
+        <type 'list'>
         >>> 
 
         """
+        # write a query that returns all rows where 'FixDate' is in between a set of dates
+
         #dbf2sql(dbf)
         #self.con = sqlite.connect(":memory:", detect_types = 2) #remains in memory 
         #self.con = sqlite.connect("", detect_types = 2)   #flushed to disk if too large
         #self.con = sqlite.connect("/tmp/stars_sqlite.db", detect_types = 2) #r/w to disk
         
         EVENTS_TABLE = "events"
-        db = pysal.open(dbf)
+        self.db = db = pysal.open(dbf)
         self.header = db.header
         self.spec = db.field_spec
         self.info = db.field_info
         self.con = sqlite.connect(":memory:", detect_types=sqlite.PARSE_DECLTYPES|sqlite.PARSE_COLNAMES)
         self.con.row_factory = sqlite.Row
-        #self.cur = cur = self.con.execute(createTableSQL(EVENTS_TABLE, db.header, db.field_spec, primaryKey = None))
         self.cur = self.con.cursor()
         self.cur.execute(createTableSQL(EVENTS_TABLE, db.header, db.field_spec, primaryKey = None))
         insert_sql = "insert into %s values (%s)" % (EVENTS_TABLE,','.join(['?'] * len(db.header)))
         for row in db:
             self.cur.execute(insert_sql, row)
         self.con.commit()
-        #print "Database written."
+        print "Database written."
 
+        self.con.create_function("toyear", 1, toyear)
+        self.con.create_function("tomonth", 1, tomonth)
+        self.con.create_function("toquarter", 1, toquarter)
+        self.con.create_function("d2qtr",1, awesome)
+
+
+    def qrecords(self, year, quarter):
+        records = self.cur.execute("SELECT d2qtr(DateFix) from events")
+        return records.fetchall()
+        
+    def get_quarterly_records(self, year, quarter):
+        """
+        Parameters
+        ----------
+        datecol : datetime.date column in the table
+        year : string 
+        quarter : string
+        
+        """
+        sql = 'Select * from events WHERE %s LIKE "%s%s"' % (DATE_COL, year, "%")
+        query = self.cur.execute(sql)
+        lst = query.fetchall()
+        result = []
+        for row in lst:
+            qtr = toquarter(row[DATE_COL])
+            if qtr == quarter:
+                print qtr, row
+                result.append(row)
+        return result 
 
     def build_simple_query(tableName, field_name, filter=None, groupby=None):
         """Builds queries."""
@@ -132,17 +173,7 @@ class StarsDb:
         """Futzing around:
         this returns one column
         x.cur.execute('select RPTDATE from events').fetchall()
-
-
-
-
-
-
         """
-
-
-
-
     
     """Convert a dBase file to an Sqlite3 db, table.
 
@@ -158,7 +189,15 @@ class StarsDb:
     start doing inserts.
     
     """
-
+def awesome(date):
+    "turn date into a year, quarter tuple"
+    return date.year, toquarter(date)
+def toyear(date):
+    return date.year
+def tomonth(date):
+    return date.month
+def toquarter(date):
+    return (date.month - 1)//3 + 1
 
 def createTableSQL(tableName,header,field_spec,primaryKey = None):
     create_table_sql = "create table IF NOT EXISTS %s (%s)"
@@ -194,12 +233,9 @@ def spec2type(spec):
     elif t.lower() == 'd':
         return "DATE"
     return "TEXT"
-
-
     
 # some of these funcs are here to document how things work, they may be
 # discarded if integration is more efficient
-
 
 # Example: Convert file existing_db.db to SQL dump file dump.sql
 '''
@@ -302,7 +338,34 @@ def week(date):
     calweek = date.isocalendar()[1]
     return calweek
 
-def quarter(date):
+def in_quarter(date):
+    """sql wrapper that passes datetime.date object to the db cursor"""
+    #pseudo code:
+    # want to pass a column of dates into a func to create a table JOIN with
+    # year and quarter for quicker lookups?
+    #first pass month to quarter
+    q = quarter(date)
+    
+    #SELECT * FROM events WHERE 'FixDate'.year == year AND 'FixDate'.quarter
+
+def mapM2Q(date):
+    """Accepts a datetime.date object and returns the quarter in which that
+    month exists, irrespective of year."""
+    q1 = (1,2,3)
+    q2 = (4,5,6)
+    q3 = (7,8,9)
+    q4 = (10,11,12)
+    q = date.month  #returns an integer
+    if q in q1:
+        return 1
+    elif q in q2:
+        return 2
+    elif q in q3:
+        return 3
+    elif q in q4:
+        return 4
+
+def get_quarter(date):
     """Map a datetime.date object to its quarter.
     Given an instance x of datetime.date, (x.month-1)//3 will give you the quarter 
     (0 for first quarter, 1 for second quarter, etc -- add 1 if you need to count from 1 instead
@@ -319,13 +382,17 @@ def quarter(date):
     """
     tmp = (date.month - 1)//3 + 1  
     return tmp
+            
+        
+
 
 def _test():
     import doctest
     doctest.testmod(verbose=True)
        
 if __name__ == '__main__':
-    #dbf = 'examples/mesa/Mesa_Crime_Clipped_subset.dbf'
-    dbf = '/home/stephens/Desktop/Phil_Data/Mesa_Crime_Clipped.dbf'
+    DATE_COL = 'DateFix'
+    dbf = 'examples/mesa/Export_Output.dbf'
+    #dbf = '/home/stephens/Desktop/Phil_Data/Mesa_Crime_Clipped.dbf'
     x = StarsDb(dbf)
     _test()
