@@ -17,6 +17,11 @@ class FileDropTarget(wx.FileDropTarget):
         for fname in filenames:
             print "Dropped: ",fname, self.obj.addPath(fname)
 class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
+    def __init__(self,parent,mapModel,size=(150,400)):
+        # Note: treemixin seems to take care of the TreeCtrl __init__
+        treemixin.DragAndDrop.__init__(self,parent,size=size)
+        self.mapModel = mapModel
+        self.Bind(wx.EVT_TREE_ITEM_MENU,self.onMenu)
     __mapModel = None
     def __get_mapModel(self):
         return self.__mapModel
@@ -89,3 +94,8 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
     def IsValidDropTarget(self,dropTarget):
         #print "IsValidDropTarget(%r)"%dropTarget
         return True
+    def onMenu(self,evt):
+        print evt
+        print evt.GetItem()
+        print self.GetIndexOfItem(evt.GetItem())
+        print evt.GetPoint()

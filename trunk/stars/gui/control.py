@@ -54,8 +54,8 @@ class mapFrame(mapview_xrc.xrcMapFrame):
 
 
         #tc = wx.TextCtrl(self,-1,'Side Pane', wx.DefaultPosition, wx.Size(200,150), wx.NO_BORDER | wx.TE_MULTILINE)
-        self.layers = LayersControl(self,size=(150,400))
-        self.layers.mapModel = self.mapPanel.mapObj
+        self.layers = LayersControl(self,self.mapPanel.mapObj,size=(150,400))
+        #self.layers.mapModel = self.mapPanel.mapObj
         self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton().Hide() )
         self._mgr.Update()
         self.toggleLayers()
@@ -118,13 +118,14 @@ class mapFrame(mapview_xrc.xrcMapFrame):
             wx.Bell()
             print "Could not open the clipboard?"
     def open(self,evtName=None,evt=None,value=None):
-        dlg = wx.FileDialog(self,"Open Shapefile", wildcard="ESRI ShapeFile (*.shp)|*.shp")
+        dlg = wx.FileDialog(self,"Open Shapefile", wildcard="ESRI ShapeFile (*.shp)|*.shp", style=wx.FD_MULTIPLE|wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
-            pth = dlg.GetPath()
-            if not pth.endswith('.shp'):
-                pth = pth+'.shp'
-            print "Adding Layer:",pth
-            layer = self.model.addPath(pth)
+            for pth in dlg.GetPaths():
+                #pth = dlg.GetPath()
+                if not pth.endswith('.shp'):
+                    pth = pth+'.shp'
+                print "Adding Layer:",pth
+                layer = self.model.addPath(pth)
     def setTool(self,toolname,state=None):
         tool,tid,mid = self.tools[toolname]
         if state == None:
