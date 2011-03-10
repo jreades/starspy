@@ -11,6 +11,7 @@ from tableViewer import TableViewer
 from layerControl import LayersControl
 import pysal
 import os
+import json
 DEBUG = True
 
 COLOR_SAMPLE_WIDTH = 20
@@ -28,11 +29,29 @@ class StatusTool(wxMapTools.wxMapControl):
 class mapFrame(mapview_xrc.xrcMapFrame):
     def __init__(self,parent=None):
         stars.remapEvtsToDispatcher(self,self.evtDispatch)
+
+        #defaults 
+        defaults = {'pos':wx.DefaultPosition, 'size':wx.DefaultSize, 'shell':{'pos':wx.DefaultPosition,'size':wx.DefaultSize}}
+        #read prefs...
+        paths = wx.StandardPaths.Get()
+        pth = os.path.join(paths.GetUserDataDir(),'stars.config')
+        if os.path.exists(pth):
+            config = open(pth,'r')
+            try:
+                d = json.load(config)
+                defaults.update(d)
+                #print "Config loaded:",defaults
+            except ValueError:
+                print "bad config file, consider removing"
+
         mapview_xrc.xrcMapFrame.__init__(self,parent)
+        self.SetPosition(defaults['pos'])
+        self.SetSize(defaults['size'])
+
 
         self._mgr = wx.aui.AuiManager(self)
 
-        shell = wx.Frame(self)
+        shell = wx.Frame(self,pos=defaults['shell']['pos'], size=defaults['shell']['size'])
         shell.Bind(wx.EVT_CLOSE,self.shell)
         shell.SetTitle("STARS -- Console")
         sh = Shell(shell) 
@@ -201,3 +220,19 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         self.mapPanel.mapObj.zoom_to_world()
     def table_update(self,mdl,tag=None):
         mdl.layer.selection = mdl.selection
+    def OnClose(self,evt):
+        paths = wx.StandardPaths.Get()
+        pth = paths.GetUserDataDir()
+        if not os.path.exists(pth):
+            os.mkdir(pth)
+        config = open(os.path.join(pth,'stars.config'),'w')
+        json.dump({
+            "pos":self.GetPosition().Get(), 
+            "size":self.GetSize().Get(),
+            "shell": {
+                "pos": self.__shell.GetPosition().Get(),
+                "size": self.__shell.GetSize().Get()
+            }
+        },config)
+        config.close()
+        self.Destroy()

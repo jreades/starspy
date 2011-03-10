@@ -254,5 +254,8 @@
     </object>
     <size>650,500</size>
     <title>STARS -- Map View</title>
+    <XRCED>
+      <events>EVT_CLOSE</events>
+    </XRCED>
   </object>
 </resource>
