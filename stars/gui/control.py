@@ -10,6 +10,7 @@ from stars.visualization import layers
 from tableViewer import TableViewer
 from layerControl import LayersControl
 import pysal
+import numpy
 import os
 import json
 DEBUG = True
@@ -26,6 +27,41 @@ class StatusTool(wxMapTools.wxMapControl):
         x,y = self.mapObj.mapObj.pixel_to_world(*evt.Position)
         self.status.SetStatusText("%f, %f"%(x,y),self.field)
 
+class layerPropFrame(mapview_xrc.xrcLayerPropFrame):
+    def __init__(self,parent,layer):
+        stars.remapEvtsToDispatcher(self,self.evtDispatch)
+        mapview_xrc.xrcLayerPropFrame.__init__(self,parent)
+
+        self.Bind(wx.EVT_CLOSE,self.close)
+
+        self.layer = layer
+        #layer.addListener(self.update)
+        self.update(layer)
+
+        self.dispatch = d = {}
+        d['classificationApply'] = self.run
+    def evtDispatch(self,evtName,evt):
+        evtName,widgetName = evtName.rsplit('_',1)
+        if widgetName in self.dispatch:
+            self.dispatch[widgetName](evtName,evt)
+        else:
+            if DEBUG: print "not implemented:", evtName,widgetName
+    def update(self,mdl):
+        self.classificationAttribute.SetItems(mdl.data_table.header)
+        self.classificationAttribute.Select(0)
+        self.classificationMethod.SetItems(pysal.esda.mapclassify.kmethods.keys())
+        self.classificationMethod.Select(0)
+        self.classificationClasses.SetItems(map(str,range(3,11)))
+        self.classificationClasses.Select(2)
+    def run(self,evtName=None,evt=None,value=None):
+        y = self.layer.data_table.by_col(self.classificationAttribute.GetStringSelection())
+        y = numpy.array(y)
+        k = int(self.classificationClasses.GetStringSelection())
+        meth = pysal.esda.mapclassify.kmethods[self.classificationMethod.GetStringSelection()]
+        self.layer.classification = meth(y,k)
+    def close(self,evt):
+        self.Hide()
+        
 class mapFrame(mapview_xrc.xrcMapFrame):
     def __init__(self,parent=None):
         stars.remapEvtsToDispatcher(self,self.evtDispatch)
@@ -66,7 +102,9 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         self._mgr = wx.aui.AuiManager(self)
         # Setup AUI Panes
         self._mgr.AddPane(self.mapPanel, wx.CENTER)
+        #self._mgr.AddPane(self.mapPanel, wx.aui.AuiPaneInfo().Name('mapView').Caption('Map View 1').Left().MaximizeButton().Show() )
         self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton().Hide() )
+        #self._mgr.AddPane(self.ToolBar, wx.aui.AuiPaneInfo().Name('toolbar1').Caption('ToolBar').ToolbarPane().Top() )
         self._mgr.Update()
         self.toggleLayers()
 
@@ -115,6 +153,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         d['menuLayerRemove'] = self.removeLayer
         d['menuLayerZoom'] = self.zoomLayer
         d['menuLayerSelectable'] = self.layerSelectable
+        d['menuLayerProps'] = self.layerProps
 
     def evtDispatch(self,evtName,evt):
         evtName,widgetName = evtName.rsplit('_',1)
@@ -227,6 +266,15 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         if evtName == 'OnMenu':
             state = self.model.selected_layer.is_selectable^True
             self.model.selected_layer.is_selectable = state
+    def layerProps(self,evtName=None,evt=None,value=None):
+        if evtName == 'OnMenu' and self.model.selected_layer:
+            layer = self.model.selected_layer
+            if not hasattr(layer,'propsView'):
+                print "Create Props View"
+                layer.propsView = layerPropFrame(self,layer)
+            layer.propsView.Show()
+            layer.propsView.Raise()
+            
     def table_update(self,mdl,tag=None):
         mdl.layer.selection = mdl.selection
     def OnClose(self,evt):

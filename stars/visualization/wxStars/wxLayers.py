@@ -57,8 +57,8 @@ class wxPointLayer:
             cs = self.layer.colors
             #cs = {0:(255,0,0)}
         for i,cls in enumerate(cl.classes):
-            r,g,b = cs[i]
-            gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(r,g,b,255))) )
+            r,g,b,a = cs[i]
+            gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(r,g,b,a))) )
             gc = self.draw_set(gc,matrix,cls)
         return buff
     def draw_selection(self,transform):
@@ -69,7 +69,7 @@ class wxPointLayer:
         dc.SelectObject(buff)
         gc = wx.GraphicsContext.Create(dc)
         gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,255),1)) )
-        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255))) )
+        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255), style=wx.CROSSDIAG_HATCH)) )
         matrix = gc.CreateMatrix()
         matrix.Scale(1./transform.scale,1./-transform.scale) #first transform is applied last
         matrix.Translate(*transform.offset)                   #last transform is applied first
@@ -122,11 +122,11 @@ class wxPolygonLayer:
             #cs = {0:(255,0,0)}
             cs = self.layer.colors
         for i,cls in enumerate(cl.classes):
-            r,g,b = cs[i]
+            r,g,b,a = cs[i]
             pth = gc.CreatePath()
             pth = self.draw_set(pth,cls)
             pth.Transform(matrix)
-            gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(r,g,b,255))) )
+            gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(r,g,b,a))) )
             gc.FillPath(pth)
             gc.StrokePath(pth)
         return buff
@@ -138,7 +138,7 @@ class wxPolygonLayer:
         dc.SelectObject(buff)
         gc = wx.GraphicsContext.Create(dc)
         gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,255),1)) )
-        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255))) )
+        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255), style=wx.CROSSDIAG_HATCH)) )
         matrix = gc.CreateMatrix()
         matrix.Scale(1./transform.scale,1./-transform.scale) #first transform is applied last
         matrix.Translate(*transform.offset)                   #last transform is applied first

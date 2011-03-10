@@ -45,16 +45,16 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
     #        return idx[0]
     #    except:
     #        return None
-    def update(self,mdl=None,tag=None):
-        if tag=='layers' or not tag:
+    def update(self,mdl=None,tag=''):
+        if 'classification' in tag or tag=='layers' or not tag:
             self.__imgList.RemoveAll()
             self.__layerColor2Image = {}
             if mdl and mdl.layers:
                 c = 0
                 for i,layer in enumerate(mdl.layers):
                     for j in xrange(len(layer.colors)):
-                        r,g,b = layer.colors[j]
-                        bitmap = wx.EmptyBitmapRGBA(COLOR_SAMPLE_WIDTH,COLOR_SAMPLE_HEIGHT,r,g,b,255)
+                        r,g,b,a = layer.colors[j]
+                        bitmap = wx.EmptyBitmapRGBA(COLOR_SAMPLE_WIDTH,COLOR_SAMPLE_HEIGHT,r,g,b,a)
                         self.__imgList.Add(bitmap)
                         self.__layerColor2Image[(i,j)]=c
                         c+=1
@@ -84,7 +84,15 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
         if len(index) == 1:
             return self.mapModel.layers[index[0]].name
         elif len(index) == 2:
-            return "Class %d"%index[1]
+            layer = self.mapModel.layers[index[0]]
+            if not layer.classification:
+                return "Class %d"%index[1]
+            else:
+                k = index[1]
+                if k == 0:
+                    return "x[i] <= %.3f"%layer.classification.bins[k]
+                else:
+                    return "%.3f < x[i] <= %.3f"%(layer.classification.bins[k-1],layer.classification.bins[k])
         return ""
     def OnGetItemImage(self,index,which=0,column=0):
         if index in self.__layerColor2Image:
