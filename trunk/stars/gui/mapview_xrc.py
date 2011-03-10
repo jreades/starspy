@@ -256,6 +256,39 @@ class xrcMapFrame(wx.Frame):
 #!XRCED:end-block:xrcMapFrame.OnClose        
 
 
+class xrcLayerPropFrame(wx.Frame):
+#!XRCED:begin-block:xrcLayerPropFrame.PreCreate
+    def PreCreate(self, pre):
+        """ This function is called during the class's initialization.
+        
+        Override it for custom setup before the window is created usually to
+        set additional window styles using SetWindowStyle() and SetExtraStyle().
+        """
+        pass
+        
+#!XRCED:end-block:xrcLayerPropFrame.PreCreate
+
+    def __init__(self, parent):
+        # Two stage creation (see http://wiki.wxpython.org/index.cgi/TwoStageCreation)
+        pre = wx.PreFrame()
+        self.PreCreate(pre)
+        get_resources().LoadOnFrame(pre, parent, "LayerPropFrame")
+        self.PostCreate(pre)
+
+        # Define variables for the controls, bind event handlers
+        self.classificationAttribute = xrc.XRCCTRL(self, "classificationAttribute")
+        self.classificationMethod = xrc.XRCCTRL(self, "classificationMethod")
+        self.classificationClasses = xrc.XRCCTRL(self, "classificationClasses")
+
+        self.Bind(wx.EVT_BUTTON, self.OnButton_classificationApply, id=xrc.XRCID('classificationApply'))
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnButton_classificationApply
+    def OnButton_classificationApply(self, evt):
+        # Replace with event handler code
+        print "OnButton_classificationApply()"
+#!XRCED:end-block:xrcLayerPropFrame.OnButton_classificationApply        
+
+
 
 
 # ------------------------ Resource data ----------------------
@@ -525,6 +558,131 @@ def __init_resources():
     <XRCED>
       <events>EVT_CLOSE</events>
     </XRCED>
+  </object>
+  <object class="wxFrame" name="LayerPropFrame">
+    <title>STARS -- Layer Properties</title>
+    <object class="wxNotebook" name="layerBook">
+      <object class="notebookpage">
+        <object class="wxPanel">
+          <object class="wxBoxSizer">
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Attribute</label>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxChoice" name="classificationAttribute">
+                    <XRCED>
+                      <assign_var>1</assign_var>
+                    </XRCED>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <orient>wxHORIZONTAL</orient>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Method</label>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxChoice" name="classificationMethod">
+                    <XRCED>
+                      <assign_var>1</assign_var>
+                    </XRCED>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <orient>wxHORIZONTAL</orient>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Classes</label>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxChoice" name="classificationClasses">
+                    <selection>0</selection>
+                    <XRCED>
+                      <assign_var>1</assign_var>
+                    </XRCED>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <orient>wxHORIZONTAL</orient>
+              </object>
+            </object>
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <object class="sizeritem">
+                  <object class="wxButton" name="classificationApply">
+                    <label>Apply</label>
+                    <XRCED>
+                      <events>EVT_BUTTON</events>
+                    </XRCED>
+                  </object>
+                  <flag>wxLEFT|wxALL</flag>
+                  <border>10</border>
+                </object>
+                <orient>wxHORIZONTAL</orient>
+              </object>
+            </object>
+          </object>
+        </object>
+        <label>Classification</label>
+        <selected>1</selected>
+      </object>
+      <object class="notebookpage">
+        <object class="wxPanel">
+          <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>The Page is Blank, Coming Soon.</label>
+              </object>
+              <option>0</option>
+              <flag>wxALL|wxALIGN_CENTRE</flag>
+              <border>60</border>
+            </object>
+          </object>
+        </object>
+        <label>Color Scheme</label>
+      </object>
+      <object class="notebookpage">
+        <object class="wxPanel">
+          <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>The Page is Blank.</label>
+              </object>
+              <option>0</option>
+              <flag>wxALL|wxALIGN_CENTRE</flag>
+              <border>60</border>
+            </object>
+          </object>
+        </object>
+        <label>General</label>
+      </object>
+    </object>
   </object>
 </resource>'''
 

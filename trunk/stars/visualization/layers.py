@@ -1,5 +1,6 @@
 import wx
 import pysal
+import colors
 from model import AbstractModel
 from kernelDensityTime import KernelDensity
 import random
@@ -64,7 +65,7 @@ class BaseLayer(AbstractModel):
     def __init__(self):
         AbstractModel.__init__(self)
         self._data = {'type':'BaseLayer', 'extent':pysal.cg.Rectangle(0,0,0,0), 'selection':set(),
-                        'data':None, 'selectable':False, 'classification':None, 'colors':{0:rcolor()}, 'name':''}
+                        'data':None, 'selectable':False, 'classification':None, 'colors':colors.ColorScheme([rcolor()]), 'name':''}
         self._locator = None
     def __len__(self):
         d = self.data
@@ -95,6 +96,8 @@ class BaseLayer(AbstractModel):
     def __set_classification(self,value):
         if len(value.yb) == len(self.data):
             self._data['classification'] = value
+            if value.k != len(self.colors):
+                self.colors = colors.fade(value.k)
         self.update('classification')
     classification = property(fget=__get_classification,fset=__set_classification)
     def __get_colors(self):
