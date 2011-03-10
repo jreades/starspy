@@ -91,6 +91,7 @@ class xrcMapFrame(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.OnTool_consoleTool, self.consoleTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_tableTool, self.tableTool)
         self.Bind(wx.EVT_TOOL, self.OnTool_layersTool, self.layersTool)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
 
 #!XRCED:begin-block:xrcMapFrame.OnMenu_FileOpen
     def OnMenu_FileOpen(self, evt):
@@ -247,6 +248,12 @@ class xrcMapFrame(wx.Frame):
         # Replace with event handler code
         print "OnTool_layersTool()"
 #!XRCED:end-block:xrcMapFrame.OnTool_layersTool        
+
+#!XRCED:begin-block:xrcMapFrame.OnClose
+    def OnClose(self, evt):
+        # Replace with event handler code
+        print "OnClose()"
+#!XRCED:end-block:xrcMapFrame.OnClose        
 
 
 
@@ -515,6 +522,9 @@ def __init_resources():
     </object>
     <size>650,500</size>
     <title>STARS -- Map View</title>
+    <XRCED>
+      <events>EVT_CLOSE</events>
+    </XRCED>
   </object>
 </resource>'''
 
