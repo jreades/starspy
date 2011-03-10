@@ -72,6 +72,8 @@ class rectangleTool(wxMapControl):
             X,Y = self.__end
             x,y = transform.pixel_to_world(x,y)
             X,Y = transform.pixel_to_world(X,Y)
+            if self.__start == self.__end: #single click.
+                return self.onPoint(x,y)
             left = min(x,X)
             right = max(x,X)
             lower = min(y,Y)
@@ -82,7 +84,9 @@ class rectangleTool(wxMapControl):
         rect -- list -- [left, lower, right, upper] in World Coordinates
         """
         print "onRectangle(%r)"%rect
-class rectangleTool2(wxMapControl):
+    def onPoint(self,x,y):
+        print "onPoint(%f,%f)"%(x,y)
+class rectangleTool2(rectangleTool):
     """
     A Generic Rectangle Tool, bound to the right mouse button.
 
@@ -90,10 +94,6 @@ class rectangleTool2(wxMapControl):
         clicking and draging will draw a box.
         on release the tool's 'onRectangle' method will be called.
     """
-    def __init__(self):
-        wxMapControl.__init__(self)
-        self.__start = None
-        self.__end = None
     def _onEvent(self,evt):
         if evt.Dragging() and evt.RightIsDown():
             if self.__start:
@@ -111,16 +111,13 @@ class rectangleTool2(wxMapControl):
             X,Y = self.__end
             x,y = transform.pixel_to_world(x,y)
             X,Y = transform.pixel_to_world(X,Y)
+            if self.__start == self.__end: #single click.
+                return self.onPoint(x,y)
             left = min(x,X)
             right = max(x,X)
             lower = min(y,Y)
             upper = max(y,Y)
             self.onRectangle([left,lower,right,upper])
-    def onRectangle(self,rect):
-        """ Called when the user releases the Mouse Button
-        rect -- list -- [left, lower, right, upper] in World Coordinates
-        """
-        print "onRectangle(%r)"%rect
 class rectangleTool_Persistent(wxMapControl):
     """
     A Generic Rectangle Tool, where the rectangle persists after button release
