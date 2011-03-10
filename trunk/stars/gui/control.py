@@ -36,32 +36,21 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         shell.Bind(wx.EVT_CLOSE,self.shell)
         shell.SetTitle("STARS -- Console")
         sh = Shell(shell) 
-        
         self.__shell = shell
-        #self.__tables = []
-        self.tools = {}
 
-        #Add Map Panel
+        #Add Map Panel and Layers Control
         self.model = MapModel()
+        self.model.addListener(self.able)
         self.mapPanel = wxMapPanel(self,self.model)
-        #sizer = self.mapPanelHolder.GetContainingSizer()
-        #sizer.Replace(self.mapPanelHolder,self.mapPanel)
-        #sizer.Layout()
-
+        self.layers = LayersControl(self,self.mapPanel.mapObj,size=(150,400))
 
         #AUI Setup
         self._mgr.AddPane(self.mapPanel, wx.CENTER)
-
-
-        #tc = wx.TextCtrl(self,-1,'Side Pane', wx.DefaultPosition, wx.Size(200,150), wx.NO_BORDER | wx.TE_MULTILINE)
-        self.layers = LayersControl(self,self.mapPanel.mapObj,size=(150,400))
-        #self.layers.mapModel = self.mapPanel.mapObj
         self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton().Hide() )
         self._mgr.Update()
         self.toggleLayers()
 
-
-
+        self.tools = {}
         #setup status tool
         statusTool = StatusTool(self.status,3)
         self.mapPanel.addControl(statusTool)
@@ -78,7 +67,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         selectTool.disableBrushing()
         self.mapPanel.addControl(selectTool)
         self.tools['selectTool'] = selectTool,self.selectTool.GetId(),self.menuToolSelect.GetId()
-        self.setTool('panTool',True)
+        self.setTool('panTool',False)
 
         self.dispatch = d = {}
         d['FileOpen'] = self.open
@@ -102,6 +91,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         d['menuViewTable'] = self.table
         d['menuViewLayers'] = self.toggleLayers
         d['layersTool'] = self.toggleLayers
+        d['menuLayerRemove'] = self.removeLayer
 
     def evtDispatch(self,evtName,evt):
         evtName,widgetName = evtName.rsplit('_',1)
@@ -109,6 +99,18 @@ class mapFrame(mapview_xrc.xrcMapFrame):
             self.dispatch[widgetName](evtName,evt)
         else:
             if DEBUG: print "not implemented:", evtName,widgetName
+    def able(self,mdl=None,tag=None):
+        """
+        Enables/Disables GUI Widgets based on the model's state.
+        """
+        if self.model.selected_layer:
+            self.mapMenuBar.EnableTop(self.mapMenuBar.FindMenu('Layer'),True)
+            self.ToolBar.EnableTool(self.tableTool.GetId(),True)
+            self.menuViewTable.Enable(True)
+        else:
+            self.mapMenuBar.EnableTop(self.mapMenuBar.FindMenu('Layer'),False)
+            self.ToolBar.EnableTool(self.tableTool.GetId(),False)
+            self.menuViewTable.Enable(False)
     def onCopy(self,evtName=None,evt=None,value=None):
         """ Copies the current display buffer to the Clipboard """
         if wx.TheClipboard.Open():
@@ -148,6 +150,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         self.MenuBar.Check(self.menuToolBrush.GetId(),state)
         if state:
             self.tools['selectTool'][0].enableBrushing()
+            self.setTool('selectTool',True)
         else:
             self.tools['selectTool'][0].disableBrushing()
     def shell(self,evtName=None,evt=None,value=None):
@@ -159,9 +162,8 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         else:
             self.__shell.Hide()
     def table(self,evtName=None,evt=None,value=None):
-        cur_table = self.layers.layer
-        if cur_table != None:
-            layer = self.model.layers[cur_table]
+        if self.model.selected_layer:
+            layer = self.model.selected_layer
             if not hasattr(layer,'tableView'):
                 layer.tableView = TableViewer(self,layer)
                 layer.tableView.SetTitle("STARS -- Attribute Table for %s"%layer.name)
@@ -177,6 +179,11 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         else:
             pane.Hide()
         self._mgr.Update()
+    def removeLayer(self,evtName=None,evt=None,value=None):
+        print evtName,self.model.selected_layer
+        if evtName == 'OnMenu' and self.model.selected_layer:
+            print "remove layer"
+            self.model.removeLayer(self.model.selected_layer)
             
     def toolbarIcons(self,evtName=None,evt=None,value=None):
         self.mapToolBar.ToggleWindowStyle(wx.TB_NOICONS)

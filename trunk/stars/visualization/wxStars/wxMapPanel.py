@@ -81,7 +81,7 @@ class wxMapPanel(wx.Panel):
         dc.SelectObject(self.buffer)
         dc.SetBackground(wx.Brush(wx.Colour(*self.background)))
         dc.Clear()
-        for layer in self.mapObj.layers:
+        for layer in self.mapObj.layers[::-1]: #draw the top layer last
             bitmap = self.layers[layer][1]
             if not bitmap:
                 bitmap = self.cacheLayer(layer)

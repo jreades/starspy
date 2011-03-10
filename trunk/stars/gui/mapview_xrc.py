@@ -36,8 +36,13 @@ class xrcMapFrame(wx.Frame):
         self.PostCreate(pre)
 
         # Define variables for the controls, bind event handlers
+        self.mapMenuBar = self.GetMenuBar()
         self.FileOpen = self.GetMenuBar().FindItemById(xrc.XRCID("FileOpen"))
         self.menuEditCopy = self.GetMenuBar().FindItemById(xrc.XRCID("menuEditCopy"))
+        self.menuLayerZoom = self.GetMenuBar().FindItemById(xrc.XRCID("menuLayerZoom"))
+        self.menuLayerSelectable = self.GetMenuBar().FindItemById(xrc.XRCID("menuLayerSelectable"))
+        self.menuLayerProps = self.GetMenuBar().FindItemById(xrc.XRCID("menuLayerProps"))
+        self.menuLayerRemove = self.GetMenuBar().FindItemById(xrc.XRCID("menuLayerRemove"))
         self.menuToolPan = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolPan"))
         self.menuToolZoom = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolZoom"))
         self.MenuToolExtent = self.GetMenuBar().FindItemById(xrc.XRCID("MenuToolExtent"))
@@ -62,6 +67,11 @@ class xrcMapFrame(wx.Frame):
 
         self.Bind(wx.EVT_MENU, self.OnMenu_FileOpen, self.FileOpen)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuEditCopy, self.menuEditCopy)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuLayerZoom, self.menuLayerZoom)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuLayerSelectable, self.menuLayerSelectable)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuLayerProps, self.menuLayerProps)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuLayerRemove, self.menuLayerRemove)
+        self.Bind(wx.EVT_MENU_OPEN, self.OnMenu_open_LayerMenu, id=xrc.XRCID('LayerMenu'))
         self.Bind(wx.EVT_MENU, self.OnMenu_menuToolPan, self.menuToolPan)
         self.Bind(wx.EVT_MENU, self.OnMenu_menuToolZoom, self.menuToolZoom)
         self.Bind(wx.EVT_MENU, self.OnMenu_MenuToolExtent, self.MenuToolExtent)
@@ -93,6 +103,36 @@ class xrcMapFrame(wx.Frame):
         # Replace with event handler code
         print "OnMenu_menuEditCopy()"
 #!XRCED:end-block:xrcMapFrame.OnMenu_menuEditCopy        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuLayerZoom
+    def OnMenu_menuLayerZoom(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuLayerZoom()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuLayerZoom        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuLayerSelectable
+    def OnMenu_menuLayerSelectable(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuLayerSelectable()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuLayerSelectable        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuLayerProps
+    def OnMenu_menuLayerProps(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuLayerProps()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuLayerProps        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_menuLayerRemove
+    def OnMenu_menuLayerRemove(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuLayerRemove()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_menuLayerRemove        
+
+#!XRCED:begin-block:xrcMapFrame.OnMenu_open_LayerMenu
+    def OnMenu_open_LayerMenu(self, evt):
+        # Replace with event handler code
+        print "OnMenu_open_LayerMenu()"
+#!XRCED:end-block:xrcMapFrame.OnMenu_open_LayerMenu        
 
 #!XRCED:begin-block:xrcMapFrame.OnMenu_menuToolPan
     def OnMenu_menuToolPan(self, evt):
@@ -243,6 +283,42 @@ def __init_resources():
           </XRCED>
         </object>
       </object>
+      <object class="wxMenu" name="LayerMenu">
+        <object class="wxMenuItem" name="menuLayerZoom">
+          <label>Zoom To Layer</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerSelectable">
+          <label>Selectable</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerProps">
+          <label>Layer Properties</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerRemove">
+          <label>Remove Layer</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>Layer</label>
+        <enabled>0</enabled>
+        <XRCED>
+          <events>EVT_MENU_OPEN</events>
+        </XRCED>
+      </object>
       <object class="wxMenu" name="ToolMenu">
         <object class="wxMenuItem" name="menuToolPan">
           <label>Pan Tool\tCtrl-1</label>
@@ -331,6 +407,9 @@ def __init_resources():
         </object>
         <label>View</label>
       </object>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
     </object>
     <object class="wxToolBar" name="mapToolBar">
       <object class="tool" name="openTool">
