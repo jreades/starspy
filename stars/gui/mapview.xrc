@@ -22,6 +22,42 @@
           </XRCED>
         </object>
       </object>
+      <object class="wxMenu" name="LayerMenu">
+        <object class="wxMenuItem" name="menuLayerZoom">
+          <label>Zoom To Layer</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerSelectable">
+          <label>Selectable</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerProps">
+          <label>Layer Properties</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerRemove">
+          <label>Remove Layer</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>Layer</label>
+        <enabled>0</enabled>
+        <XRCED>
+          <events>EVT_MENU_OPEN</events>
+        </XRCED>
+      </object>
       <object class="wxMenu" name="ToolMenu">
         <object class="wxMenuItem" name="menuToolPan">
           <label>Pan Tool\tCtrl-1</label>
@@ -110,6 +146,9 @@
         </object>
         <label>View</label>
       </object>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
     </object>
     <object class="wxToolBar" name="mapToolBar">
       <object class="tool" name="openTool">

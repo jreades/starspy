@@ -20,8 +20,12 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
     def __init__(self,parent,mapModel,size=(150,400)):
         # Note: treemixin seems to take care of the TreeCtrl __init__
         treemixin.DragAndDrop.__init__(self,parent,size=size)
+        self.mapPanel = parent
         self.mapModel = mapModel
+        self.dragging = False
         self.Bind(wx.EVT_TREE_ITEM_MENU,self.onMenu)
+        self.Bind(wx.EVT_TREE_SEL_CHANGED,self.onSelect)
+        self.Bind(wx.EVT_TREE_SEL_CHANGING,self.onSelecting)
     __mapModel = None
     def __get_mapModel(self):
         return self.__mapModel
@@ -34,13 +38,13 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
         #self.AssignImageList(self.__imgList)
         self.update()
     mapModel = property(fget=__get_mapModel,fset=__set_mapModel)
-    @property
-    def layer(self):
-        try:
-            idx = self.GetIndexOfItem(self.GetSelection())
-            return idx[0]
-        except:
-            return None
+    #@property
+    #def layer(self):
+    #    try:
+    #        idx = self.GetIndexOfItem(self.GetSelection())
+    #        return idx[0]
+    #    except:
+    #        return None
     def update(self,mdl=None,tag=None):
         if tag=='layers' or not tag:
             self.__imgList.RemoveAll()
@@ -56,6 +60,18 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
                         c+=1
             self.SetImageList(self.__imgList)
             self.RefreshItems()
+        if tag=='selected_layer' or tag=='layers':
+            if not mdl.selected_layer:
+                self.Unselect()
+            else:
+                try:
+                    new_idx = mdl.layers.index(mdl.selected_layer)
+                    idx = self.GetIndexOfItem(self.GetSelection())[0]
+                    if new_idx != idx:
+                        itm = self.GetItemByIndex((new_idx,))
+                        self.SelectItem(itm)
+                except:
+                    pass #probably no items in the Tree yet.
     def OnGetChildrenCount(self,index):
         if not self.mapModel: return 0
         if index == ():
@@ -76,6 +92,7 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
         return -1
     def OnDrop(self,dropItem,dragItem):
         #print "OnDrop(%r,%r)"%(dropItem,dragItem)
+        self.dragging = False
         if not self.mapModel: return
         drop = self.GetIndexOfItem(dropItem)
         drag = self.GetIndexOfItem(dragItem)
@@ -95,7 +112,18 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
         #print "IsValidDropTarget(%r)"%dropTarget
         return True
     def onMenu(self,evt):
-        print evt
-        print evt.GetItem()
-        print self.GetIndexOfItem(evt.GetItem())
-        print evt.GetPoint()
+        #print "Current Layer:",self.layer
+        print "Current Item:",evt.GetItem(), self.GetIndexOfItem(evt.GetItem())
+        print "Click Location:",evt.GetPoint()
+    def onSelecting(self,evt):
+        if self.dragging:
+            evt.Veto()
+        evt.Skip()
+    def onSelect(self,evt):
+        idx = self.GetIndexOfItem(self.GetSelection())
+        if idx: #has no index if the item is being moved.
+            self.mapModel.selected_layer = self.mapModel.layers[idx[0]]
+    def OnDragging(self,evt):
+        self.dragging = True
+        evt.Skip()
+        

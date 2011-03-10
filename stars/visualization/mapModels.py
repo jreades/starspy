@@ -12,7 +12,7 @@ class MapModel(WorldToViewTransform):
             Pan, Zoom, Selection, etc.
     """
     def __init__(self,layers=[],initial_size=(500,500)):
-        self._data = {'selectionLayer':0,'layers':[],'world_extent':pysal.cg.Rectangle(0,0,0,0)}
+        self._data = {'selected_layer':None,'layers':[],'world_extent':pysal.cg.Rectangle(0,0,0,0)}
         WorldToViewTransform.__init__(self,self.world_extent,*initial_size)
         for layer in layers:
             self.addLayer(layer)
@@ -57,12 +57,32 @@ class MapModel(WorldToViewTransform):
         """
         if issubclass(type(layer),layers.BaseLayer) and layer not in self._data['layers']:
             layer.is_selectable = True
-            self._data['layers'].append(layer)
+            self._data['layers'].insert(0,layer)
             layer.addListener(self._layerListener)
             self._data['world_extent'] = pysal.cg.Rectangle(0,0,0,0)
+            self.selected_layer = layer
             self.update('layers')
             return layer
         return False
+    def removeLayer(self,layer):
+        """
+        Remove the layer from the map.
+
+        layer should be a layer instance or it's index in self.layers
+
+        The remove layer object is returned.
+        """
+        idx = None
+        if issubclass(type(layer),layers.BaseLayer) and layer in self._data['layers']:
+            idx = self._data['layers'].index(layer)
+        elif type(layer) == int:
+            idx = layer
+        if idx != None:
+            l = self._data['layers'].pop(idx)
+            self.update('layers')
+            self.selected_layer = None
+            return l
+        
     @property
     def layers(self):
         return self._data['layers'][:]
@@ -80,6 +100,25 @@ class MapModel(WorldToViewTransform):
         Zoom the current transform to the extent of the world.
         """
         self.extent = self.world_extent
+    def __set_selected_layer(self,value):
+        if value != None:
+            if issubclass(type(value),layers.BaseLayer):
+                self._data['selected_layer'] = value
+            else:
+                raise TypeError,"selected_layer must be a a Layer"
+        else:
+            self._data['selected_layer'] = None
+        self.update('selected_layer')
+    def __get_selected_layer(self):
+        """
+        Get/Set the current selected layer.
+        This is useful for operations that need to be performs on a given layer.
+        The last layer added to the map will be selected by default.
+        Clear the selection by setting it to None.
+        """
+        return self._data['selected_layer']
+    selected_layer = property(fget=__get_selected_layer,fset=__set_selected_layer)
+        
     def moveLayer(self,start_pos,end_pos):
         """
         Move the layer from the start_pos to the end_pos in the 1 Dimmension layer list
