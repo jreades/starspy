@@ -61,6 +61,9 @@ class MapModel(WorldToViewTransform):
             layer.addListener(self._layerListener)
             self._data['world_extent'] = pysal.cg.Rectangle(0,0,0,0)
             self.selected_layer = layer
+            if not self.extent:
+                self.extent = self.world_extent
+                self.zoom_to_world()
             self.update('layers')
             return layer
         return False
@@ -81,6 +84,7 @@ class MapModel(WorldToViewTransform):
             l = self._data['layers'].pop(idx)
             self.update('layers')
             self.selected_layer = None
+            self._data['world_extent'] = pysal.cg.Rectangle(0,0,0,0)
             return l
         
     @property

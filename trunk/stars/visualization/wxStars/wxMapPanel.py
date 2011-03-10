@@ -41,7 +41,7 @@ class wxMapPanel(wx.Panel):
             self.draw()
         elif tag == 'layers':
             self._updateLayers()
-            self.mapObj.zoom_to_world()
+            self.draw()
         elif tag and 'data' in tag:
             print "update KDE"
             lid = int(tag.split(':')[1])
@@ -77,6 +77,8 @@ class wxMapPanel(wx.Panel):
             self.boxoutline = None
         self.draw()
     def draw(self):
+        if not self.layers:
+            return
         dc = wx.MemoryDC()
         dc.SelectObject(self.buffer)
         dc.SetBackground(wx.Brush(wx.Colour(*self.background)))

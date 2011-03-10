@@ -40,6 +40,7 @@ class DbfTableList(wx.ListCtrl):
         self.SetItemCount(len(self.db))
 
         layer.addListener(self.updateLayer)
+        self.updateLayer(None,'selection')
     def updateLayer(self,mdl,tag):
         if tag == 'selection':
             value = self.layer.selection
