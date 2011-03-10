@@ -112,9 +112,7 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
         #print "IsValidDropTarget(%r)"%dropTarget
         return True
     def onMenu(self,evt):
-        #print "Current Layer:",self.layer
-        print "Current Item:",evt.GetItem(), self.GetIndexOfItem(evt.GetItem())
-        print "Click Location:",evt.GetPoint()
+        self.PopupMenu(self.mapPanel.layerMenu,evt.GetPoint())
     def onSelecting(self,evt):
         if self.dragging:
             evt.Veto()

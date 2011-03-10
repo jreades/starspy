@@ -29,6 +29,9 @@ class StatusTool(wxMapTools.wxMapControl):
 class mapFrame(mapview_xrc.xrcMapFrame):
     def __init__(self,parent=None):
         stars.remapEvtsToDispatcher(self,self.evtDispatch)
+        mapview_xrc.xrcMapFrame.__init__(self,parent)
+        # localize layerMenu.
+        self.layerMenu = self.mapMenuBar.Menus[self.mapMenuBar.FindMenu('Layer')][0]
 
         #defaults 
         defaults = {'pos':wx.DefaultPosition, 'size':wx.DefaultSize, 'shell':{'pos':wx.DefaultPosition,'size':wx.DefaultSize}}
@@ -43,32 +46,31 @@ class mapFrame(mapview_xrc.xrcMapFrame):
                 #print "Config loaded:",defaults
             except ValueError:
                 print "bad config file, consider removing"
-
-        mapview_xrc.xrcMapFrame.__init__(self,parent)
+        # restore defaults
         self.SetPosition(defaults['pos'])
         self.SetSize(defaults['size'])
-
-
-        self._mgr = wx.aui.AuiManager(self)
-
+        # setup shell
         shell = wx.Frame(self,pos=defaults['shell']['pos'], size=defaults['shell']['size'])
         shell.Bind(wx.EVT_CLOSE,self.shell)
         shell.SetTitle("STARS -- Console")
         sh = Shell(shell) 
         self.__shell = shell
 
-        #Add Map Panel and Layers Control
+        #Setup Map Panel and Layers Control
         self.model = MapModel()
         self.model.addListener(self.able)
         self.mapPanel = wxMapPanel(self,self.model)
         self.layers = LayersControl(self,self.mapPanel.mapObj,size=(150,400))
 
-        #AUI Setup
+        # initialize the Advanced User Interface (AUI) manager.
+        self._mgr = wx.aui.AuiManager(self)
+        # Setup AUI Panes
         self._mgr.AddPane(self.mapPanel, wx.CENTER)
         self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton().Hide() )
         self._mgr.Update()
         self.toggleLayers()
 
+        # Setup Tools
         self.tools = {}
         #setup status tool
         statusTool = StatusTool(self.status,3)
@@ -111,6 +113,8 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         d['menuViewLayers'] = self.toggleLayers
         d['layersTool'] = self.toggleLayers
         d['menuLayerRemove'] = self.removeLayer
+        d['menuLayerZoom'] = self.zoomLayer
+        d['menuLayerSelectable'] = self.layerSelectable
 
     def evtDispatch(self,evtName,evt):
         evtName,widgetName = evtName.rsplit('_',1)
@@ -126,10 +130,12 @@ class mapFrame(mapview_xrc.xrcMapFrame):
             self.mapMenuBar.EnableTop(self.mapMenuBar.FindMenu('Layer'),True)
             self.ToolBar.EnableTool(self.tableTool.GetId(),True)
             self.menuViewTable.Enable(True)
+            self.MenuBar.Check(self.menuLayerSelectable.GetId(),self.model.selected_layer.is_selectable)
         else:
             self.mapMenuBar.EnableTop(self.mapMenuBar.FindMenu('Layer'),False)
             self.ToolBar.EnableTool(self.tableTool.GetId(),False)
             self.menuViewTable.Enable(False)
+            self.MenuBar.Check(self.menuLayerSelectable.GetId(),False)
     def onCopy(self,evtName=None,evt=None,value=None):
         """ Copies the current display buffer to the Clipboard """
         if wx.TheClipboard.Open():
@@ -199,11 +205,8 @@ class mapFrame(mapview_xrc.xrcMapFrame):
             pane.Hide()
         self._mgr.Update()
     def removeLayer(self,evtName=None,evt=None,value=None):
-        print evtName,self.model.selected_layer
         if evtName == 'OnMenu' and self.model.selected_layer:
-            print "remove layer"
             self.model.removeLayer(self.model.selected_layer)
-            
     def toolbarIcons(self,evtName=None,evt=None,value=None):
         self.mapToolBar.ToggleWindowStyle(wx.TB_NOICONS)
         self.MenuBar.Check(self.menuViewIcons.GetId(), self.mapToolBar.HasFlag(wx.TB_NOICONS)^True)
@@ -218,6 +221,12 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         self.setTool('selectTool')
     def zoomExtent(self,evtName=None,evt=None,value=None):
         self.mapPanel.mapObj.zoom_to_world()
+    def zoomLayer(self,evtName=None,evt=None,value=None):
+        self.model.extent = self.model.selected_layer.extent
+    def layerSelectable(self,evtName=None,evt=None,value=None):
+        if evtName == 'OnMenu':
+            state = self.model.selected_layer.is_selectable^True
+            self.model.selected_layer.is_selectable = state
     def table_update(self,mdl,tag=None):
         mdl.layer.selection = mdl.selection
     def OnClose(self,evt):

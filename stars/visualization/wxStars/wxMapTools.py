@@ -173,7 +173,7 @@ class rectangleTool_Persistent(wxMapControl):
             self.action(*evt.Position)
             if not self.__brushing:
                 self.mapObj.drawBoxOutline()
-        elif evt.RightDown() or self.__start == self.__end: #single click with no movement.
+        elif evt.RightDown() or (self.__start == self.__end and self.mapObj.boxoutline): #single click with no movement.
             self.__start = None
             self.__end = None
             if self.mapObj.HasCapture():
@@ -214,7 +214,7 @@ class selectTool(rectangleTool_Persistent):
         self.in_rect = True
         rect = pysal.cg.Rectangle(*rect)
         for layer in self.mapObj.mapObj.layers:
-            if layer.locator:
+            if layer.is_selectable and layer.locator:
                 rs = layer.locator.overlapping(rect)
                 rs = [x.id-1 for x in rs]
                 layer.selection = rs
@@ -225,7 +225,7 @@ class selectTool(rectangleTool_Persistent):
         else:
             rect = pysal.cg.Rectangle(x,y,x,y)
             for layer in self.mapObj.mapObj.layers:
-                if layer.locator:
+                if layer.is_selectable and layer.locator:
                     rs = layer.locator.overlapping(rect)
                     rs = [x.id-1 for x in rs]
                     layer.selection = rs
