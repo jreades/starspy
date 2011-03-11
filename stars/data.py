@@ -117,9 +117,9 @@ class StarsDb:
         
         EVENTS_TABLE = "events"
         self.db = db = pysal.open(dbf)
-        self.header = db.header
-        self.spec = db.field_spec
-        self.info = db.field_info
+        #self.header = db.header
+        #self.spec = db.field_spec
+        #self.info = db.field_info
         self.con = sqlite.connect(":memory:", detect_types=sqlite.PARSE_DECLTYPES|sqlite.PARSE_COLNAMES)
         self.con.row_factory = sqlite.Row
         self.cur = self.con.cursor()
@@ -144,7 +144,6 @@ class StarsDb:
         """
         Parameters
         ----------
-        datecol : datetime.date column in the table
         year : string 
         quarter : string
         
@@ -159,6 +158,34 @@ class StarsDb:
                 print qtr, row
                 result.append(row)
         return result 
+    # 10MAR2011 meeting notes:
+
+    #give me all crimes in quarter 4 that occurred between 3 and 6 pm
+    #give me all crimes that started here, and ended here (generic window)
+
+    def get_interval_records(self, start, end):
+        """
+        Parameters
+        ----------
+        start : datetime.date object; beginning of observation period
+        end : datetime.date object; end of observation period
+        """
+        #set up window of datetimes
+        ### how can we get sqlite to recognize or operate on these datetime objects?
+        sql = 'Select * from events WHERE %s BETWEEN %s AND %s < %s' % (DATE_COL, start, DATE_COL, end)
+        query = self.cur.execute(sql)
+        lst = query.fetchall()
+        result =[]
+        for row in lst:
+            result.append(row)
+        return result 
+
+
+
+    #write some basic tests for speed, etc.
+
+    #aag deliverable
+
 
     def build_simple_query(tableName, field_name, filter=None, groupby=None):
         """Builds queries."""
@@ -198,12 +225,15 @@ def tomonth(date):
     return date.month
 def toquarter(date):
     return (date.month - 1)//3 + 1
-
+def inrange(date1, date2, date3):
+    pass
+    
 def createTableSQL(tableName,header,field_spec,primaryKey = None):
     create_table_sql = "create table IF NOT EXISTS %s (%s)"
     fields = ["%s %s"%(name,spec2type(spec)) for name,spec in zip(header,field_spec)]
     if primaryKey:
         fields.append("PRIMARY KEY (%s)"%primaryKey)
+    #print fields
     fields = ', '.join(fields)
     fields = fields.upper()
     sql = create_table_sql%(tableName,fields)
@@ -277,9 +307,10 @@ def create_advancing_window(startdate, enddate, increment):
     """    
     interval = []
     day = startdate
+    step = datetime.timedelta(increment)
     while day < enddate:
         interval.append(day)
-        day = day + increment
+        day = day + step
     return interval
 
 def create_moving_window(origindate, daterange):
