@@ -6,8 +6,9 @@ wxLayers implement drawing of stars layers in wx
 import wx
 import numpy
 import stars.visualization.layers as layers
+from stars.visualization.transforms import WorldToViewTransform
 from kernelDensityTime import KernelDensity
-from pysal.cg import bbcommon
+from pysal.cg import bbcommon, get_rectangle_rectangle_intersection
 
 class wxPointLayer:
     def __init__(self,layer):
@@ -179,6 +180,135 @@ class wxKernelDensityLayer:
         gc.Translate(*transform.offset)
         left,lower,right,upper = kd.extent
         gc.DrawBitmap(bitmap,left,lower,right-left,upper-lower)
+        return buff
+class wxCachedPolygonLayer:
+    """
+    This is a cached layer.
+    Each draw is cahced in a buffer. On the next draw, assuming only the scale has changed...
+        only the difference between the extents of the old buffer and the new request are drawn.
+    """
+    def __init__(self,layer):
+        if not isinstance(layer,layers.PolygonLayer):
+            raise TypeError, "Layer must be instance of PolygonLayer"
+        self.cache = {}
+        self.cache2 = {} #selection cache, this need to be a little smarter.
+        self.layer = layer
+        self.trns = 0
+    def draw_set(self,pth,ids):
+        window = self.transform.extent
+        data = self.layer.data
+        inside = set([x.id-1 for x in self.layer.locator.overlapping(window)])
+        to_draw = inside.intersection(set(ids))
+        #print "\tdrawing %d polygons"%len(to_draw)
+        for i in to_draw:
+            poly = data[i]
+            # only draw the polygon if it's inside the view window.
+            # for very large shapefiles and small view windows, it would be fast to query an rtree.
+            #if bbcommon(window,poly.bounding_box):
+            parts = poly.parts
+            if poly.holes[0]:
+                parts = parts + poly.holes
+            for part in parts:
+                x,y = part[0]
+                pth.MoveToPoint(x,y)
+                for x,y in part[1:]:
+                    pth.AddLineToPoint(x,y)
+                pth.CloseSubpath()
+        return pth
+    def draw(self,transform):
+        """ pre-draw function, calc what needs to be drawn """
+        if self.cache:
+            oldT = self.cache['transform']
+            if (oldT.scale != transform.scale) or not bbcommon(oldT.extent,transform.extent):
+                #bad cache, clear it.
+               self.cache = {}
+            else: # We have a Good cache!
+                w,h = transform.pixel_size
+                buff = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
+                dc = wx.MemoryDC()
+                dc.SelectObject(buff)
+                common = get_rectangle_rectangle_intersection(transform.extent,oldT.extent)
+                x,y = oldT.world_to_pixel(common.left,common.upper)
+                X,Y = oldT.world_to_pixel(common.right,common.lower)
+                #print x,y,X,Y
+                cw, ch = X-x, Y-y
+                dest_x,dest_y = transform.world_to_pixel(common.left,common.upper)
+                dc_temp = wx.MemoryDC()
+                dc_temp.SelectObject(self.cache['buff'])
+                dc.Blit(dest_x,dest_y,cw,ch, dc_temp, x, y)
+                dc_temp.SelectObject(wx.NullBitmap)
+
+                region = wx.Region(0,0,w,h)
+                region.Subtract(dest_x,dest_y,cw,ch)
+                ri = wx.RegionIterator(region)
+                while not ri.Rect.Empty:
+                    #print "part:", ri.Rect
+                    px,py,w,h = ri.Rect
+                    pX,pY = px+w, py+h
+                    left,upper = transform.pixel_to_world(px,py)
+                    right,lower = transform.pixel_to_world(pX,pY)
+                    part = self.draw_post(WorldToViewTransform([left,lower,right,upper],w,h))
+                    dc_temp.SelectObject(part)
+                    dc.Blit(px,py,w,h, dc_temp, 0, 0)
+                    ri.Next()
+                #del dc_temp
+                #dc.SelectObject(wx.NullBitmap)
+                #del dc
+                self.cache['buff'] = buff
+                self.cache['transform'] = transform.copy()
+                return buff
+        if not self.cache: #populate a new cache.
+            self.cache['transform'] = transform.copy()
+            buff = self.draw_post(transform)
+            self.cache['buff'] = buff #populat the initial cache
+            return buff
+            
+    def draw_post(self,transform):
+        self.transform = transform
+        w,h = transform.pixel_size
+        buff = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
+        dc = wx.MemoryDC()
+        dc.SelectObject(buff)
+        gc = wx.GraphicsContext.Create(dc)
+        gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,255),1)) )
+        matrix = gc.CreateMatrix()
+        matrix.Scale(1./transform.scale,1./-transform.scale) #first transform is applied last
+        matrix.Translate(*transform.offset)                   #last transform is applied first
+        if self.layer.classification and self.layer.colors:
+            cl = self.layer.classification
+            cs = self.layer.colors
+        else:
+            class EmptyCL:
+                classes = [range(len(self.layer.data))]
+            cl = EmptyCL()
+            #cs = {0:(255,0,0)}
+            cs = self.layer.colors
+        for i,cls in enumerate(cl.classes):
+            r,g,b,a = cs[i]
+            pth = gc.CreatePath()
+            pth = self.draw_set(pth,cls)
+            pth.Transform(matrix)
+            gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(r,g,b,a))) )
+            gc.FillPath(pth)
+            gc.StrokePath(pth)
+        return buff
+    def draw_selection(self,transform):
+        self.transform = transform
+        w,h = transform.pixel_size
+        buff = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
+        dc = wx.MemoryDC()
+        dc.SelectObject(buff)
+        gc = wx.GraphicsContext.Create(dc)
+        gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,255),1)) )
+        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255), style=wx.CROSSDIAG_HATCH)) )
+        matrix = gc.CreateMatrix()
+        matrix.Scale(1./transform.scale,1./-transform.scale) #first transform is applied last
+        matrix.Translate(*transform.offset)                   #last transform is applied first
+        pth = gc.CreatePath()
+        pth = self.draw_set(pth,self.layer.selection)
+        pth.Transform(matrix)
+        gc.FillPath(pth)
+        gc.StrokePath(pth)
         return buff
 
 wxLayers = {'PolygonLayer':wxPolygonLayer,'PointLayer':wxPointLayer,'KernelDensityLayer':wxKernelDensityLayer}

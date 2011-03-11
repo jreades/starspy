@@ -38,6 +38,9 @@ class WorldToViewTransform(AbstractModel):
         self.__world = worldExtent
         self.extent = worldExtent
         # In World Coords
+    def __copy__(self):
+        return WorldToViewTransform(self.extent,self.__pixel_width,self.__pixel_height)
+    copy = __copy__
     def __get_offset(self):
         """ 
         Returns the offset of the top left corner of the current view in world coords.
@@ -100,10 +103,10 @@ class WorldToViewTransform(AbstractModel):
         
         Eg.
         >>> view = WorldToViewTransform([0,0,100,100],500,500)
-        >>> view.extent
+        >>> view.extent[:]
         [0.0, 0.0, 100.0, 100.0]
         >>> view.width = 250
-        >>> view.extent
+        >>> view.extent[:]
         [0.0, 0.0, 50.0, 100.0]
         """
         if self.__pixel_width != value:
@@ -119,10 +122,10 @@ class WorldToViewTransform(AbstractModel):
         
         Eg.
         >>> view = WorldToViewTransform([0,0,100,100],500,500)
-        >>> view.extent
+        >>> view.extent[:]
         [0.0, 0.0, 100.0, 100.0]
         >>> view.height = 250
-        >>> view.extent
+        >>> view.extent[:]
         [0.0, 50.0, 100.0, 100.0]
         """
         if self.__pixel_height != value:
@@ -153,19 +156,19 @@ class WorldToViewTransform(AbstractModel):
         Eg.
         >>> view = WorldToViewTransform([0,0,100,100],500,500)
         >>> view.pan(500,0)
-        >>> view.extent
+        >>> view.extent[:]
         [-100.0, 0.0, 0.0, 100.0]
         >>> view.pan(-500,500)
-        >>> view.extent
+        >>> view.extent[:]
         [0.0, 100.0, 100.0, 200.0]
         >>> view.pan(0,-500)
-        >>> view.extent
+        >>> view.extent[:]
         [0.0, 0.0, 100.0, 100.0]
         >>> view.pan(490,490)
-        >>> view.extent
+        >>> view.extent[:]
         [-98.0, 98.0, 2.0, 198.0]
         >>> view.pan(-490,-490)
-        >>> view.extent
+        >>> view.extent[:]
         [0.0, 0.0, 100.0, 100.0]
         """
         ogx,ogy = self.__offset
