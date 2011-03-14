@@ -133,11 +133,11 @@ class StarsDb:
         self.con.create_function("toyear", 1, toyear)
         self.con.create_function("tomonth", 1, tomonth)
         self.con.create_function("toquarter", 1, toquarter)
-        self.con.create_function("d2qtr",1, awesome)
+        self.con.create_function("date2qtr",1, date2qtr)
 
 
     def qrecords(self, year, quarter):
-        records = self.cur.execute("SELECT d2qtr(DateFix) from events")
+        records = self.cur.execute("SELECT date2qtr(DateFix) from events")
         return records.fetchall()
         
     def get_quarterly_records(self, year, quarter):
@@ -161,25 +161,29 @@ class StarsDb:
     # 10MAR2011 meeting notes:
 
     #give me all crimes in quarter 4 that occurred between 3 and 6 pm
-    #give me all crimes that started here, and ended here (generic window)
+        #look at joining DateFix and a TimeStamp to create one field 
 
-    def get_interval_records(self, start, end):
+    #give me all crimes that started here, and ended here (generic window)
+    def get_interval_records(self, startdate, enddate):
         """
         Parameters
         ----------
-        start : datetime.date object; beginning of observation period
-        end : datetime.date object; end of observation period
+        startdate : datetime.date object; beginning of observation period
+        enddate : datetime.date object; end of observation period
+
+        Notes
+        -----
+        Argument order matters. If reversed, an empty list is returned.
+
         """
-        #set up window of datetimes
-        ### how can we get sqlite to recognize or operate on these datetime objects?
-        sql = 'Select * from events WHERE %s BETWEEN %s AND %s < %s' % (DATE_COL, start, DATE_COL, end)
+        sql = 'Select * from events' 
         query = self.cur.execute(sql)
         lst = query.fetchall()
-        result =[]
+        result = []
         for row in lst:
-            result.append(row)
-        return result 
-
+            if startdate <= row[DATE_COL] <= enddate:
+                result.append(row)
+        return result
 
 
     #write some basic tests for speed, etc.
@@ -216,7 +220,7 @@ class StarsDb:
     start doing inserts.
     
     """
-def awesome(date):
+def date2qtr(date):
     "turn date into a year, quarter tuple"
     return date.year, toquarter(date)
 def toyear(date):
@@ -423,7 +427,14 @@ def _test():
        
 if __name__ == '__main__':
     DATE_COL = 'DateFix'
+    TIMESTAMP = 'REPORT_TIM'
     dbf = 'examples/mesa/Export_Output.dbf'
     #dbf = '/home/stephens/Desktop/Phil_Data/Mesa_Crime_Clipped.dbf'
     x = StarsDb(dbf)
+    #today = datetime.date.today()
+    #sql = 'Select * from events WHERE %s < %s' % (DATE_COL, today)
+    #query = x.cur.execute(sql)
+    #lst = query.fetchall()
     _test()
+    print x.cur.description
+
