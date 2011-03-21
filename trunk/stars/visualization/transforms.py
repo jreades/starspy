@@ -95,7 +95,7 @@ class WorldToViewTransform(AbstractModel):
         self.update('extent')
     extent = property(fget=__get_extent,fset=__set_extent)
     def __get_width(self):
-        """ Returns the width of the current view in ground coords """
+        """ Returns the width of the current view in world coords """
         return self.__pixel_width*self.scale
     def __set_width(self, value):
         """
@@ -114,7 +114,7 @@ class WorldToViewTransform(AbstractModel):
             self.update('size')
     width = property(fget=__get_width,fset=__set_width)
     def __get_height(self):
-        """ Returns the height of the current view in ground coords """
+        """ Returns the height of the current view in world coords """
         return self.__pixel_height*self.scale
     def __set_height(self, value):
         """
