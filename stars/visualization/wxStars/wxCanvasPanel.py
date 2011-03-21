@@ -111,7 +111,7 @@ class wxCanvasPanel(wx.Panel):
 
 if __name__=="__main__":
     from stars.visualization.mapModels import MapModel
-    from wxMapTools import panTool,randomSelction,zoomWorld,zoomTool2,randomClassification,randomPalette,animateKD,rectangleTool_Persistent
+    from wxCanvasTools import panTool,randomSelction,zoomWorld,zoomTool2,randomClassification,randomPalette,animateKD,rectangleTool_Persistent
     import pysal
     import numpy
     import random

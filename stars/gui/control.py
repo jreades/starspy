@@ -4,7 +4,7 @@ from wx.py.shell import Shell
 import mapview_xrc
 import stars
 from stars.visualization.wxStars import wxCanvasPanel
-from stars.visualization.wxStars import wxMapTools
+from stars.visualization.wxStars import wxCanvasTools
 from stars.visualization.mapModels import MapModel
 from stars.visualization import layers
 from tableViewer import TableViewer
@@ -18,11 +18,11 @@ DEBUG = True
 COLOR_SAMPLE_WIDTH = 20
 COLOR_SAMPLE_HEIGHT = 20
 
-class StatusTool(wxMapTools.wxCanvasControl):
+class StatusTool(wxCanvasTools.wxCanvasControl):
     def __init__(self,wx_status_bar,status_field,enabled=True):
         self.status = wx_status_bar
         self.field = status_field
-        wxMapTools.wxCanvasControl.__init__(self,enabled)
+        wxCanvasTools.wxCanvasControl.__init__(self,enabled)
     def _onEvent(self,evt):
         x,y = self.canvasPanel.model.pixel_to_world(*evt.Position)
         self.status.SetStatusText("%f, %f"%(x,y),self.field)
@@ -114,15 +114,15 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         statusTool = StatusTool(self.status,3)
         self.mapPanel.addControl(statusTool)
         #setup pan tool
-        panTool = wxMapTools.panTool()
+        panTool = wxCanvasTools.panTool()
         self.mapPanel.addControl(panTool)
         self.tools['panTool'] = panTool,self.panTool.GetId(),self.menuToolPan.GetId()
         #setup zoom tool
-        zoomTool = wxMapTools.zoomTool()
+        zoomTool = wxCanvasTools.zoomTool()
         self.mapPanel.addControl(zoomTool)
         self.tools['zoomTool'] = zoomTool,self.zoomTool.GetId(),self.menuToolZoom.GetId()
         #setup select tool
-        selectTool = wxMapTools.selectTool()
+        selectTool = wxCanvasTools.selectTool()
         selectTool.disableBrushing()
         self.mapPanel.addControl(selectTool)
         self.tools['selectTool'] = selectTool,self.selectTool.GetId(),self.menuToolSelect.GetId()
