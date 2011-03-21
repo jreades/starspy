@@ -1,3 +1,3 @@
-from wxMapPanel import wxCanvasPanel
-import wxMapTools
+from wxCanvasPanel import wxCanvasPanel
+import wxCanvasTools
 
