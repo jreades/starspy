@@ -3,7 +3,7 @@ import wx.aui
 from wx.py.shell import Shell
 import mapview_xrc
 import stars
-from stars.visualization.wxStars import wxMapPanel
+from stars.visualization.wxStars import wxCanvasPanel
 from stars.visualization.wxStars import wxMapTools
 from stars.visualization.mapModels import MapModel
 from stars.visualization import layers
@@ -18,13 +18,13 @@ DEBUG = True
 COLOR_SAMPLE_WIDTH = 20
 COLOR_SAMPLE_HEIGHT = 20
 
-class StatusTool(wxMapTools.wxMapControl):
+class StatusTool(wxMapTools.wxCanvasControl):
     def __init__(self,wx_status_bar,status_field,enabled=True):
         self.status = wx_status_bar
         self.field = status_field
-        wxMapTools.wxMapControl.__init__(self,enabled)
+        wxMapTools.wxCanvasControl.__init__(self,enabled)
     def _onEvent(self,evt):
-        x,y = self.mapObj.mapObj.pixel_to_world(*evt.Position)
+        x,y = self.canvasPanel.model.pixel_to_world(*evt.Position)
         self.status.SetStatusText("%f, %f"%(x,y),self.field)
 
 class layerPropFrame(mapview_xrc.xrcLayerPropFrame):
@@ -95,8 +95,8 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         #Setup Map Panel and Layers Control
         self.model = MapModel()
         self.model.addListener(self.able)
-        self.mapPanel = wxMapPanel(self,self.model)
-        self.layers = LayersControl(self,self.mapPanel.mapObj,size=(150,400))
+        self.mapPanel = wxCanvasPanel(self,self.model)
+        self.layers = LayersControl(self,self.mapPanel.model,size=(150,400))
 
         # initialize the Advanced User Interface (AUI) manager.
         self._mgr = wx.aui.AuiManager(self)
@@ -259,7 +259,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
     def toggle_select(self,evtName=None,evt=None,value=None):
         self.setTool('selectTool')
     def zoomExtent(self,evtName=None,evt=None,value=None):
-        self.mapPanel.mapObj.zoom_to_world()
+        self.mapPanel.model.zoom_to_world()
     def zoomLayer(self,evtName=None,evt=None,value=None):
         self.model.extent = self.model.selected_layer.extent
     def layerSelectable(self,evtName=None,evt=None,value=None):

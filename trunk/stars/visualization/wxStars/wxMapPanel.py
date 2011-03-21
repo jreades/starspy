@@ -1,18 +1,17 @@
 import random
 from stars.visualization.layers import BaseLayer, PointLayer, PolygonLayer, KernelDensityLayer
-from stars.visualization.mapModels import MapModel
 import pysal
 import wx
 import wxLayers
 
-class wxMapPanel(wx.Panel):
-    """ Display a MapModel in a wxPanel """
-    def __init__(self, parent, mapObj):
-        wx.Panel.__init__(self,parent,style=wx.WANTS_CHARS,size=mapObj.pixel_size)
-        self.mapObj = mapObj
+class wxCanvasPanel(wx.Panel):
+    """ Display a CanvasModel in a wxPanel """
+    def __init__(self, parent, model):
+        wx.Panel.__init__(self,parent,style=wx.WANTS_CHARS,size=model.pixel_size)
+        self.model = model
         self.Bind(wx.EVT_SIZE, self.onSize)
         self.Bind(wx.EVT_PAINT,self.onPaint)
-        self.mapObj.addListener(self._mapListener)
+        self.model.addListener(self._mapListener)
         self.layers = {}
         self._updateLayers()
         self.background = (255,255,255,255)
@@ -21,18 +20,18 @@ class wxMapPanel(wx.Panel):
         self.buffer = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
         self.boxoutline = None
     def _updateLayers(self):
-        for layer in self.mapObj.layers:
+        for layer in self.model.layers:
             if layer not in self.layers:
                 self.layers[layer] = [wxLayers.wxLayers[layer.type](layer),None,None]
     def _mapListener(self,mdl,tag=''):
         #print mdl,tag
         if tag and "selection:" in tag:
             lid = int(tag.split(':')[1])
-            self.layers[self.mapObj.layers[lid]][2] = None
+            self.layers[self.model.layers[lid]][2] = None
             self.draw()
         elif tag and "classification:" in tag:
             lid = int(tag.split(':')[1])
-            self.layers[self.mapObj.layers[lid]][1] = None
+            self.layers[self.model.layers[lid]][1] = None
             self.draw()
         elif tag == 'extent' or tag == 'offset' or tag == 'size':
             for layer in self.layers:
@@ -45,12 +44,12 @@ class wxMapPanel(wx.Panel):
         elif tag and 'data' in tag:
             print "update KDE"
             lid = int(tag.split(':')[1])
-            self.layers[self.mapObj.layers[lid]][1] = None
+            self.layers[self.model.layers[lid]][1] = None
             self.draw()
     def onSize(self,evt):
         w,h = self.GetSize()
         self.buffer = wx.EmptyBitmapRGBA(w,h,alpha=self.trns)
-        self.mapObj.pixel_size = (w,h)
+        self.model.pixel_size = (w,h)
         #print evt
     def onPaint(self,evt):
         pdc = wx.PaintDC(self)
@@ -58,12 +57,12 @@ class wxMapPanel(wx.Panel):
         self.draw()
     def cacheLayer(self,layer):
         wxLayer = self.layers[layer][0]
-        bitmap = wxLayer.draw(self.mapObj)
+        bitmap = wxLayer.draw(self.model)
         self.layers[layer][1] = bitmap
         return bitmap
     def cacheLayerSelectin(self,layer):
         wxLayer = self.layers[layer][0]
-        sbitmap = wxLayer.draw_selection(self.mapObj)
+        sbitmap = wxLayer.draw_selection(self.model)
         self.layers[layer][2] = sbitmap
         return sbitmap
     def drawBoxOutline(self,pt1=None,pt2=None):
@@ -83,7 +82,7 @@ class wxMapPanel(wx.Panel):
         dc.SelectObject(self.buffer)
         dc.SetBackground(wx.Brush(wx.Colour(*self.background)))
         dc.Clear()
-        for layer in self.mapObj.layers[::-1]: #draw the top layer last
+        for layer in self.model.layers[::-1]: #draw the top layer last
             bitmap = self.layers[layer][1]
             if not bitmap:
                 bitmap = self.cacheLayer(layer)
@@ -101,16 +100,17 @@ class wxMapPanel(wx.Panel):
             cdc.SetPen(wx.Pen(wx.Colour(0,0,0,255)))
             cdc.DrawRectangle(*self.boxoutline)
     def addControl(self,control):
-        control.setMap(self)
+        control.setCanvas(self)
         if type(control.evtType) == wx._core.PyEventBinder:
             self.Bind(control.evtType,control.onEvent)
         else:
             for evt in control.evtType:
                 self.Bind(evt, control.onEvent)
     def pan(self,dx,dy):
-        self.mapObj.pan(dx,dy)
+        self.model.pan(dx,dy)
 
 if __name__=="__main__":
+    from stars.visualization.mapModels import MapModel
     from wxMapTools import panTool,randomSelction,zoomWorld,zoomTool2,randomClassification,randomPalette,animateKD,rectangleTool_Persistent
     import pysal
     import numpy
@@ -121,10 +121,10 @@ if __name__=="__main__":
     pts = PointLayer([p.centroid for p in stl])
     #pts = pysal.open('/Users/charlie/Documents/data/pittsburgh/pitthom.shp','r').read()
     #pts = pysal.open('/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Mesa_ResBurgAllYears_withGrids/Mesa_ResBurgAllYears_withGrids.shp','r').read()
-    #mapObj = MapModel([PolygonLayer(usa),polys,pts])
-    mapObj = MapModel([polys,pts])
-    #mapObj = MapModel([KernelDensityLayer(pts),PointLayer(pts)])
-    #mapObj = MapModel([KernelDensityLayer(pts),PointLayer(pts)])
+    #model = MapModel([PolygonLayer(usa),polys,pts])
+    model = MapModel([polys,pts])
+    #model = MapModel([KernelDensityLayer(pts),PointLayer(pts)])
+    #model = MapModel([KernelDensityLayer(pts),PointLayer(pts)])
     #polys.selection = range(0,len(polys),4)
     data = [random.random() for i in range(len(polys))]
     data = numpy.array(data)
@@ -136,7 +136,7 @@ if __name__=="__main__":
     class myApp(wx.App):
         def OnInit(self):
             self.frame = wx.Frame(None,size=(500,500))
-            self.mapPanel = wxMapPanel(self.frame,mapObj)
+            self.mapPanel = wxCanvasPanel(self.frame,model)
             #tools = [panTool(),zoomTool2(),randomSelction(),randomClassification(),randomPalette(),zoomWorld(),animateKD()]
             tools = [rectangleTool_Persistent()]
             for tool in tools:

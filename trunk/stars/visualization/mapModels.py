@@ -4,11 +4,11 @@ from model import AbstractModel
 import layers
 from transforms import WorldToViewTransform
 
-class MapModel(WorldToViewTransform):
-    """ Base Model for all Maps 
-        Maintains the state of the map,
-            The current view extent, layer order, etc
-        Handles Map Events,
+class CanvasModel(WorldToViewTransform):
+    """ Base model for all Canvas views.
+        Maintains the state of the view,
+            Current extent, layer order, etc.
+        Handles View Events,
             Pan, Zoom, Selection, etc.
     """
     def __init__(self,layers=[],initial_size=(500,500)):
@@ -28,28 +28,6 @@ class MapModel(WorldToViewTransform):
         """
         lid = self._data['layers'].index(layer)
         self.update('%s:%d'%(tag,lid))
-    def addPath(self,path):
-        """
-        Attempts to add the path as a new layer.
-        Returns the layer if successful, else False
-        """
-        layer = None
-        if os.path.exists(path):
-            f = pysal.open(path,'r')
-            if hasattr(f,'type'):
-                if f.type == pysal.cg.Polygon:
-                    layer = layers.PolygonLayer(f.read())
-                if f.type == pysal.cg.Point:
-                    layer = layers.PointLayer(f.read())
-            if path.endswith('shp') and os.path.exists(path[:-4]+'.dbf'):
-                dbf = pysal.open(path[:-4]+'.dbf','r')
-                layer.data_table = dbf
-            elif layer:
-                layer.data_table = layers.NullDBF(len(layer))
-        if layer:
-            layer.name = os.path.splitext(os.path.basename(path))[0]
-            return self.addLayer(layer)
-        return False
     def addLayer(self,layer):
         """
         Add a layer to the current map.
@@ -138,6 +116,32 @@ class MapModel(WorldToViewTransform):
         layer = self._data['layers'].pop(start_pos)
         self._data['layers'].insert(end_pos,layer)
         self.update('layers')
+
+class MapModel(CanvasModel):
+    """ Base Model for all Maps 
+    """
+    def addPath(self,path):
+        """
+        Attempts to add the path as a new layer.
+        Returns the layer if successful, else False
+        """
+        layer = None
+        if os.path.exists(path):
+            f = pysal.open(path,'r')
+            if hasattr(f,'type'):
+                if f.type == pysal.cg.Polygon:
+                    layer = layers.PolygonLayer(f.read())
+                if f.type == pysal.cg.Point:
+                    layer = layers.PointLayer(f.read())
+            if path.endswith('shp') and os.path.exists(path[:-4]+'.dbf'):
+                dbf = pysal.open(path[:-4]+'.dbf','r')
+                layer.data_table = dbf
+            elif layer:
+                layer.data_table = layers.NullDBF(len(layer))
+        if layer:
+            layer.name = os.path.splitext(os.path.basename(path))[0]
+            return self.addLayer(layer)
+        return False
 
 
 
