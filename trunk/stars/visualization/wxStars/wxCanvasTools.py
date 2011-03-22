@@ -16,7 +16,7 @@ class wxCanvasControl(object):
     def disable(self):
         self._enabled = False
     def setCanvas(self,canvas):
-        self.canvasPanel = canvas
+        self.canvas = canvas
     def onEvent(self,evt):
         if self._enabled:
             self._onEvent(evt)
@@ -36,12 +36,12 @@ class panTool(wxCanvasControl):
                 x,y = self._prev_position
                 X,Y = evt.Position
                 px,py = (X-x),(Y-y)
-                self.canvasPanel.pan(px,py)
+                self.canvas.pan(px,py)
         if evt.LeftDown(): #state changed to left down
-            self.canvasPanel.CaptureMouse() #capture mouse events even when it leaves the frame.
+            self.canvas.CaptureMouse() #capture mouse events even when it leaves the frame.
         if evt.LeftUp():
-            if self.canvasPanel.HasCapture():
-                self.canvasPanel.ReleaseMouse()
+            if self.canvas.HasCapture():
+                self.canvas.ReleaseMouse()
         self._prev_position = evt.Position
 class rectangleTool(wxCanvasControl):
     """
@@ -58,16 +58,16 @@ class rectangleTool(wxCanvasControl):
     def _onEvent(self,evt):
         if evt.Dragging() and evt.LeftIsDown():
             if self.__start:
-                self.canvasPanel.drawBoxOutline(self.__start,evt.Position)
+                self.canvas.drawBoxOutline(self.__start,evt.Position)
         if evt.LeftDown(): #state changed to left down
-            self.canvasPanel.CaptureMouse() #capture mouse events even when it leaves the frame.
+            self.canvas.CaptureMouse() #capture mouse events even when it leaves the frame.
             self.__start = evt.Position
             self.__end = None
         elif evt.LeftUp():
-            if self.canvasPanel.HasCapture():
-                self.canvasPanel.ReleaseMouse()
+            if self.canvas.HasCapture():
+                self.canvas.ReleaseMouse()
             self.__end = evt.Position
-            transform = self.canvasPanel.model
+            transform = self.canvas.model
             x,y = self.__start
             X,Y = self.__end
             x,y = transform.pixel_to_world(x,y)
@@ -97,16 +97,16 @@ class rectangleTool2(rectangleTool):
     def _onEvent(self,evt):
         if evt.Dragging() and evt.RightIsDown():
             if self.__start:
-                self.canvasPanel.drawBoxOutline(self.__start,evt.Position)
+                self.canvas.drawBoxOutline(self.__start,evt.Position)
         if evt.RightDown(): #state changed to left down
-            self.canvasPanel.CaptureMouse() #capture mouse events even when it leaves the frame.
+            self.canvas.CaptureMouse() #capture mouse events even when it leaves the frame.
             self.__start = evt.Position
             self.__end = None
         elif evt.RightUp():
-            if self.canvasPanel.HasCapture():
-                self.canvasPanel.ReleaseMouse()
+            if self.canvas.HasCapture():
+                self.canvas.ReleaseMouse()
             self.__end = evt.Position
-            transform = self.canvasPanel.model
+            transform = self.canvas.model
             x,y = self.__start
             X,Y = self.__end
             x,y = transform.pixel_to_world(x,y)
@@ -144,9 +144,9 @@ class rectangleTool_Persistent(wxCanvasControl):
         if evt.GetKeyCode() == wx.WXK_ESCAPE:
             self.__start = None
             self.__end = None
-            if self.canvasPanel.HasCapture():
-                self.canvasPanel.ReleaseMouse()
-            self.canvasPanel.drawBoxOutline()
+            if self.canvas.HasCapture():
+                self.canvas.ReleaseMouse()
+            self.canvas.drawBoxOutline()
     def isBrushing(self):
         return self.__brushing
     def enableBrushing(self):
@@ -159,7 +159,7 @@ class rectangleTool_Persistent(wxCanvasControl):
         self.__end = None
     def onMouse(self,evt):
         if evt.LeftDown(): #state changed to left down
-            self.canvasPanel.CaptureMouse() #capture mouse events even when it leaves the frame.
+            self.canvas.CaptureMouse() #capture mouse events even when it leaves the frame.
             self.__start = evt.Position
             self.__end = None
         elif evt.Dragging() and evt.LeftIsDown():
@@ -169,24 +169,24 @@ class rectangleTool_Persistent(wxCanvasControl):
             self.__end = evt.Position
             self.action(*evt.Position)
             if not self.__brushing:
-                self.canvasPanel.drawBoxOutline()
-        elif evt.RightDown() or (self.__start == self.__end and self.canvasPanel.boxoutline): #single click with no movement.
+                self.canvas.drawBoxOutline()
+        elif evt.RightDown() or (self.__start == self.__end and self.canvas.boxoutline): #single click with no movement.
             self.__start = None
             self.__end = None
-            if self.canvasPanel.HasCapture():
-                self.canvasPanel.ReleaseMouse()
-            self.canvasPanel.drawBoxOutline()
+            if self.canvas.HasCapture():
+                self.canvas.ReleaseMouse()
+            self.canvas.drawBoxOutline()
         elif self.__start and self.__end and self.__brushing:
-            if not self.canvasPanel.HasCapture():
-                self.canvasPanel.CaptureMouse()
+            if not self.canvas.HasCapture():
+                self.canvas.CaptureMouse()
             x,y = evt.Position
             self.action(x,y)
     def action(self,x,y):
         if self.__start and self.__end:
             w,h = (self.__start[0]-self.__end[0], self.__start[1]-self.__end[1])
             X,Y = x+w,y+h
-            self.canvasPanel.drawBoxOutline((x,y),(X,Y))
-            transform = self.canvasPanel.model
+            self.canvas.drawBoxOutline((x,y),(X,Y))
+            transform = self.canvas.model
             x,y = transform.pixel_to_world(x,y)
             if self.__start == self.__end: #single click.
                 return self.onPoint(x,y)
@@ -210,7 +210,7 @@ class selectTool(rectangleTool_Persistent):
     def onRectangle(self,rect):
         self.in_rect = True
         rect = pysal.cg.Rectangle(*rect)
-        for layer in self.canvasPanel.model.layers:
+        for layer in self.canvas.model.layers:
             if layer.is_selectable and layer.locator:
                 rs = layer.locator.overlapping(rect)
                 rs = [x.id-1 for x in rs]
@@ -221,7 +221,7 @@ class selectTool(rectangleTool_Persistent):
             self.in_rect = False # keep the current selection.
         else:
             rect = pysal.cg.Rectangle(x,y,x,y)
-            for layer in self.canvasPanel.model.layers:
+            for layer in self.canvas.model.layers:
                 if layer.is_selectable and layer.locator:
                     rs = layer.locator.overlapping(rect)
                     rs = [x.id-1 for x in rs]
@@ -235,8 +235,8 @@ class zoomTool(rectangleTool):
         on release the map extent will be set to the extent of the box.
     """
     def onRectangle(self,rect):
-        self.canvasPanel.drawBoxOutline() # Clear the zoom box
-        self.canvasPanel.model.extent = rect #[left,lower,right,upper]
+        self.canvas.drawBoxOutline() # Clear the zoom box
+        self.canvas.model.extent = rect #[left,lower,right,upper]
 class zoomTool2(rectangleTool2):
     """
     Same as zoomTool, but bound to the right mouse button.
@@ -246,8 +246,8 @@ class zoomTool2(rectangleTool2):
         on release the map extent will be set to the extent of the box.
     """
     def onRectangle(self,rect):
-        self.canvasPanel.drawBoxOutline() # Clear the zoom box
-        self.canvasPanel.model.extent = rect #[left,lower,right,upper]
+        self.canvas.drawBoxOutline() # Clear the zoom box
+        self.canvas.model.extent = rect #[left,lower,right,upper]
 class animateKD(wxCanvasControl):
     """
     For Demo Purposes only.
@@ -262,7 +262,7 @@ class animateKD(wxCanvasControl):
         self.step = 0
     def _onEvent(self,evt):
         if chr(evt.GetKeyCode()).lower() == 'a':
-            for layer in self.canvasPanel.layers:
+            for layer in self.canvas.layers:
                 if layer.type == "KernelDensityLayer":
                     if self.step == 0:
                         layer.animate()
@@ -284,7 +284,7 @@ class randomSelction(wxCanvasControl):
         self.n = n
     def _onEvent(self,evt):
         if chr(evt.GetKeyCode()).lower() == 'r':
-            for layer in self.canvasPanel.layers:
+            for layer in self.canvas.layers:
                 layer.selection = random.sample(range(len(layer)),self.n)
 class randomClassification(wxCanvasControl):
     """
@@ -300,7 +300,7 @@ class randomClassification(wxCanvasControl):
         self.k = k
     def _onEvent(self,evt):
         if chr(evt.GetKeyCode()).lower() == 'c':
-            for layer in self.canvasPanel.layers:
+            for layer in self.canvas.layers:
                 n = len(layer.data)
                 data = numpy.array([random.random() for i in range(n)])
                 layer.classification = pysal.esda.mapclassify.Natural_Breaks(data,k=self.k)
@@ -318,7 +318,7 @@ class randomPalette(wxCanvasControl):
         self.k = k
     def _onEvent(self,evt):
         if chr(evt.GetKeyCode()).lower() == 'p':
-            for layer in self.canvasPanel.layers:
+            for layer in self.canvas.layers:
                 layer.colors = dict([(i,[random.randint(0,255) for i in range(3)]) for i in range(5)])
 class zoomWorld(wxCanvasControl):
     """
@@ -329,5 +329,5 @@ class zoomWorld(wxCanvasControl):
     evtType = wx.EVT_CHAR
     def _onEvent(self,evt):
         if chr(evt.GetKeyCode()).lower() == 'z':
-            self.canvasPanel.pan_offset = 0,0
-            self.canvasPanel.model.zoom_to_world()
+            self.canvas.pan_offset = 0,0
+            self.canvas.model.zoom_to_world()
