@@ -20,7 +20,7 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
     def __init__(self,parent,mapModel,size=(150,400)):
         # Note: treemixin seems to take care of the TreeCtrl __init__
         treemixin.DragAndDrop.__init__(self,parent,size=size)
-        self.mapPanel = parent
+        self.mapCanvas = parent
         self.mapModel = mapModel
         self.dragging = False
         self.Bind(wx.EVT_TREE_ITEM_MENU,self.onMenu)
@@ -120,7 +120,7 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
         #print "IsValidDropTarget(%r)"%dropTarget
         return True
     def onMenu(self,evt):
-        self.PopupMenu(self.mapPanel.layerMenu,evt.GetPoint())
+        self.PopupMenu(self.mapCanvas.layerMenu,evt.GetPoint())
     def onSelecting(self,evt):
         if self.dragging:
             evt.Veto()

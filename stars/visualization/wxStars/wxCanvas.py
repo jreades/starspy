@@ -4,7 +4,7 @@ import pysal
 import wx
 import wxLayers
 
-class wxCanvasPanel(wx.Panel):
+class wxCanvas(wx.Panel):
     """ Display a CanvasModel in a wxPanel """
     def __init__(self, parent, model):
         wx.Panel.__init__(self,parent,style=wx.WANTS_CHARS,size=model.pixel_size)
@@ -136,7 +136,7 @@ if __name__=="__main__":
     class myApp(wx.App):
         def OnInit(self):
             self.frame = wx.Frame(None,size=(500,500))
-            self.mapPanel = wxCanvasPanel(self.frame,model)
+            self.mapPanel = wxCanvas(self.frame,model)
             #tools = [panTool(),zoomTool2(),randomSelction(),randomClassification(),randomPalette(),zoomWorld(),animateKD()]
             tools = [rectangleTool_Persistent()]
             for tool in tools:

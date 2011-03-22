@@ -3,7 +3,7 @@ import wx.aui
 from wx.py.shell import Shell
 import mapview_xrc
 import stars
-from stars.visualization.wxStars import wxCanvasPanel
+from stars.visualization.wxStars import wxCanvas
 from stars.visualization.wxStars import wxCanvasTools
 from stars.visualization.mapModels import MapModel
 from stars.visualization import layers
@@ -24,7 +24,7 @@ class StatusTool(wxCanvasTools.wxCanvasControl):
         self.field = status_field
         wxCanvasTools.wxCanvasControl.__init__(self,enabled)
     def _onEvent(self,evt):
-        x,y = self.canvasPanel.model.pixel_to_world(*evt.Position)
+        x,y = self.canvas.model.pixel_to_world(*evt.Position)
         self.status.SetStatusText("%f, %f"%(x,y),self.field)
 
 class layerPropFrame(mapview_xrc.xrcLayerPropFrame):
@@ -95,14 +95,14 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         #Setup Map Panel and Layers Control
         self.model = MapModel()
         self.model.addListener(self.able)
-        self.mapPanel = wxCanvasPanel(self,self.model)
-        self.layers = LayersControl(self,self.mapPanel.model,size=(150,400))
+        self.mapCanvas = wxCanvas(self,self.model)
+        self.layers = LayersControl(self,self.mapCanvas.model,size=(150,400))
 
         # initialize the Advanced User Interface (AUI) manager.
         self._mgr = wx.aui.AuiManager(self)
         # Setup AUI Panes
-        self._mgr.AddPane(self.mapPanel, wx.CENTER)
-        #self._mgr.AddPane(self.mapPanel, wx.aui.AuiPaneInfo().Name('mapView').Caption('Map View 1').Left().MaximizeButton().Show() )
+        self._mgr.AddPane(self.mapCanvas, wx.CENTER)
+        #self._mgr.AddPane(self.mapCanvas, wx.aui.AuiPaneInfo().Name('mapView').Caption('Map View 1').Left().MaximizeButton().Show() )
         self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton().Hide() )
         #self._mgr.AddPane(self.ToolBar, wx.aui.AuiPaneInfo().Name('toolbar1').Caption('ToolBar').ToolbarPane().Top() )
         self._mgr.Update()
@@ -112,19 +112,19 @@ class mapFrame(mapview_xrc.xrcMapFrame):
         self.tools = {}
         #setup status tool
         statusTool = StatusTool(self.status,3)
-        self.mapPanel.addControl(statusTool)
+        self.mapCanvas.addControl(statusTool)
         #setup pan tool
         panTool = wxCanvasTools.panTool()
-        self.mapPanel.addControl(panTool)
+        self.mapCanvas.addControl(panTool)
         self.tools['panTool'] = panTool,self.panTool.GetId(),self.menuToolPan.GetId()
         #setup zoom tool
         zoomTool = wxCanvasTools.zoomTool()
-        self.mapPanel.addControl(zoomTool)
+        self.mapCanvas.addControl(zoomTool)
         self.tools['zoomTool'] = zoomTool,self.zoomTool.GetId(),self.menuToolZoom.GetId()
         #setup select tool
         selectTool = wxCanvasTools.selectTool()
         selectTool.disableBrushing()
-        self.mapPanel.addControl(selectTool)
+        self.mapCanvas.addControl(selectTool)
         self.tools['selectTool'] = selectTool,self.selectTool.GetId(),self.menuToolSelect.GetId()
         self.setTool('panTool',False)
 
@@ -178,7 +178,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
     def onCopy(self,evtName=None,evt=None,value=None):
         """ Copies the current display buffer to the Clipboard """
         if wx.TheClipboard.Open():
-            wx.TheClipboard.SetData(wx.BitmapDataObject(self.mapPanel.buffer))
+            wx.TheClipboard.SetData(wx.BitmapDataObject(self.mapCanvas.buffer))
             wx.TheClipboard.Close()
         else:
             wx.Bell()
@@ -259,7 +259,7 @@ class mapFrame(mapview_xrc.xrcMapFrame):
     def toggle_select(self,evtName=None,evt=None,value=None):
         self.setTool('selectTool')
     def zoomExtent(self,evtName=None,evt=None,value=None):
-        self.mapPanel.model.zoom_to_world()
+        self.mapCanvas.model.zoom_to_world()
     def zoomLayer(self,evtName=None,evt=None,value=None):
         self.model.extent = self.model.selected_layer.extent
     def layerSelectable(self,evtName=None,evt=None,value=None):

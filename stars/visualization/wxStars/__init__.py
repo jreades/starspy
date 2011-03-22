@@ -1,3 +1,3 @@
-from wxCanvasPanel import wxCanvasPanel
+from wxCanvas import wxCanvas
 import wxCanvasTools
 
