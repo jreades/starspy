@@ -165,6 +165,25 @@ class PointLayer(BaseLayer):
         self._data['type'] = 'PointLayer'
         self._data['data'] = points
         self._data['extent'] = pysal.cg.get_bounding_box(points)
+        self._locator = pysal.cg.PointLocator(points)
+class ScatterLayer(BaseLayer):
+    """
+    Represents a collection of 2 vectors
+    """
+    def __init__(self,points):
+        BaseLayer.__init__(self)
+        self._data['type'] = 'ScatterLayer'
+        self._data['data'] = points
+        dims = len(points[0])
+        self._locator = pysal.cg.PointLocator(points)
+        if dims == 2:
+            d0 = [x[0] for x in points]
+            d0,D0 = min(d0),max(d0)
+            d1 = [x[1] for x in points]
+            d1,D1 = min(d1),max(d1)
+            self._data['extent'] = pysal.cg.Rectangle(d0,d1,D0,D1)
+        else:
+            raise NotImplementedError, "Only 2D scatter plots are supported at this point."
 class PolygonLayer(BaseLayer):
     """
     Represents a collection of Polygons
