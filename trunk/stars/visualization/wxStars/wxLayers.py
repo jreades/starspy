@@ -18,14 +18,16 @@ class wxPointLayer:
         self.trns = 0
         self.radius = 5
     def draw_set(self,gc,matrix,ids):
+        #NOTE: This is w,h not Radius!
         r = self.radius#*transform.scale #see option 2 below
+        radius = r/2.0
         data = self.layer.data
         for i in ids:
             pt = data[i]
             ### Two options for drawing points.
             ### First is to Draw with an Ellipse
             x,y = matrix.TransformPoint(*pt)
-            gc.DrawEllipse(x,y,r,r)
+            gc.DrawEllipse(x-radius,y-radius,r,r)
             ### Second is to Draw with a Graphics Path,
             ### It seems that you need to create a new Path Each time
             ### Otherwise the lines are drawn funny.
@@ -70,11 +72,39 @@ class wxPointLayer:
         dc.SelectObject(buff)
         gc = wx.GraphicsContext.Create(dc)
         gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,255),1)) )
-        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255), style=wx.CROSSDIAG_HATCH)) )
+        #gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255), style=wx.CROSSDIAG_HATCH)) )
+        gc.SetBrush( gc.CreateBrush(wx.Brush(wx.Colour(255,255,0,255))) )
         matrix = gc.CreateMatrix()
         matrix.Scale(1./transform.scale,1./-transform.scale) #first transform is applied last
         matrix.Translate(*transform.offset)                   #last transform is applied first
         gc = self.draw_set(gc,matrix,self.layer.selection)
+        return buff
+class wxScatterLayer(wxPointLayer):
+    def __init__(self,layer):
+        if not isinstance(layer,layers.ScatterLayer):
+            raise TypeError, "Layer must be instance of ScatterLayer"
+        self.layer = layer
+        self.trns = 0
+        self.radius = 5
+    def draw(self,transform):
+        buff = wxPointLayer.draw(self,transform)
+        dc = wx.MemoryDC()
+        dc.SelectObject(buff)
+        ox,oy = transform.world_to_pixel(0,0)
+        left,lower,right,upper = transform.extent
+        lx,oy = transform.world_to_pixel(left,0)
+        rx,oy = transform.world_to_pixel(right,0)
+        ox,uy = transform.world_to_pixel(0,upper)
+        ox,ly = transform.world_to_pixel(0,lower)
+
+        dc.DrawLine(lx,oy,rx,oy)
+        dc.DrawLine(ox,ly,ox,uy)
+        for i in range(20): #just a sample of how to draw an ticks, need to draw them using real Majors/Minors.
+            dc.DrawLine(ox+(i*20), oy-2, ox+(i*20), oy+2)
+            dc.DrawLine(ox-(i*20), oy-2, ox-(i*20), oy+2)
+            dc.DrawLine(ox-2, oy+(i*20), ox+2, oy+(i*20))
+            dc.DrawLine(ox-2, oy-(i*20), ox+2, oy-(i*20))
+
         return buff
 class wxPolygonLayer:
     def __init__(self,layer):
@@ -311,4 +341,4 @@ class wxCachedPolygonLayer:
         gc.StrokePath(pth)
         return buff
 
-wxLayers = {'PolygonLayer':wxPolygonLayer,'PointLayer':wxPointLayer,'KernelDensityLayer':wxKernelDensityLayer}
+wxLayers = {'PolygonLayer':wxPolygonLayer,'PointLayer':wxPointLayer,'KernelDensityLayer':wxKernelDensityLayer, 'ScatterLayer':wxScatterLayer}

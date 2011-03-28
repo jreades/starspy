@@ -5,7 +5,7 @@ import mapview_xrc
 import stars
 from stars.visualization.wxStars import wxCanvas
 from stars.visualization.wxStars import wxCanvasTools
-from stars.visualization.mapModels import MapModel
+from stars.visualization.mapModels import MapModel, CanvasModel
 from stars.visualization import layers
 from tableViewer import TableViewer
 from layerControl import LayersControl
@@ -94,14 +94,37 @@ class mapFrame(mapview_xrc.xrcMapFrame):
 
         #Setup Map Panel and Layers Control
         self.model = MapModel()
+        #self.model.addPath('/Users/charlie/Documents/data/stl_hom/stl_hom.shp')
         self.model.addListener(self.able)
         self.mapCanvas = wxCanvas(self,self.model)
         self.layers = LayersControl(self,self.mapCanvas.model,size=(150,400))
+
+        #Add a plot Canvas
+        #x = self.model.layers[0].data_table.by_col('HR8893')
+        #y = self.model.layers[0].data_table.by_col('PE87')
+        #somePoints = map(pysal.cg.Point,zip(x,y))
+        #for i,pt in enumerate(somePoints):
+        #    pt.id = i+1
+        
+        #plotLayer = layers.ScatterLayer(somePoints)
+        #self.plot = CanvasModel([plotLayer])
+        #self.plotCanvas= wxCanvas(self,self.plot)
+        #self.plotCanvas.addControl(wxCanvasTools.selectTool())
+        
+        #def custom_linker(src, tag):
+        #    layers = [plotLayer, self.model.layers[0]]
+        #    targets = [x for x in layers if x != src]
+        #    for target in targets:
+        #        target.selection = src.selection
+        #plotLayer.addListener(custom_linker)
+        #self.model.layers[0].addListener(custom_linker)
+            
 
         # initialize the Advanced User Interface (AUI) manager.
         self._mgr = wx.aui.AuiManager(self)
         # Setup AUI Panes
         self._mgr.AddPane(self.mapCanvas, wx.CENTER)
+        #self._mgr.AddPane(self.plotCanvas, wx.LEFT)
         #self._mgr.AddPane(self.mapCanvas, wx.aui.AuiPaneInfo().Name('mapView').Caption('Map View 1').Left().MaximizeButton().Show() )
         self._mgr.AddPane(self.layers, wx.aui.AuiPaneInfo().Name('layers').Caption('Layers').Left().MaximizeButton().Hide() )
         #self._mgr.AddPane(self.ToolBar, wx.aui.AuiPaneInfo().Name('toolbar1').Caption('ToolBar').ToolbarPane().Top() )
