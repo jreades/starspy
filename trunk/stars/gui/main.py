@@ -67,7 +67,11 @@ class MapFrameApp(wx.App):
 
         frame = scatterFrame(None)#,shellFrame)
         frame.model.addLayer(layer2)
+        frame.SetTitle(layer2.name)
+        frame.Show()
+        frame = scatterFrame(None)#,shellFrame)
         frame.model.addLayer(layer3)
+        frame.SetTitle(layer3.name)
         frame.Show()
 
         self.linker = SelectionLinker([layer, layer2, layer3])
