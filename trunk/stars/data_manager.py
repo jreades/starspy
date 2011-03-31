@@ -8,10 +8,109 @@ deals with Joins and aggregation
 """
 __author__ = "Charles R Schmidt <charles.r.schmidt@asu.edu>"
 
+import numpy
 import pysal
 import sqlite3
 from data_utils import Table_MetaData, createTableFromSHP
+from collections import deque
+import datetime
 
+class StarsTableFilter(object):
+    """
+    Filter a StarsTable by its attributes.
+
+    modeled after target1_ESDA.js:Filters
+    """
+    MAX_LEN = 25
+    def __init__(self, parent_table):
+        self.parent = parent_table
+        self.ranges = {}
+        self.values = {}
+        self.range_field = None
+        if 'spec' in parent_table.meta:
+            fields = parent_table.meta['spec']
+            for field in fields:
+                if fields[field][0].upper() == 'D':
+                    # use first range field found as the default range field.
+                    if not self.range_field:
+                        self.range_field = field
+                    self.ranges[field] = self.parent[field].range
+                # equality filters are not implemented yet
+                #else:
+                #    values = self.parent[field].toset()
+                #    if len(values) <= self.MAX_LEN:
+                #        self.values[field] = values
+    def setRangeField(self,field):
+        if field in self.ranges:
+            self.range_field = field
+        else:
+            raise KeyError,field
+    def step(self, window = datetime.timedelta(days=120), step = datetime.timedelta(days=30), direction = "FORWARD", group_by=None):
+        """
+        Returns a new Series Object
+
+        If direction is "FORWARD" the first event is guaranteed to be included.
+        If direction is "BACKWARD" the last event is guaranteed to be included, the last time period will be returned first.
+
+        Arguments
+        ---------
+        window -- datetime.timedelta -- size of window to collect events
+        step -- datetime.timedelta -- how much to move the window each step
+        direction -- "FORWARD" or "BACKWARD"
+        group_by -- field_name -- If not none, GROUP BY field_name.
+        """
+        if self.range_field:
+            name = self.range_field
+            filt = "%s >= ? AND %s < ?"%(name,name)
+            t_0,t_end = self.ranges[name]
+            if direction == 'BACKWARD':
+                window_end = t_end
+                window_begin = t_end-window
+                while window_begin >= t_0:
+                    yield filt,[window_begin,window_end]
+                    window_begin -= step
+                    window_end -= step
+            else:
+                window_begin = t_0
+                window_end = t_0+window
+                while window_end <= t_end:
+                    yield filt,[window_begin,window_end]
+                    window_begin += step
+                    window_end += step
+        else:
+            raise ValueError, "No range field is not set"
+        
+class StarsColumn(object):
+    """
+    Models a Stars Column within a Stars Table
+    """
+    def __repr__(self):
+        return "<%s %s of \"%r\" at 0x%X>"%(self.__class__.__name__,self._fieldName, self.parent_table, id(self))
+    def __init__(self, table, field_name):
+        self.conn = table._db.conn
+        self.parent_table = table
+        self._fieldName = field_name
+        self.typ = table.meta['spec'][field_name][0].upper()
+    @property
+    def range(self):
+        """The (min,max) of the data column"""
+        if self.typ == 'D':
+            rs = self.conn.execute("SELECT MIN(%s) AS 'min [date]', MAX(%s) AS 'max [date]' FROM %s"%(self._fieldName,self._fieldName,self.parent_table._tableName)).fetchall()
+        else:
+            rs = self.conn.execute("SELECT MIN(%s) AS 'min',MAX(%s) AS 'max' FROM %s"%(self._fieldName,self._fieldName,self.parent_table._tableName)).fetchall()
+        return rs[0]
+    def tolist(self):
+        """returns the data column as a list"""
+        rs = self.conn.execute("SELECT %s FROM %s"%(self._fieldName,self.parent_table._tableName)).fetchall()
+        return [x[0] for x in rs]
+    def toset(self):
+        """returns the data column as a set"""
+        rs = self.conn.execute("SELECT DISTINCT %s FROM %s"%(self._fieldName,self.parent_table._tableName)).fetchall()
+        return set([x[0] for x in rs])
+    def count_distinct(self):
+        """returns len(self.toset())"""
+        rs = self.conn.execute("SELECT count(DISTINCT %s) FROM %s"%(self._fieldName,self.parent_table._tableName)).fetchall()[0][0]
+        return rs
 class StarsTable(object):
     """
     Models a Stars Table within a Stars Database
@@ -23,10 +122,20 @@ class StarsTable(object):
 
         This class contains zero data, all the data is stored in the StarsDatabase.
         This class is just a helper class to get data out of the StarDatabase in useful ways.
+
+    Examples
+    >>> table = StarsTable(db, 'stars_Table_0')
+    >>> table['FIELD_NAME']
+    <__main__.StarsColumn object at 0x23b05b0>
     """
     def __init__(self, database, table_name):
         self._db = database
         self._tableName = table_name
+    def __repr__(self):
+        name = self._tableName
+        if 'title' in self.meta:
+            name = self.meta['title']
+        return "<%s %s at 0x%X>"%(self.__class__.__name__,name,id(self))
     @classmethod
     def table_factory(cls, database):
         """
@@ -34,6 +143,12 @@ class StarsTable(object):
         This is useful for something like, map(factory, ['table1','table2','table3'])
         """
         return lambda x: cls(database, x)
+    def __getitem__(self,key):
+        if key in self.meta['header']:
+            return StarsColumn(self,key)
+        elif type(key) == int and key < len(self.meta['header']):
+            return StarsColumn(self,self.meta['header'][key])
+        raise IndexError, "index out of range"
     def __get_meta(self):
         return self._db.conn.execute("SELECT meta FROM tables WHERE table_name=? LIMIT 1",[self._tableName]).fetchone()[0]
     def __set_meta(self,value):
@@ -64,6 +179,18 @@ class StarsTable(object):
             self._db.conn.commit()
             return True
         return False
+        
+class StarsEventTable(StarsTable):
+    """Extends the Stars Tables adding special methods to filter and aggregate by date"""
+    def __init__(self, database, table_name):
+        StarsTable.__init__(self, database, table_name)
+        self.__filter = None
+    @property
+    def filter(self):
+        if not self.__filter:
+            self.__filter = StarsTableFilter(self)
+            self.__filter.setRangeField(self.meta['time_field'])
+        return self.__filter
     def count(self, filters = None, groupby = None):
         """
         rewrite this to use joins
@@ -76,9 +203,14 @@ class StarsTable(object):
             sql += " GROUP BY %s"%groupby
             sql = sql.replace("SELECT ","SELECT %s,"%groupby)
         return self._db.conn.execute(sql).fetchall()
-        
-class StarsEventTable(StarsTable):
-    """Extends the Stars Tables adding special methods to filter and aggregate by date"""
+    def group_by(self,field,filt=None):
+        sql = "SELECT %s,count(*) from %s"%(field, self._tableName)
+        sql2= " GROUP BY %s"%(field)
+        if filt:
+            sql+= " WHERE "+filt[0]
+            return self._db.conn.execute(sql+sql2,filt[1]).fetchall()
+        else:
+            return self._db.conn.execute(sql+sql2).fetchall()
 
 class StarsDatabase(object):
     """
@@ -95,12 +227,17 @@ class StarsDatabase(object):
 
     """
     def __init__(self,connectionString=":memory:"):
-        self.conn = sqlite3.connect(connectionString, detect_types=sqlite3.PARSE_DECLTYPES)
+        self.conn = sqlite3.connect(connectionString, detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
         self.conn.row_factory = sqlite3.Row
         self.conn.execute("create table IF NOT EXISTS tables (table_name PRIMARY KEY, table_type, source_files, meta table_metadata)")
         self.table_factory = StarsTable.table_factory(self)
+        self.evt_table_factory = StarsEventTable.table_factory(self)
+        self.table_dispatch = {"event":StarsEventTable}
     @property
     def tables(self):
+        tables = [x[0] for x in self.conn.execute("SELECT table_name,table_type FROM tables").fetchall()]
+        tables = self.conn.execute("SELECT table_name,table_type FROM tables").fetchall()
+        return [self.table_dispatch.get(x[1],StarsTable)(self,x[0]) for x in tables]
         tables = [x[0] for x in self.conn.execute("SELECT table_name FROM tables").fetchall()]
         return map(self.table_factory, tables)
     @property
@@ -249,3 +386,7 @@ if __name__=='__main__':
     REGIONS_SHP = "/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Mesa_Beats/Mesa_Cleaned_withCrimeData.shp"
     REGIONS_SHP = "/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Burglaries_Mesagrids0609/projected.shp"
     REGIONS_DBF = "/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Burglaries_Mesagrids0609/projected.dbf"
+
+    db = StarsDatabase('test.starsdb')
+    t = db.tables[0]
+    c = t['REPORT_DAT']
