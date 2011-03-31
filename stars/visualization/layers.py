@@ -222,6 +222,8 @@ class EventLayer(PointLayer):
         table._fields = "geom"
         points = [x[0] for x in table.rows()]
         PointLayer.__init__(self, points)
+        self.name = table.meta['title']
+        self.data_table = NullDBF(table.meta['n'])
     def set_step(self,n):
         self.data = [x[0] for x in self.table.period(n)]
         

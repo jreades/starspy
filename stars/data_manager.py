@@ -473,6 +473,15 @@ if __name__=='__main__':
     REGIONS_SHP = "/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Burglaries_Mesagrids0609/projected.shp"
     REGIONS_DBF = "/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Burglaries_Mesagrids0609/projected.dbf"
 
-    db = StarsDatabase('test.starsdb')
-    t = db.tables[0]
-    c = t['REPORT_DAT']
+    import os
+    if os.path.exists('test.starsdb'):
+        db = StarsDatabase('test.starsdb')
+        t = db.tables[0]
+        c = t['REPORT_DAT']
+    else:
+        db = StarsDatabase('test.starsdb')
+        db.add_table_from_shp(EVENT_DATA_SHP,EVENT_DATA_DBF)
+        db.tables[0].make_event_table('REPORT_DAT')
+        db.add_table_from_shp(REGIONS_SHP,REGIONS_DBF)
+        t = db.tables[0]
+        c = t['REPORT_DAT']
