@@ -11,74 +11,10 @@ __author__ = "Charles R Schmidt <charles.r.schmidt@asu.edu>"
 import numpy
 import pysal
 import sqlite3
-from data_utils import Table_MetaData, createTableFromSHP
+from data_utils import Table_MetaData, createTableFromSHP, time_step
 from collections import deque
 import datetime
 
-class StarsTableFilter(object):
-    """
-    Filter a StarsTable by its attributes.
-
-    modeled after target1_ESDA.js:Filters
-    """
-    MAX_LEN = 25
-    def __init__(self, parent_table):
-        self.parent = parent_table
-        self.ranges = {}
-        self.values = {}
-        self.range_field = None
-        if 'spec' in parent_table.meta:
-            fields = parent_table.meta['spec']
-            for field in fields:
-                if fields[field][0].upper() == 'D':
-                    # use first range field found as the default range field.
-                    if not self.range_field:
-                        self.range_field = field
-                    self.ranges[field] = self.parent[field].range
-                # equality filters are not implemented yet
-                #else:
-                #    values = self.parent[field].toset()
-                #    if len(values) <= self.MAX_LEN:
-                #        self.values[field] = values
-    def setRangeField(self,field):
-        if field in self.ranges:
-            self.range_field = field
-        else:
-            raise KeyError,field
-    def step(self, window = datetime.timedelta(days=120), step = datetime.timedelta(days=30), direction = "FORWARD", group_by=None):
-        """
-        Returns a new Series Object
-
-        If direction is "FORWARD" the first event is guaranteed to be included.
-        If direction is "BACKWARD" the last event is guaranteed to be included, the last time period will be returned first.
-
-        Arguments
-        ---------
-        window -- datetime.timedelta -- size of window to collect events
-        step -- datetime.timedelta -- how much to move the window each step
-        direction -- "FORWARD" or "BACKWARD"
-        group_by -- field_name -- If not none, GROUP BY field_name.
-        """
-        if self.range_field:
-            name = self.range_field
-            filt = "%s >= ? AND %s < ?"%(name,name)
-            t_0,t_end = self.ranges[name]
-            if direction == 'BACKWARD':
-                window_end = t_end
-                window_begin = t_end-window
-                while window_begin >= t_0:
-                    yield filt,[window_begin,window_end]
-                    window_begin -= step
-                    window_end -= step
-            else:
-                window_begin = t_0
-                window_end = t_0+window
-                while window_end <= t_end:
-                    yield filt,[window_begin,window_end]
-                    window_begin += step
-                    window_end += step
-        else:
-            raise ValueError, "No range field is not set"
         
 class StarsColumn(object):
     """
@@ -181,12 +117,97 @@ class StarsTable(object):
         return False
         
 class StarsEventTable(StarsTable):
-    """Extends the Stars Tables adding special methods to filter and aggregate by date"""
+    """
+    Extends the Stars Tables adding special methods to filter and aggregate by date
+
+    Stars Event Tables are REQUIRED to have at leaste one DATE field.
+    The field MUST be specified in meta['time_field']
+
+    These table have special filtering abilities,
+
+    t_0 -- datetime -- Filter out all dates before t_0, Set to None to use the data's own t_0
+    t_end -- datetime -- Folter out all dates after t_end, Set to None to use the data's own t_end
+    window -- timedelta -- Size of a movable window used to filter the events.
+    step -- timedelta -- delta by which to advance the window.
+    periods -- getter -- table.periods[n]: returns a table view with the necessary filters set 
+                         for time period n, in the range t_0:t_end of size window, 
+                         n steps from t_0.
+    rows -- list of lists -- returns all rows in the current set (after filters are applied).
+    """
     def __init__(self, database, table_name):
         StarsTable.__init__(self, database, table_name)
         self.__filter = None
+        self.__t0 = None
+        self.__tEnd = None
+        self.__window = datetime.timedelta(days=90)
+        self.__step = datetime.timedelta(days=30)
+        self.__periods = None
+        self._fields = "*"
+    def __set_t0(self,value):
+        if value == None:
+            self.__t0 = None
+            self.__periods = None
+        elif type(value) != datetime.datetime:
+            raise TypeError, "Value must be a datetime object."
+        else:
+            self.__t0 = value
+            self.__periods = None
+    def __get_t0(self):
+        if not self.__t0:
+            self.__t0 = self[self.meta['time_field']].range[0]
+        return self.__t0
+    t_0 = property(__get_t0, __set_t0)
+    def __set_tEnd(self, value):
+        if value == None:
+            self.__tEnd = None
+            self.__periods = None
+        elif type(value) != datetime.datetime:
+            raise TypeError, "Value must be a datetime object."
+        else:
+            self.__tEnd = value
+            self.__periods = None
+    def __get_tEnd(self):
+        if not self.__tEnd:
+            self.__tEnd = self[self.meta['time_field']].range[1]
+        return self.__tEnd
+    t_end = property(__get_tEnd, __set_tEnd)
+    def __set_window(self, value):
+        if type(value) != datetime.timedelta:
+            raise TypeError, "Value must be a timedelta object."
+        else:
+            self.__window = value
+            self.__periods = None
+    def __get_window(self):
+        return self.__window
+    window = property(__get_window,__set_window)
+    def __set_step(self, value):
+        if type(value) != datetime.timedelta:
+            raise TypeError, "Value must be a timedelta object."
+        else:
+            self.__step = value
+            self.__periods = None
+    def __get_step(self):
+        return self.__step
+    step = property(__get_step,__set_step)
+    def rows(self,filter=None,filterArgs = []):
+        sql = "SELECT %s FROM %s"%(self._fields,self._tableName)
+        if filter:
+            sql += " WHERE "+filter
+        return self._db.conn.execute(sql,filterArgs).fetchall()
+    @property
+    def num_periods(self):
+        if not self.__periods:
+            x = self.period(0)
+        return len(self.__periods)
+    def period(self, t):
+        if not self.__periods: #would be better to just calculate the period for t.
+            self.__periods = time_step(self.t_0,self.t_end,self.window,self.step)
+        name = self.meta['time_field']
+        filt = "%s >= ? AND %s < ?"%(name,name)
+        return self.rows(filt, self.__periods[t])
     @property
     def filter(self):
+        print "DeprecationWarning"
         if not self.__filter:
             self.__filter = StarsTableFilter(self)
             self.__filter.setRangeField(self.meta['time_field'])
@@ -195,6 +216,7 @@ class StarsEventTable(StarsTable):
         """
         rewrite this to use joins
         """
+        print "DeprecationWarning"
         pkey = self.meta['primaryKey']
         sql = "SELECT count(%s) from %s"%(pkey,self._tableName)
         if filters:
@@ -204,6 +226,7 @@ class StarsEventTable(StarsTable):
             sql = sql.replace("SELECT ","SELECT %s,"%groupby)
         return self._db.conn.execute(sql).fetchall()
     def group_by(self,field,filt=None):
+        print "DeprecationWarning"
         sql = "SELECT %s,count(*) from %s"%(field, self._tableName)
         sql2= " GROUP BY %s"%(field)
         if filt:
@@ -211,7 +234,70 @@ class StarsEventTable(StarsTable):
             return self._db.conn.execute(sql+sql2,filt[1]).fetchall()
         else:
             return self._db.conn.execute(sql+sql2).fetchall()
+class StarsTableFilter(object):
+    """
+    Filter a StarsTable by its attributes.
 
+    modeled after target1_ESDA.js:Filters
+    """
+    MAX_LEN = 25
+    def __init__(self, parent_table):
+        self.parent = parent_table
+        self.ranges = {}
+        self.values = {}
+        self.range_field = None
+        if 'spec' in parent_table.meta:
+            fields = parent_table.meta['spec']
+            for field in fields:
+                if fields[field][0].upper() == 'D':
+                    # use first range field found as the default range field.
+                    if not self.range_field:
+                        self.range_field = field
+                    self.ranges[field] = self.parent[field].range
+                # equality filters are not implemented yet
+                #else:
+                #    values = self.parent[field].toset()
+                #    if len(values) <= self.MAX_LEN:
+                #        self.values[field] = values
+    def setRangeField(self,field):
+        if field in self.ranges:
+            self.range_field = field
+        else:
+            raise KeyError,field
+    def step(self, window = datetime.timedelta(days=120), step = datetime.timedelta(days=30), direction = "FORWARD", group_by=None):
+        """
+        Returns a new Series Object
+
+        If direction is "FORWARD" the first event is guaranteed to be included.
+        If direction is "BACKWARD" the last event is guaranteed to be included, the last time period will be returned first.
+
+        Arguments
+        ---------
+        window -- datetime.timedelta -- size of window to collect events
+        step -- datetime.timedelta -- how much to move the window each step
+        direction -- "FORWARD" or "BACKWARD"
+        group_by -- field_name -- If not none, GROUP BY field_name.
+        """
+        if self.range_field:
+            name = self.range_field
+            filt = "%s >= ? AND %s < ?"%(name,name)
+            t_0,t_end = self.ranges[name]
+            if direction == 'BACKWARD':
+                window_end = t_end
+                window_begin = t_end-window
+                while window_begin >= t_0:
+                    yield filt,[window_begin,window_end]
+                    window_begin -= step
+                    window_end -= step
+            else:
+                window_begin = t_0
+                window_end = t_0+window
+                while window_end <= t_end:
+                    yield filt,[window_begin,window_end]
+                    window_begin += step
+                    window_end += step
+        else:
+            raise ValueError, "No range field is not set"
 class StarsDatabase(object):
     """
     Models a Stars Database,

@@ -8,6 +8,53 @@ def rcolor():
     randint = random.randint
     return randint(0,255), randint(0,255), randint(0,255)
 
+class SqlDBF(object):
+    """
+    Helper Class for Sqlite tables, not really a layer.
+
+    TODO: Move this.
+
+    Example:
+    >>> db = SqlDBF(table)
+    >>> len(db)
+    60
+    >>> db[:5]
+    [0, 1, 2, 3, 4]
+    """
+    def __init__(self,table):
+        self.table = table
+        self.n = table.meta['n']
+        self.header = table.meta['header']
+        self.field_spec = [table.meta['spec'][key] for key in self.header]
+    def __len__(self):
+        return self.n
+    def __getitem__(self,key):
+        if issubclass(type(key), basestring):
+            raise TypeError, "index should be int or slice"
+        if issubclass(type(key), int) or isinstance(key, slice):
+            rows = key
+            cols = None
+        elif len(key) > 2:
+            raise TypeError, "DataTables support two dimmensional slicing,  % d slices provided"    % len(key)
+        elif len(key) == 2:
+            rows, cols = key
+        else:
+            raise TypeError, "Key: % r,  is confusing me.  I don't know what to do"% key
+        if isinstance(rows, slice):
+            row_start, row_stop, row_step = rows.indices(len(self))
+            data = self.table.rows()[row_start, row_stop, row_step]
+        else:
+            data = self.table.rows()[ slice(rows).indices(len(self))[1] ]
+        if cols is not None:
+            if isinstance(cols, slice):
+                col_start, col_stop, col_step = cols.indices(len(data[0]))
+                data = [r[col_start:col_stop:col_step] for r in data]
+            else:
+                #col_start, col_stop, col_step = cols, cols+1, 1
+                data = [r[cols] for r in data]
+        return data
+
+    
 class NullDBF(object):
     """
     Helper Class for Shapefiles with No DBF, not really a layer.
@@ -166,6 +213,18 @@ class PointLayer(BaseLayer):
         self._data['data'] = points
         self._data['extent'] = pysal.cg.get_bounding_box(points)
         self._locator = pysal.cg.PointLocator(points)
+class EventLayer(PointLayer):
+    """
+    Represents a collection of Events
+    """
+    def __init__(self,stars_evt_table):
+        self.table = table = stars_evt_table
+        table._fields = "geom"
+        points = [x[0] for x in table.rows()]
+        PointLayer.__init__(self, points)
+    def set_step(self,n):
+        self.data = [x[0] for x in self.table.period(n)]
+        
 class ScatterLayer(BaseLayer):
     """
     Represents a collection of 2 vectors
