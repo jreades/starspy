@@ -38,6 +38,7 @@ class Table_MetaData(dict):
         obj['title'] = os.path.splitext(os.path.basename(dbf.dataPath))[0]
         obj['sources'] = [dbf.dataPath]
         obj['header'] = dbf.header
+        obj['spec'] = dict(zip(dbf.header,dbf.field_spec))
         obj['n'] = len(dbf)
         return obj
     @classmethod
@@ -91,6 +92,8 @@ def spec2type(spec):
             return "REAL"
     elif t.lower()=='f':
         return "REAL"
+    elif t.lower()=='d':
+        return "DATE"
     return "TEXT"
 
 # Load SQL Adapters/Converters
