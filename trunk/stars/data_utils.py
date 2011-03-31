@@ -9,7 +9,26 @@ import os
 import json
 import cPickle
 
-__all__ = ["Table_MetaData", "createTableFromSHP"]
+__all__ = ["Table_MetaData", "createTableFromSHP","time_step","xtime_step"]
+
+def time_step(t_0,t_end,window,step):
+    """ Return a list of a date pairs, marking the beginning and end of each step. """
+    periods = []
+    window_end = t_end
+    window_begin = t_end-window
+    while window_begin >= t_0:
+        periods.append((window_begin,window_end))
+        window_begin -= step
+        window_end -= step
+    return periods
+def xtime_step(t_0,t_end,window,step):
+    """ Return a list of a date pairs, marking the beginning and end of each step. """
+    window_end = t_end
+    window_begin = t_end-window
+    while window_begin >= t_0:
+        yield (window_begin,window_end)
+        window_begin -= step
+        window_end -= step
 
 def pysalShapeType2name(typ):
     if typ == pysal.cg.Point: return "point"
@@ -46,7 +65,8 @@ class Table_MetaData(dict):
         obj = cls.populate_from_dbf(dbf)
         obj['geom_type'] = pysalShapeType2name(shp.type)
         obj['sources'] = [shp.dataPath,obj['sources']]
-        obj['header'] = dbf.header+[obj['geom_type']]
+        obj['header'] = dbf.header+['geom']
+        obj['spec']['geom'] = ('C',1,0)
         return obj
 
 def createTableFromSHP(conn, tableName, shp, dbf, primaryKey = "stars_oid"):
