@@ -40,6 +40,10 @@ class layerPropFrame(mapview_xrc.xrcLayerPropFrame):
 
         self.dispatch = d = {}
         d['classificationApply'] = self.run
+        d['eventsApplyButton'] = self.events_set
+        d['eventEventsTable'] = self.events_table_set
+        d['animateButton'] = self.animate
+        d['animateSlider'] = self.animateMan
     def evtDispatch(self,evtName,evt):
         evtName,widgetName = evtName.rsplit('_',1)
         if widgetName in self.dispatch:
@@ -53,6 +57,54 @@ class layerPropFrame(mapview_xrc.xrcLayerPropFrame):
         self.classificationMethod.Select(0)
         self.classificationClasses.SetItems(map(str,range(3,11)))
         self.classificationClasses.Select(2)
+
+        if type(self.layer) == layers.RegionLayer:
+            evtTables = [t.meta['title'] for t in self.layer.table._db.event_tables]
+            self.eventEventsTable.SetItems(evtTables)
+            self.eventRegionsJoinField.SetItems(self.layer.table.meta['header'])
+            if hasattr(mdl.table,'_evtTable'):
+                print "has evts!"
+    def events_table_set(self,evtName=None,evt=None,value=None):
+        tbl_id = self.eventEventsTable.GetSelection()
+        if tbl_id >= 0:
+            evtTable = self.layer.table._db.event_tables[tbl_id]
+            self.eventEventsJoinField.SetItems(evtTable.meta['header'])
+    def animateMan(self,evtName=None,evt=None,value=None):
+        n = self.layer.num_periods
+        if self.animateSlider.GetMax() != n:
+            self.animateSlider.SetMax(n)
+        n = self.animateSlider.GetValue()
+        self.layer.set_step(n)
+        a,b = self.layer.periods[n]
+        self.animateLabel.SetLabel("%s -- %s"%(a.isoformat(),b.isoformat()))
+    def animate(self,evtName=None,evt=None,value=None):
+        n = self.layer.num_periods
+        self.animateSlider.SetMax(n)
+        for t in range(n):
+            self.animateSlider.SetValue(t)
+            self.layer.set_step(t)
+            a,b = self.layer.periods[t]
+            self.animateLabel.SetLabel("%s -- %s"%(a.isoformat(),b.isoformat()))
+            wx.Yield()
+            
+    def events_set(self,evtName=None,evt=None,value=None):
+        tbl_id = self.eventEventsTable.GetSelection()
+        evtJoinField_ID = self.eventEventsJoinField.GetSelection()
+        rgnJoinField_ID = self.eventRegionsJoinField.GetSelection()
+        if tbl_id >= 0 and evtJoinField_ID >= 0 and rgnJoinField_ID >=0:
+            r = self.layer.table
+            rjf = r.meta['header'][rgnJoinField_ID]
+            e = r._db.event_tables[tbl_id]
+            ejf = e.meta['header'][evtJoinField_ID]
+            try:
+                r.set_events(e,rjf,ejf)
+                print "events set"
+                self.update(self.layer)
+            except:
+                print "failed"
+                return False
+        print "not ready."
+        return False
     def run(self,evtName=None,evt=None,value=None):
         y = self.layer.data_table.by_col(self.classificationAttribute.GetStringSelection())
         y = numpy.array(y)
@@ -295,6 +347,8 @@ class mapFrame(mapview_xrc.xrcMapFrame):
             if not hasattr(layer,'propsView'):
                 print "Create Props View"
                 layer.propsView = layerPropFrame(self,layer)
+                if type(layer) != layers.RegionLayer:
+                    layer.propsView.layerBook.RemovePage(1)
             layer.propsView.Show()
             layer.propsView.Raise()
             

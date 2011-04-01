@@ -276,17 +276,134 @@ class xrcLayerPropFrame(wx.Frame):
         self.PostCreate(pre)
 
         # Define variables for the controls, bind event handlers
+        self.layerBook = xrc.XRCCTRL(self, "layerBook")
         self.classificationAttribute = xrc.XRCCTRL(self, "classificationAttribute")
         self.classificationMethod = xrc.XRCCTRL(self, "classificationMethod")
         self.classificationClasses = xrc.XRCCTRL(self, "classificationClasses")
+        self.eventsPage = xrc.XRCCTRL(self, "eventsPage")
+        self.eventEventsTable = xrc.XRCCTRL(self, "eventEventsTable")
+        self.eventEventsJoinField = xrc.XRCCTRL(self, "eventEventsJoinField")
+        self.eventRegionsJoinField = xrc.XRCCTRL(self, "eventRegionsJoinField")
+        self.eventsApplyButton = xrc.XRCCTRL(self, "eventsApplyButton")
+        self.timePage = xrc.XRCCTRL(self, "timePage")
+        self.t0Slider = xrc.XRCCTRL(self, "t0Slider")
+        self.t0Textctrl = xrc.XRCCTRL(self, "t0Textctrl")
+        self.tEndSlider = xrc.XRCCTRL(self, "tEndSlider")
+        self.tEndTextctrl = xrc.XRCCTRL(self, "tEndTextctrl")
+        self.windowSlider = xrc.XRCCTRL(self, "windowSlider")
+        self.windowTextctrl = xrc.XRCCTRL(self, "windowTextctrl")
+        self.stepSlider = xrc.XRCCTRL(self, "stepSlider")
+        self.stepTextctrl = xrc.XRCCTRL(self, "stepTextctrl")
+        self.timeApply = xrc.XRCCTRL(self, "timeApply")
+        self.animateLabel = xrc.XRCCTRL(self, "animateLabel")
+        self.animateSlider = xrc.XRCCTRL(self, "animateSlider")
+        self.animateButton = xrc.XRCCTRL(self, "animateButton")
 
         self.Bind(wx.EVT_BUTTON, self.OnButton_classificationApply, id=xrc.XRCID('classificationApply'))
+        self.Bind(wx.EVT_CHOICE, self.OnChoice_eventEventsTable, self.eventEventsTable)
+        self.Bind(wx.EVT_BUTTON, self.OnButton_eventsApplyButton, self.eventsApplyButton)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_t0Slider, self.t0Slider)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_t0Slider, self.t0Slider)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_tEndSlider, self.tEndSlider)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_tEndSlider, self.tEndSlider)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_windowSlider, self.windowSlider)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_windowSlider, self.windowSlider)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_stepSlider, self.stepSlider)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_stepSlider, self.stepSlider)
+        self.Bind(wx.EVT_BUTTON, self.OnButton_timeApply, self.timeApply)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_animateSlider, self.animateSlider)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll_animateSlider, self.animateSlider)
+        self.Bind(wx.EVT_BUTTON, self.OnButton_animateButton, self.animateButton)
 
 #!XRCED:begin-block:xrcLayerPropFrame.OnButton_classificationApply
     def OnButton_classificationApply(self, evt):
         # Replace with event handler code
         print "OnButton_classificationApply()"
 #!XRCED:end-block:xrcLayerPropFrame.OnButton_classificationApply        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnChoice_eventEventsTable
+    def OnChoice_eventEventsTable(self, evt):
+        # Replace with event handler code
+        print "OnChoice_eventEventsTable()"
+#!XRCED:end-block:xrcLayerPropFrame.OnChoice_eventEventsTable        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnButton_eventsApplyButton
+    def OnButton_eventsApplyButton(self, evt):
+        # Replace with event handler code
+        print "OnButton_eventsApplyButton()"
+#!XRCED:end-block:xrcLayerPropFrame.OnButton_eventsApplyButton        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_t0Slider
+    def OnScroll_t0Slider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_t0Slider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_t0Slider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_t0Slider
+    def OnScroll_t0Slider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_t0Slider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_t0Slider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_tEndSlider
+    def OnScroll_tEndSlider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_tEndSlider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_tEndSlider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_tEndSlider
+    def OnScroll_tEndSlider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_tEndSlider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_tEndSlider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_windowSlider
+    def OnScroll_windowSlider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_windowSlider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_windowSlider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_windowSlider
+    def OnScroll_windowSlider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_windowSlider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_windowSlider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_stepSlider
+    def OnScroll_stepSlider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_stepSlider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_stepSlider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_stepSlider
+    def OnScroll_stepSlider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_stepSlider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_stepSlider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnButton_timeApply
+    def OnButton_timeApply(self, evt):
+        # Replace with event handler code
+        print "OnButton_timeApply()"
+#!XRCED:end-block:xrcLayerPropFrame.OnButton_timeApply        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_animateSlider
+    def OnScroll_animateSlider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_animateSlider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_animateSlider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnScroll_animateSlider
+    def OnScroll_animateSlider(self, evt):
+        # Replace with event handler code
+        print "OnScroll_animateSlider()"
+#!XRCED:end-block:xrcLayerPropFrame.OnScroll_animateSlider        
+
+#!XRCED:begin-block:xrcLayerPropFrame.OnButton_animateButton
+    def OnButton_animateButton(self, evt):
+        # Replace with event handler code
+        print "OnButton_animateButton()"
+#!XRCED:end-block:xrcLayerPropFrame.OnButton_animateButton        
 
 
 
@@ -651,6 +768,296 @@ def __init_resources():
         <selected>1</selected>
       </object>
       <object class="notebookpage">
+        <object class="wxPanel" name="eventsPage">
+          
+          <XRCED>
+            <assign_var>1</assign_var>
+          </XRCED>
+          <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Events Table</label>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxChoice" name="eventEventsTable">
+                    <XRCED>
+                      <events>EVT_CHOICE</events>
+                      <assign_var>1</assign_var>
+                    </XRCED>
+                  </object>
+                  <flag>wxALL|wxALIGN_RIGHT</flag>
+                  <border>5</border>
+                </object>
+                <orient>wxHORIZONTAL</orient>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Events Join Field</label>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxChoice" name="eventEventsJoinField">
+                    <XRCED>
+                      <assign_var>1</assign_var>
+                    </XRCED>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <orient>wxHORIZONTAL</orient>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Regions Join Field</label>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxChoice" name="eventRegionsJoinField">
+                    <XRCED>
+                      <assign_var>1</assign_var>
+                    </XRCED>
+                  </object>
+                  <flag>wxALL|wxALIGN_CENTRE</flag>
+                  <border>5</border>
+                </object>
+                <orient>wxHORIZONTAL</orient>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxButton" name="eventsApplyButton">
+                <label>Apply</label>
+                <XRCED>
+                  <events>EVT_BUTTON</events>
+                  <assign_var>1</assign_var>
+                </XRCED>
+              </object>
+              <flag>wxRIGHT|wxALL</flag>
+              <border>5</border>
+            </object>
+          </object>
+        </object>
+        <label>Events</label>
+      </object>
+      <object class="notebookpage">
+        <object class="wxPanel" name="timePage">
+          <object class="wxBoxSizer">
+            
+            <object class="sizeritem">
+              <object class="wxStaticBoxSizer">
+                <label>Time</label>
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>t_0</label>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxSlider" name="t0Slider">
+                        <XRCED>
+                          <events>EVT_SCROLL|EVT_SCROLL</events>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="t0Textctrl">
+                        <style>wxTE_READONLY</style>
+                        <XRCED>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL</flag>
+                      <border>5</border>
+                    </object>
+                    <orient>wxHORIZONTAL</orient>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>t_end</label>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxSlider" name="tEndSlider">
+                        <value>100</value>
+                        <min>0</min>
+                        <max>100</max>
+                        <XRCED>
+                          <events>EVT_SCROLL|EVT_SCROLL</events>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="tEndTextctrl">
+                        <style>wxTE_READONLY</style>
+                        <XRCED>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL</flag>
+                      <border>5</border>
+                    </object>
+                    <orient>wxHORIZONTAL</orient>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Window</label>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxSlider" name="windowSlider">
+                        <value>90</value>
+                        <min>0</min>
+                        <max>365</max>
+                        <XRCED>
+                          <events>EVT_SCROLL|EVT_SCROLL</events>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="windowTextctrl">
+                        <style>wxTE_READONLY</style>
+                        <XRCED>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL</flag>
+                      <border>5</border>
+                    </object>
+                    <orient>wxHORIZONTAL</orient>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Step</label>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxSlider" name="stepSlider">
+                        <value>30</value>
+                        <min>1</min>
+                        <max>365</max>
+                        <XRCED>
+                          <events>EVT_SCROLL|EVT_SCROLL</events>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="stepTextctrl">
+                        <style>wxTE_READONLY</style>
+                        <XRCED>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL</flag>
+                      <border>5</border>
+                    </object>
+                    <orient>wxHORIZONTAL</orient>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxButton" name="timeApply">
+                    <label>Apply</label>
+                    <XRCED>
+                      <events>EVT_BUTTON</events>
+                      <assign_var>1</assign_var>
+                    </XRCED>
+                  </object>
+                  <flag>wxALIGN_RIGHT</flag>
+                </object>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticBoxSizer">
+                <label>Animate</label>
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="animateLabel">
+                    <label>1/1/2005 -- 12/30/2009</label>
+                    <XRCED>
+                      <assign_var>1</assign_var>
+                    </XRCED>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <object class="sizeritem">
+                      <object class="wxSlider" name="animateSlider">
+                        <XRCED>
+                          <events>EVT_SCROLL|EVT_SCROLL</events>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                      <flag>wxALL|wxALIGN_CENTRE</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="animateButton">
+                        <label>Play</label>
+                        <XRCED>
+                          <events>EVT_BUTTON</events>
+                          <assign_var>1</assign_var>
+                        </XRCED>
+                      </object>
+                    </object>
+                    <orient>wxHORIZONTAL</orient>
+                  </object>
+                </object>
+              </object>
+            </object>
+            <orient>wxVERTICAL</orient>
+          </object>
+          <XRCED>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>Time</label>
+      </object>
+      <object class="notebookpage">
         <object class="wxPanel">
           <object class="wxBoxSizer">
             <orient>wxVERTICAL</orient>
@@ -682,6 +1089,9 @@ def __init_resources():
         </object>
         <label>General</label>
       </object>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
     </object>
   </object>
 </resource>'''

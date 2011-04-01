@@ -38,7 +38,9 @@ class MapFrameApp(wx.App):
         self.db = StarsDatabase("../test.starsdb")
         evts, regions = self.db.tables
         self.evtLayer = layers.EventLayer(evts)
+        self.regionLayer = layers.RegionLayer(regions)
         self.frame.model.addLayer(self.evtLayer)
+        self.frame.model.addLayer(self.regionLayer)
         self.frame.Bind(wx.EVT_CHAR,self.onKey)
 
         return True

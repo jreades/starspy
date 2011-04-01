@@ -14,21 +14,21 @@ __all__ = ["Table_MetaData", "createTableFromSHP","time_step","xtime_step"]
 def time_step(t_0,t_end,window,step):
     """ Return a list of a date pairs, marking the beginning and end of each step. """
     periods = []
-    window_end = t_end
-    window_begin = t_end-window
-    while window_begin >= t_0:
+    window_end = t_0+window
+    window_begin = t_0
+    while window_begin <= t_end: #window_end will run off the end of the dates
         periods.append((window_begin,window_end))
-        window_begin -= step
-        window_end -= step
+        window_begin += step
+        window_end += step
     return periods
 def xtime_step(t_0,t_end,window,step):
     """ Return a list of a date pairs, marking the beginning and end of each step. """
-    window_end = t_end
-    window_begin = t_end-window
-    while window_begin >= t_0:
+    window_end = t_0+window
+    window_begin = t_0
+    while window_begin <= t_end: #window_end will run off the end of the dates
         yield (window_begin,window_end)
-        window_begin -= step
-        window_end -= step
+        window_begin += step
+        window_end += step
 
 def pysalShapeType2name(typ):
     if typ == pysal.cg.Point: return "point"
