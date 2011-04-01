@@ -163,8 +163,27 @@ class StarsRegionTable(StarsTable):
         self._evtTable = evtTable
         self._evtJoinField = evtJoinField
         self._regionJoinField = regionJoinField
+
+        d = {}
+        d['evtTable'] = evtTable._tableName
+        d['evtJoinField'] = evtJoinField
+        d['regionJoinField'] = regionJoinField
+        meta = self.meta
+        meta['evtJoin'] = d
+        self.meta = meta
+    @property
+    def evtTable(self):
+        if hasattr(self,'_evtTable'):
+            return self._evtTable
+        elif 'evtJoin' in self.meta:
+            join = self.meta['evtJoin']
+            self._evtTable = StarsEventTable(self._db,join['evtTable'])
+            self._evtJoinField = join['evtJoinField']
+            self._regionJoinField = join['regionJoinField']
+            return self._evtTable
+        return None
     def event_count_by_period(self):
-        if not hasattr(self,'_evtTable'):
+        if not self.evtTable:
             raise ValueError, "No event table set"
         bridge = self.field_to_oid(self._regionJoinField,True)
         order = self.get_oid()

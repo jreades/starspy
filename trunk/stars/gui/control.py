@@ -72,14 +72,14 @@ class layerPropFrame(mapview_xrc.xrcLayerPropFrame):
     def animateMan(self,evtName=None,evt=None,value=None):
         n = self.layer.num_periods
         if self.animateSlider.GetMax() != n:
-            self.animateSlider.SetMax(n)
+            self.animateSlider.SetMax(n-1)
         n = self.animateSlider.GetValue()
         self.layer.set_step(n)
         a,b = self.layer.periods[n]
         self.animateLabel.SetLabel("%s -- %s"%(a.isoformat(),b.isoformat()))
     def animate(self,evtName=None,evt=None,value=None):
         n = self.layer.num_periods
-        self.animateSlider.SetMax(n)
+        self.animateSlider.SetMax(n-1)
         for t in range(n):
             self.animateSlider.SetValue(t)
             self.layer.set_step(t)

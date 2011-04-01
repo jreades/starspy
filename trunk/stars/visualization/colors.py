@@ -1,4 +1,5 @@
 from collections import namedtuple
+from tkStars.color import colorSchemes
 class Color(namedtuple('Color',['red','green','blue','alpha'])):
     """
     Abstract representation of a color
@@ -89,6 +90,12 @@ class ColorScheme(list):
             elif type(key) == slice:
                 return [self.__getitem__(x) for x in range(key.start,key.stop,key.step)]
 
+def brewer(k,device="desktop",legendType="sequential"):
+    cs = colorSchemes.getScheme(device,legendType,k)
+    if cs:
+        return ColorScheme(cs.rgb)
+    else:
+        return fade(k)
 def fade(k=1, left=(255,128,0), right=(0,255,0), background=(0,0,1), borders=(0,0,0)):
     colors = []
     if k == 1:
