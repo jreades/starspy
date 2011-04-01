@@ -92,7 +92,12 @@ class LayersControl(treemixin.DragAndDrop,treemixin.VirtualTree,wx.TreeCtrl):
                 if k == 0:
                     return "x[i] <= %.3f"%layer.classification.bins[k]
                 else:
-                    return "%.3f < x[i] <= %.3f"%(layer.classification.bins[k-1],layer.classification.bins[k])
+                    try:
+                        return "%.3f < x[i] <= %.3f"%(layer.classification.bins[k-1],layer.classification.bins[k])
+                    except:
+                        print k,layer.classification.bins
+                        return "No Label"
+                    
         return ""
     def OnGetItemImage(self,index,which=0,column=0):
         if index in self.__layerColor2Image:

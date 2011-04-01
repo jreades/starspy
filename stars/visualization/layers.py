@@ -144,7 +144,8 @@ class BaseLayer(AbstractModel):
         if len(value.yb) == len(self.data):
             self._data['classification'] = value
             if value.k != len(self.colors):
-                self.colors = colors.fade(value.k,(0,0,255),(255,0,0))
+                #self.colors = colors.fade(value.k,(0,0,255),(255,0,0))
+                self.colors = colors.brewer(value.k)
         self.update('classification')
     classification = property(fget=__get_classification,fset=__set_classification)
     def __get_colors(self):
@@ -280,7 +281,7 @@ class RegionLayer(PolygonLayer):
         PolygonLayer.__init__(self, polys)
         self.name = table.meta['title']
         self.data_table = NullDBF(table.meta['n'])
-        self.__default_kmeth = "Quantiles"
+        self.__default_kmeth = "Natural_Breaks"
         self.__default_kClasses = 5
         self.__y = None
         self.__cl_cache = {}
@@ -292,8 +293,8 @@ class RegionLayer(PolygonLayer):
             return None #no evt table set.
     @property
     def num_periods(self):
-        if hasattr(self.table,'_evtTable'):
-            return self.table._evtTable.num_periods
+        if self.table.evtTable:
+            return self.table.evtTable.num_periods
         else:
             return 0
     @property
