@@ -137,14 +137,14 @@ class BaseLayer(AbstractModel):
     data = property(fget=__get_data,fset=__set_data)
     def __get_classification(self):
         """
-        The classification should be a standard pysal classifcation object.
+        The classification should be a standard pysal classification object.
         """
         return self._data['classification']
     def __set_classification(self,value):
         if len(value.yb) == len(self.data):
             self._data['classification'] = value
             if value.k != len(self.colors):
-                self.colors = colors.fade(value.k)
+                self.colors = colors.fade(value.k,(0,0,255),(255,0,0))
         self.update('classification')
     classification = property(fget=__get_classification,fset=__set_classification)
     def __get_colors(self):
@@ -226,6 +226,15 @@ class EventLayer(PointLayer):
         self.data_table = NullDBF(table.meta['n'])
     def set_step(self,n):
         self.data = [x[0] for x in self.table.period(n)]
+    @property
+    def num_periods(self):
+        return self.table.num_periods
+    @property
+    def periods(self):
+        if hasattr(self.table,'_periods'):
+            return self.table._periods
+        else:
+            return []
         
 class ScatterLayer(BaseLayer):
     """
@@ -251,7 +260,7 @@ class PolygonLayer(BaseLayer):
     Handles Classifcation
 
     Because it extends AbstractModel,
-      set_classification -> self.update('classifcation') -> map.update(this, 'classification')
+      set_classification -> self.update('classification') -> map.update(this, 'classification')
     i.e. The map adds itself as a listner to the Layer.
     A Scatter plot can also listen to this layer.
     """
@@ -261,6 +270,50 @@ class PolygonLayer(BaseLayer):
         self._data['data'] = polys
         self._data['extent'] = pysal.cg.get_bounding_box(polys)
         self._locator = pysal.cg.PolygonLocator(polys)
+class RegionLayer(PolygonLayer):
+    """
+    Represents a collection of Regions in an SQLITE table.
+    """
+    def __init__(self,stars_region_table):
+        self.table = table = stars_region_table
+        polys = [x[0] for x in table.rows(fields="geom")]
+        PolygonLayer.__init__(self, polys)
+        self.name = table.meta['title']
+        self.data_table = NullDBF(table.meta['n'])
+        self.__default_kmeth = "Quantiles"
+        self.__default_kClasses = 5
+        self.__y = None
+        self.__cl_cache = {}
+    def update_evts(self):
+        try:
+            self.__y = self.table.event_count_by_period()
+            self.__cl_cache = {}
+        except:
+            return None #no evt table set.
+    @property
+    def num_periods(self):
+        if hasattr(self.table,'_evtTable'):
+            return self.table._evtTable.num_periods
+        else:
+            return 0
+    @property
+    def periods(self):
+        if hasattr(self.table,'_evtTable'):
+            return self.table._evtTable._periods
+        else:
+            return []
+    def set_step(self,n):
+        if self.__y != None:
+            if n in self.__cl_cache:
+                self.classification = self.__cl_cache[n]
+            else:
+                y = self.__y[:,n]
+                cl = pysal.esda.mapclassify.kmethods[self.__default_kmeth](y,self.__default_kClasses)
+                self.__cl_cache[n] = cl
+                self.classification = cl
+        else:
+            self.update_evts()
+
 class KernelDensityLayer(BaseLayer):
     """
     Represents a Kernal Density Raster

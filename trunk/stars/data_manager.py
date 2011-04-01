@@ -97,6 +97,23 @@ class StarsTable(object):
     @property
     def type(self):
         return self._db.conn.execute("SELECT table_type FROM tables WHERE table_name=? LIMIT 1",[self._tableName]).fetchone()[0]
+    def make_region_table(self, oid):
+        """
+        Create a regions table from a data table
+        Changes the type of the data_table to "region"
+
+        Attributes
+        ----------
+        oid -- string -- name of the field contain the "order" of the regions
+        """
+        meta = self.meta
+        if oid in meta['header']:
+            meta['oid'] = oid
+            self.meta = meta
+            self._db.conn.execute("UPDATE tables SET table_type='region' WHERE table_name=?",[self._tableName])
+            self._db.conn.commit()
+            return True
+        return False
     def make_event_table(self, time_field):
         """
         Create an events table from a data table
@@ -115,7 +132,53 @@ class StarsTable(object):
             self._db.conn.commit()
             return True
         return False
+    def rows(self,filter=None,filterArgs = [], group_by=None, fields=""):
+        fields = fields if fields else self._fields
+        sql = "SELECT %s FROM %s"%(fields,self._tableName)
+        if filter:
+            sql += " WHERE "+filter
+        if group_by:
+            sql += " GROUP BY "+group_by
+        return self._db.conn.execute(sql,filterArgs).fetchall()
         
+class StarsRegionTable(StarsTable):
+    def get_oid(self):
+        oid_field = self.meta['oid']
+        cur = self._db.conn.execute("SELECT %s FROM %s ORDER BY %s"%(oid_field,self._tableName,oid_field))
+        return [x[0] for x in cur.fetchall()]
+    def field_to_oid(self,field,flip=False):
+        oid_field = self.meta['oid']
+        if flip:
+            cur = self._db.conn.execute("SELECT %s,%s FROM %s"%(oid_field,field,self._tableName))
+        else:
+            cur = self._db.conn.execute("SELECT %s,%s FROM %s"%(field,oid_field,self._tableName))
+        return dict([(a,b) for a,b in cur.fetchall()])
+    def set_events(self,evtTable,evtJoinField,regionJoinField):
+        if evtJoinField not in evtTable.meta['header']:
+            raise ValueError, "evtTable does not contain join field"
+        if regionJoinField not in self.meta['header']:
+            raise ValueError, "This table does not contain join field"
+        if evtTable.type != 'event':
+            raise TypeError, "evtTable is not an a proper StarsEventTable"
+        self._evtTable = evtTable
+        self._evtJoinField = evtJoinField
+        self._regionJoinField = regionJoinField
+    def event_count_by_period(self):
+        if not hasattr(self,'_evtTable'):
+            raise ValueError, "No event table set"
+        bridge = self.field_to_oid(self._regionJoinField,True)
+        order = self.get_oid()
+        n = len(bridge)
+        nt = self._evtTable.num_periods
+        y_by_t = numpy.zeros((n,nt))
+        groupBy = self._evtJoinField
+        euid = self._evtTable.meta['primaryKey'] # event_unique_id
+        fields = "%s,COUNT(%s)"%(groupBy,euid)
+        for t in range(nt):
+            counts = dict(self._evtTable.period(t, groupBy, fields))
+            y = [counts.get(bridge[x],0) for x in order]
+            y_by_t[:,t] = y
+        return y_by_t
 class StarsEventTable(StarsTable):
     """
     Extends the Stars Tables adding special methods to filter and aggregate by date
@@ -141,17 +204,17 @@ class StarsEventTable(StarsTable):
         self.__tEnd = None
         self.__window = datetime.timedelta(days=90)
         self.__step = datetime.timedelta(days=30)
-        self.__periods = None
+        self._periods = None
         self._fields = "*"
     def __set_t0(self,value):
         if value == None:
             self.__t0 = None
-            self.__periods = None
+            self._periods = None
         elif type(value) != datetime.datetime:
             raise TypeError, "Value must be a datetime object."
         else:
             self.__t0 = value
-            self.__periods = None
+            self._periods = None
     def __get_t0(self):
         if not self.__t0:
             self.__t0 = self[self.meta['time_field']].range[0]
@@ -160,12 +223,12 @@ class StarsEventTable(StarsTable):
     def __set_tEnd(self, value):
         if value == None:
             self.__tEnd = None
-            self.__periods = None
+            self._periods = None
         elif type(value) != datetime.datetime:
             raise TypeError, "Value must be a datetime object."
         else:
             self.__tEnd = value
-            self.__periods = None
+            self._periods = None
     def __get_tEnd(self):
         if not self.__tEnd:
             self.__tEnd = self[self.meta['time_field']].range[1]
@@ -176,7 +239,7 @@ class StarsEventTable(StarsTable):
             raise TypeError, "Value must be a timedelta object."
         else:
             self.__window = value
-            self.__periods = None
+            self._periods = None
     def __get_window(self):
         return self.__window
     window = property(__get_window,__set_window)
@@ -185,26 +248,21 @@ class StarsEventTable(StarsTable):
             raise TypeError, "Value must be a timedelta object."
         else:
             self.__step = value
-            self.__periods = None
+            self._periods = None
     def __get_step(self):
         return self.__step
     step = property(__get_step,__set_step)
-    def rows(self,filter=None,filterArgs = []):
-        sql = "SELECT %s FROM %s"%(self._fields,self._tableName)
-        if filter:
-            sql += " WHERE "+filter
-        return self._db.conn.execute(sql,filterArgs).fetchall()
     @property
     def num_periods(self):
-        if not self.__periods:
+        if not self._periods:
             x = self.period(0)
-        return len(self.__periods)
-    def period(self, t):
-        if not self.__periods: #would be better to just calculate the period for t.
-            self.__periods = time_step(self.t_0,self.t_end,self.window,self.step)
+        return len(self._periods)
+    def period(self, t, group_by = None, fields = None):
+        if not self._periods: #would be better to just calculate the period for t.
+            self._periods = time_step(self.t_0,self.t_end,self.window,self.step)
         name = self.meta['time_field']
         filt = "%s >= ? AND %s < ?"%(name,name)
-        return self.rows(filt, self.__periods[t])
+        return self.rows(filt, self._periods[t], group_by, fields)
     @property
     def filter(self):
         print "DeprecationWarning"
@@ -318,26 +376,23 @@ class StarsDatabase(object):
         self.conn.execute("create table IF NOT EXISTS tables (table_name PRIMARY KEY, table_type, source_files, meta table_metadata)")
         self.table_factory = StarsTable.table_factory(self)
         self.evt_table_factory = StarsEventTable.table_factory(self)
-        self.table_dispatch = {"event":StarsEventTable}
+        self.table_dispatch = {"event":StarsEventTable, "region":StarsRegionTable}
     @property
     def tables(self):
-        tables = [x[0] for x in self.conn.execute("SELECT table_name,table_type FROM tables").fetchall()]
         tables = self.conn.execute("SELECT table_name,table_type FROM tables").fetchall()
         return [self.table_dispatch.get(x[1],StarsTable)(self,x[0]) for x in tables]
-        tables = [x[0] for x in self.conn.execute("SELECT table_name FROM tables").fetchall()]
-        return map(self.table_factory, tables)
     @property
     def data_tables(self):
-        tables = [x[0] for x in self.conn.execute("SELECT table_name FROM tables WHERE table_type='data'").fetchall()]
-        return map(self.table_factory, tables)
+        tables = self.conn.execute("SELECT table_name,table_type FROM tables WHERE table_type='data'").fetchall()
+        return [self.table_dispatch.get(x[1],StarsTable)(self,x[0]) for x in tables]
     @property
     def event_tables(self):
-        tables = [x[0] for x in self.conn.execute("SELECT table_name FROM tables WHERE table_type='event'").fetchall()]
-        return map(self.table_factory, tables)
+        tables = self.conn.execute("SELECT table_name,table_type FROM tables WHERE table_type='event'").fetchall()
+        return [self.table_dispatch.get(x[1],StarsTable)(self,x[0]) for x in tables]
     @property
     def region_tables(self):
-        tables = [x[0] for x in self.conn.execute("SELECT table_name FROM tables WHERE table_type='region'").fetchall()]
-        return map(self.table_factory, tables)
+        tables = self.conn.execute("SELECT table_name,table_type FROM tables WHERE table_type='region'").fetchall()
+        return [self.table_dispatch.get(x[1],StarsTable)(self,x[0]) for x in tables]
     def add_table_from_shp(self, shp, dbf):
         """
         Add a generic Table from a shapefile to the project Database.
@@ -369,6 +424,8 @@ class StarsDatabase(object):
         if createTableFromSHP(self.conn, table_name, shp, dbf, pkey):
             meta = Table_MetaData.populate_from_shp(shp, dbf)
             meta['primaryKey'] = pkey
+            meta['header'].append(pkey)
+            meta['spec'][pkey] = ('N',20,0)
             self.conn.execute("INSERT INTO tables VALUES (?,?,?,?)",[table_name, 'data', dbf.dataPath, meta])
             self.conn.commit()
         
