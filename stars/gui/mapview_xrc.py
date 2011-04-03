@@ -406,6 +406,206 @@ class xrcLayerPropFrame(wx.Frame):
 #!XRCED:end-block:xrcLayerPropFrame.OnButton_animateButton        
 
 
+class xrcCanvasFrame(wx.Frame):
+#!XRCED:begin-block:xrcCanvasFrame.PreCreate
+    def PreCreate(self, pre):
+        """ This function is called during the class's initialization.
+        
+        Override it for custom setup before the window is created usually to
+        set additional window styles using SetWindowStyle() and SetExtraStyle().
+        """
+        pass
+        
+#!XRCED:end-block:xrcCanvasFrame.PreCreate
+
+    def __init__(self, parent):
+        # Two stage creation (see http://wiki.wxpython.org/index.cgi/TwoStageCreation)
+        pre = wx.PreFrame()
+        self.PreCreate(pre)
+        get_resources().LoadOnFrame(pre, parent, "CanvasFrame")
+        self.PostCreate(pre)
+
+        # Define variables for the controls, bind event handlers
+        self.mapMenuBar = self.GetMenuBar()
+        self.menuEditCopy = self.GetMenuBar().FindItemById(xrc.XRCID("menuEditCopy"))
+        self.menuLayerZoom = self.GetMenuBar().FindItemById(xrc.XRCID("menuLayerZoom"))
+        self.menuLayerSelectable = self.GetMenuBar().FindItemById(xrc.XRCID("menuLayerSelectable"))
+        self.menuLayerProps = self.GetMenuBar().FindItemById(xrc.XRCID("menuLayerProps"))
+        self.menuLayerRemove = self.GetMenuBar().FindItemById(xrc.XRCID("menuLayerRemove"))
+        self.menuToolPan = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolPan"))
+        self.menuToolZoom = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolZoom"))
+        self.MenuToolExtent = self.GetMenuBar().FindItemById(xrc.XRCID("MenuToolExtent"))
+        self.menuToolSelect = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolSelect"))
+        self.menuToolBrush = self.GetMenuBar().FindItemById(xrc.XRCID("menuToolBrush"))
+        self.menuViewIcons = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewIcons"))
+        self.menuViewText = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewText"))
+        self.menuViewConsole = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewConsole"))
+        self.menuViewTable = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewTable"))
+        self.menuViewLayers = self.GetMenuBar().FindItemById(xrc.XRCID("menuViewLayers"))
+        self.canvasToolBar = xrc.XRCCTRL(self, "canvasToolBar")
+        self.panTool = self.GetToolBar().FindById(xrc.XRCID("panTool"))
+        self.zoomTool = self.GetToolBar().FindById(xrc.XRCID("zoomTool"))
+        self.extentTool = self.GetToolBar().FindById(xrc.XRCID("extentTool"))
+        self.selectTool = self.GetToolBar().FindById(xrc.XRCID("selectTool"))
+        self.brushTool = self.GetToolBar().FindById(xrc.XRCID("brushTool"))
+        self.status = xrc.XRCCTRL(self, "status")
+
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuEditCopy, self.menuEditCopy)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuLayerZoom, self.menuLayerZoom)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuLayerSelectable, self.menuLayerSelectable)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuLayerProps, self.menuLayerProps)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuLayerRemove, self.menuLayerRemove)
+        self.Bind(wx.EVT_MENU_OPEN, self.OnMenu_open_LayerMenu, id=xrc.XRCID('LayerMenu'))
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuToolPan, self.menuToolPan)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuToolZoom, self.menuToolZoom)
+        self.Bind(wx.EVT_MENU, self.OnMenu_MenuToolExtent, self.MenuToolExtent)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuToolSelect, self.menuToolSelect)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuToolBrush, self.menuToolBrush)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewIcons, self.menuViewIcons)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewText, self.menuViewText)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewConsole, self.menuViewConsole)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewTable, self.menuViewTable)
+        self.Bind(wx.EVT_MENU, self.OnMenu_menuViewLayers, self.menuViewLayers)
+        self.Bind(wx.EVT_TOOL, self.OnTool_panTool, self.panTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_zoomTool, self.zoomTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_extentTool, self.extentTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_selectTool, self.selectTool)
+        self.Bind(wx.EVT_TOOL, self.OnTool_brushTool, self.brushTool)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuEditCopy
+    def OnMenu_menuEditCopy(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuEditCopy()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuEditCopy        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuLayerZoom
+    def OnMenu_menuLayerZoom(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuLayerZoom()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuLayerZoom        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuLayerSelectable
+    def OnMenu_menuLayerSelectable(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuLayerSelectable()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuLayerSelectable        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuLayerProps
+    def OnMenu_menuLayerProps(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuLayerProps()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuLayerProps        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuLayerRemove
+    def OnMenu_menuLayerRemove(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuLayerRemove()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuLayerRemove        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_open_LayerMenu
+    def OnMenu_open_LayerMenu(self, evt):
+        # Replace with event handler code
+        print "OnMenu_open_LayerMenu()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_open_LayerMenu        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuToolPan
+    def OnMenu_menuToolPan(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuToolPan()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuToolPan        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuToolZoom
+    def OnMenu_menuToolZoom(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuToolZoom()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuToolZoom        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_MenuToolExtent
+    def OnMenu_MenuToolExtent(self, evt):
+        # Replace with event handler code
+        print "OnMenu_MenuToolExtent()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_MenuToolExtent        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuToolSelect
+    def OnMenu_menuToolSelect(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuToolSelect()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuToolSelect        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuToolBrush
+    def OnMenu_menuToolBrush(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuToolBrush()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuToolBrush        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuViewIcons
+    def OnMenu_menuViewIcons(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewIcons()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuViewIcons        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuViewText
+    def OnMenu_menuViewText(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewText()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuViewText        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuViewConsole
+    def OnMenu_menuViewConsole(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewConsole()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuViewConsole        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuViewTable
+    def OnMenu_menuViewTable(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewTable()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuViewTable        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnMenu_menuViewLayers
+    def OnMenu_menuViewLayers(self, evt):
+        # Replace with event handler code
+        print "OnMenu_menuViewLayers()"
+#!XRCED:end-block:xrcCanvasFrame.OnMenu_menuViewLayers        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnTool_panTool
+    def OnTool_panTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_panTool()"
+#!XRCED:end-block:xrcCanvasFrame.OnTool_panTool        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnTool_zoomTool
+    def OnTool_zoomTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_zoomTool()"
+#!XRCED:end-block:xrcCanvasFrame.OnTool_zoomTool        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnTool_extentTool
+    def OnTool_extentTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_extentTool()"
+#!XRCED:end-block:xrcCanvasFrame.OnTool_extentTool        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnTool_selectTool
+    def OnTool_selectTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_selectTool()"
+#!XRCED:end-block:xrcCanvasFrame.OnTool_selectTool        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnTool_brushTool
+    def OnTool_brushTool(self, evt):
+        # Replace with event handler code
+        print "OnTool_brushTool()"
+#!XRCED:end-block:xrcCanvasFrame.OnTool_brushTool        
+
+#!XRCED:begin-block:xrcCanvasFrame.OnClose
+    def OnClose(self, evt):
+        # Replace with event handler code
+        print "OnClose()"
+#!XRCED:end-block:xrcCanvasFrame.OnClose        
+
+
 
 
 # ------------------------ Resource data ----------------------
@@ -769,7 +969,6 @@ def __init_resources():
       </object>
       <object class="notebookpage">
         <object class="wxPanel" name="eventsPage">
-          
           <XRCED>
             <assign_var>1</assign_var>
           </XRCED>
@@ -857,7 +1056,6 @@ def __init_resources():
       <object class="notebookpage">
         <object class="wxPanel" name="timePage">
           <object class="wxBoxSizer">
-            
             <object class="sizeritem">
               <object class="wxStaticBoxSizer">
                 <label>Time</label>
@@ -1093,6 +1291,216 @@ def __init_resources():
         <assign_var>1</assign_var>
       </XRCED>
     </object>
+  </object>
+  <object class="wxFrame" name="CanvasFrame">
+    <object class="wxMenuBar" name="mapMenuBar">
+      <object class="wxMenu" name="EditMenu">
+        <label>Edit</label>
+        <object class="wxMenuItem" name="menuEditCopy">
+          <label>Copy\tCtrl-C</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+      </object>
+      <object class="wxMenu" name="LayerMenu">
+        <object class="wxMenuItem" name="menuLayerZoom">
+          <label>Zoom To Layer</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerSelectable">
+          <label>Selectable</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerProps">
+          <label>Layer Properties</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerRemove">
+          <label>Remove Layer</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>Layer</label>
+        <enabled>0</enabled>
+        <XRCED>
+          <events>EVT_MENU_OPEN</events>
+        </XRCED>
+      </object>
+      <object class="wxMenu" name="ToolMenu">
+        <object class="wxMenuItem" name="menuToolPan">
+          <label>Pan Tool\tCtrl-1</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuToolZoom">
+          <label>Zoom Tool\tCtrl-2</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="MenuToolExtent">
+          <label>Zoom to Extent\tCtrl-3</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="menuToolSelect">
+          <label>Select Tool\tCtrl-4</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuToolBrush">
+          <label>Brushing\tCtrl-5</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>Tools</label>
+      </object>
+      <object class="wxMenu" name="ViewMenu">
+        <object class="wxMenuItem" name="menuViewIcons">
+          <label>Show ToolBar Icons</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuViewText">
+          <label>Show Toolbar Names</label>
+          <checkable>1</checkable>
+          <checked>1</checked>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="menuViewConsole">
+          <label>Console\tCtrl-Shift-P</label>
+          <help>help</help>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuViewTable">
+          <label>Show Attribute Table\tCtrl-T</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>View</label>
+        <object class="wxMenuItem" name="menuViewLayers">
+          <label>Show Layers\tCtrl-L</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+      </object>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <object class="wxToolBar" name="canvasToolBar">
+      <object class="tool" name="panTool">
+        <bitmap>icons_tbpan_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Pan</tooltip>
+        <label>Pan</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="zoomTool">
+        <bitmap>icons_tbzoomin_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Zoom</tooltip>
+        <label>Zoom</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="extentTool">
+        <bitmap>icons_mActionZoomFullExtent_png</bitmap>
+        <tooltip>Zoom to Extent</tooltip>
+        <label>Extent</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="selectTool">
+        <bitmap>icons_mActionSelectRectangle_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Rectangle Select</tooltip>
+        <label>Select</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="brushTool">
+        <bitmap>icons_brushing_png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Enable Brushing</tooltip>
+        <label>Brush</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      
+      
+      <style>wxTB_DOCKABLE|wxTB_TEXT</style>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <size>650,500</size>
+    <object class="wxStatusBar" name="status">
+      <fields>4</fields>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <title>STARS -- Canvas View</title>
+    <XRCED>
+      <events>EVT_CLOSE</events>
+    </XRCED>
   </object>
 </resource>'''
 

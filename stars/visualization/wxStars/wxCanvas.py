@@ -130,8 +130,8 @@ if __name__=="__main__":
     data = numpy.array(data)
     cl = pysal.esda.mapclassify.Natural_Breaks(data,k=5)
     polys.classification = cl
-    colors = dict([(i,[random.randint(0,255) for i in range(3)]) for i in range(5)])
-    polys.colors = colors
+    #colors = dict([(i,[random.randint(0,255) for i in range(3)]) for i in range(5)])
+    #polys.colors = colors
 
     class myApp(wx.App):
         def OnInit(self):
