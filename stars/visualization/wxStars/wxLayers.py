@@ -341,4 +341,6 @@ class wxCachedPolygonLayer:
         gc.StrokePath(pth)
         return buff
 
-wxLayers = {'PolygonLayer':wxPolygonLayer,'PointLayer':wxPointLayer,'KernelDensityLayer':wxKernelDensityLayer, 'ScatterLayer':wxScatterLayer}
+from wxLayers2 import wxTimeSeriesPlot
+
+wxLayers = {'PolygonLayer':wxPolygonLayer,'PointLayer':wxPointLayer,'KernelDensityLayer':wxKernelDensityLayer, 'ScatterLayer':wxScatterLayer, 'TimeSeriesPlot':wxTimeSeriesPlot}

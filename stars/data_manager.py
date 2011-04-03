@@ -12,6 +12,7 @@ import numpy
 import pysal
 import sqlite3
 from data_utils import Table_MetaData, createTableFromSHP, time_step
+from util import MetaData
 from collections import deque
 import datetime
 
@@ -193,11 +194,20 @@ class StarsRegionTable(StarsTable):
         groupBy = self._evtJoinField
         euid = self._evtTable.meta['primaryKey'] # event_unique_id
         fields = "%s,COUNT(%s)"%(groupBy,euid)
+        meta = []
         for t in range(nt):
             counts = dict(self._evtTable.period(t, groupBy, fields))
             y = [counts.get(bridge[x],0) for x in order]
             y_by_t[:,t] = y
-        return y_by_t
+
+            m = MetaData()
+            t0,t1 = self._evtTable._periods[t]
+            m['begin'] = t0
+            m['end'] = t1
+            m['label'] = t0.isoformat() + " through " + t1.isoformat()
+            m['t_step'] = t
+            meta.append(m)
+        return y_by_t, meta
 class StarsEventTable(StarsTable):
     """
     Extends the Stars Tables adding special methods to filter and aggregate by date

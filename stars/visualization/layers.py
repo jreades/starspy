@@ -237,6 +237,72 @@ class EventLayer(PointLayer):
         else:
             return []
         
+class TimeSeriesPlot(BaseLayer):
+    """
+    Models a Stars Time Series.
+
+    Time Series are STATIC (for now) aggregations of events over space and time.
+    """
+    def __init__(self, y_by_t, meta):
+        BaseLayer.__init__(self)
+
+        self.y_by_t = y_by_t
+        self.meta = meta
+
+        self._data['type'] = 'TimeSeriesPlot'
+        self._data['data'] = y_by_t
+
+        self._locator = None
+        series,periods = y_by_t.shape
+        self.__k = 5
+        self.__k_method = pysal.esda.mapclassify.Natural_Breaks
+        self.i, self.j = y_by_t.shape
+        self._t = self.j-1 # default to last time period
+        self.__cl_by_t = None
+        self.regionLayer = None
+    def __len__(self):
+        return 1
+    @property
+    def extent(self):
+        return pysal.cg.Rectangle(0,self.y_by_t.min(),self.j,self.y_by_t.max())
+
+    @property
+    def cl_by_t(self):
+        if not self.__cl_by_t:
+            cl = [0 for x in range(self.j)]
+            for j in range(self.j):
+                print "classify:",j
+                cl[j] = self.k_method(self.y_by_t[:, j], self.k)
+            self.__cl_by_t = cl
+        return self.__cl_by_t
+
+    def __set_k_method(self, value):
+        self.__k_method = value
+        self.__cl_by_t = None
+        self.update("classification")
+    def __get_k_method(self):
+        return self.__k_method
+    k_method = property(__get_k_method, __set_k_method)
+    def __set_k(self,value):
+        self.__k = value
+        self.__cl_by_t = None
+        self.update("classification")
+    def __get_k(self):
+        return self.__k
+    k = property(__get_k, __set_k)
+
+    def __set_t(self, value):
+        if value >= 0 and value < self.j:
+            self._t = value
+            self.update("selection")
+            self.update_layers()
+    def __get_t(self):
+        return self.meta[self._t]
+    t = property(__get_t, __set_t)
+    def update_layers(self):
+        if self.regionLayer:
+            self.regionLayer.classification = self.cl_by_t[self._t]
+
 class ScatterLayer(BaseLayer):
     """
     Represents a collection of 2 vectors
@@ -287,7 +353,7 @@ class RegionLayer(PolygonLayer):
         self.__cl_cache = {}
     def update_evts(self):
         try:
-            self.__y = self.table.event_count_by_period()
+            self.__y, meta = self.table.event_count_by_period()
             self.__cl_cache = {}
         except:
             return None #no evt table set.
