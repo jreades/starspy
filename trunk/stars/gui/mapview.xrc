@@ -351,7 +351,6 @@
       </object>
       <object class="notebookpage">
         <object class="wxPanel" name="eventsPage">
-          
           <XRCED>
             <assign_var>1</assign_var>
           </XRCED>
@@ -439,7 +438,6 @@
       <object class="notebookpage">
         <object class="wxPanel" name="timePage">
           <object class="wxBoxSizer">
-            
             <object class="sizeritem">
               <object class="wxStaticBoxSizer">
                 <label>Time</label>
@@ -675,5 +673,215 @@
         <assign_var>1</assign_var>
       </XRCED>
     </object>
+  </object>
+  <object class="wxFrame" name="CanvasFrame">
+    <object class="wxMenuBar" name="mapMenuBar">
+      <object class="wxMenu" name="EditMenu">
+        <label>Edit</label>
+        <object class="wxMenuItem" name="menuEditCopy">
+          <label>Copy\tCtrl-C</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+      </object>
+      <object class="wxMenu" name="LayerMenu">
+        <object class="wxMenuItem" name="menuLayerZoom">
+          <label>Zoom To Layer</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerSelectable">
+          <label>Selectable</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerProps">
+          <label>Layer Properties</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuLayerRemove">
+          <label>Remove Layer</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>Layer</label>
+        <enabled>0</enabled>
+        <XRCED>
+          <events>EVT_MENU_OPEN</events>
+        </XRCED>
+      </object>
+      <object class="wxMenu" name="ToolMenu">
+        <object class="wxMenuItem" name="menuToolPan">
+          <label>Pan Tool\tCtrl-1</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuToolZoom">
+          <label>Zoom Tool\tCtrl-2</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="MenuToolExtent">
+          <label>Zoom to Extent\tCtrl-3</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="menuToolSelect">
+          <label>Select Tool\tCtrl-4</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuToolBrush">
+          <label>Brushing\tCtrl-5</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>Tools</label>
+      </object>
+      <object class="wxMenu" name="ViewMenu">
+        <object class="wxMenuItem" name="menuViewIcons">
+          <label>Show ToolBar Icons</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuViewText">
+          <label>Show Toolbar Names</label>
+          <checkable>1</checkable>
+          <checked>1</checked>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="menuViewConsole">
+          <label>Console\tCtrl-Shift-P</label>
+          <help>help</help>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="menuViewTable">
+          <label>Show Attribute Table\tCtrl-T</label>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+        <label>View</label>
+        <object class="wxMenuItem" name="menuViewLayers">
+          <label>Show Layers\tCtrl-L</label>
+          <checkable>1</checkable>
+          <XRCED>
+            <events>EVT_MENU</events>
+            <assign_var>1</assign_var>
+          </XRCED>
+        </object>
+      </object>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <object class="wxToolBar" name="canvasToolBar">
+      <object class="tool" name="panTool">
+        <bitmap>icons/tbpan.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Pan</tooltip>
+        <label>Pan</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="zoomTool">
+        <bitmap>icons/tbzoomin.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Zoom</tooltip>
+        <label>Zoom</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="extentTool">
+        <bitmap>icons/mActionZoomFullExtent.png</bitmap>
+        <tooltip>Zoom to Extent</tooltip>
+        <label>Extent</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="separator"/>
+      <object class="tool" name="selectTool">
+        <bitmap>icons/mActionSelectRectangle.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Rectangle Select</tooltip>
+        <label>Select</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      <object class="tool" name="brushTool">
+        <bitmap>icons/brushing.png</bitmap>
+        <toggle>1</toggle>
+        <tooltip>Enable Brushing</tooltip>
+        <label>Brush</label>
+        <XRCED>
+          <events>EVT_TOOL</events>
+          <assign_var>1</assign_var>
+        </XRCED>
+      </object>
+      
+      
+      <style>wxTB_DOCKABLE|wxTB_TEXT</style>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <size>650,500</size>
+    <object class="wxStatusBar" name="status">
+      <fields>4</fields>
+      <XRCED>
+        <assign_var>1</assign_var>
+      </XRCED>
+    </object>
+    <title>STARS -- Canvas View</title>
+    <XRCED>
+      <events>EVT_CLOSE</events>
+    </XRCED>
   </object>
 </resource>
