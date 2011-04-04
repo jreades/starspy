@@ -312,7 +312,6 @@ class ScatterLayer(BaseLayer):
         self._data['type'] = 'ScatterLayer'
         self._data['data'] = points
         dims = len(points[0])
-        self._locator = pysal.cg.PointLocator(points)
         if dims == 2:
             d0 = [x[0] for x in points]
             d0,D0 = min(d0),max(d0)
@@ -321,6 +320,19 @@ class ScatterLayer(BaseLayer):
             self._data['extent'] = pysal.cg.Rectangle(d0,d1,D0,D1)
         else:
             raise NotImplementedError, "Only 2D scatter plots are supported at this point."
+    def __get_loc(self):
+        self._locator = pysal.cg.PointLocator(self.data)
+    def __set_loc(self,v):
+        pass
+    _locator = property(__get_loc,__set_loc)
+    @property
+    def extent(self):
+        points = self.data
+        d0 = [x[0] for x in points]
+        d0,D0 = min(d0),max(d0)
+        d1 = [x[1] for x in points]
+        d1,D1 = min(d1),max(d1)
+        return pysal.cg.Rectangle(d0,d1,D0,D1)
 class PolygonLayer(BaseLayer):
     """
     Represents a collection of Polygons
