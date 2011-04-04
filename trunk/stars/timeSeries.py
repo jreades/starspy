@@ -58,5 +58,10 @@ if __name__ == '__main__':
     regions = db.region_tables[0]
     y_by_t, meta = regions.event_count_by_period()
     ts = TimeSeries(y_by_t,meta)
+    REGIONS_SHP = "/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Burglaries_Mesagrids0609/projected.shp"
+    W = pysal.queen_from_shapefile(REGIONS_SHP)
 
+    lm = pysal.Moran_Local(y_by_t[:,0],W,permutations=99)
+    nonsig = lm.p_sim >= 0.05
+    lm.q[nonsig] = 0
 

@@ -231,8 +231,8 @@ class StarsEventTable(StarsTable):
         self.__filter = None
         self.__t0 = None
         self.__tEnd = None
-        self.__window = datetime.timedelta(days=90)
-        self.__step = datetime.timedelta(days=30)
+        self.__window = datetime.timedelta(days=120)
+        self.__step = datetime.timedelta(days=120)
         self._periods = None
         self._fields = "*"
     def __set_t0(self,value):

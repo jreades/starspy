@@ -90,6 +90,13 @@ class ColorScheme(list):
             elif type(key) == slice:
                 return [self.__getitem__(x) for x in range(key.start,key.stop,key.step)]
 
+#0 - Not Sig
+#1 - HH
+#2 - LH
+#3 - LL
+#4 - HL
+lisa_color_scheme = ColorScheme( [ (255,255,255,0), (255,0  ,0  ,255), (173,161,255,255), (65 ,0  ,255,255), (255,161,164,255) ] )
+
 def brewer(k,device="desktop",legendType="sequential"):
     cs = colorSchemes.getScheme(device,legendType,k)
     if cs:
