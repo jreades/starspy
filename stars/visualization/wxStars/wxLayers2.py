@@ -53,7 +53,7 @@ class wxTimeSeriesPlot:
         dc.DrawLine(t,0,t,h)
 
         gc = wx.GraphicsContext.Create(dc)
-        gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(255,255,0,255),1)) )
+        gc.SetPen( gc.CreatePen(wx.Pen(wx.Colour(0,0,0,255),2)) )
         #gc.Scale(1./transform.scale,1./-transform.scale) #first transform is applied last
         #gc.Translate(*transform.offset)                   #last transform is applied first
 
