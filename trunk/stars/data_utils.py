@@ -16,7 +16,8 @@ def time_step(t_0,t_end,window,step):
     periods = []
     window_end = t_0+window
     window_begin = t_0
-    while window_begin <= t_end: #window_end will run off the end of the dates
+    #while window_begin <= t_end: #window_end will run off the end of the dates
+    while window_begin < t_end: #window_end will NOT run off the end of the dates
         periods.append((window_begin,window_end))
         window_begin += step
         window_end += step
@@ -25,7 +26,8 @@ def xtime_step(t_0,t_end,window,step):
     """ Return a list of a date pairs, marking the beginning and end of each step. """
     window_end = t_0+window
     window_begin = t_0
-    while window_begin <= t_end: #window_end will run off the end of the dates
+    #while window_begin <= t_end: #window_end will run off the end of the dates
+    while window_begin < t_end: #window_end will NOT run off the end of the dates
         yield (window_begin,window_end)
         window_begin += step
         window_end += step

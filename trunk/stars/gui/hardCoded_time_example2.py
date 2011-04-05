@@ -1,3 +1,4 @@
+import os
 import wx
 from wx.py.shell import Shell
 from control import mapFrame 
@@ -5,8 +6,18 @@ from control2 import scatterFrame
 from stars.visualization import layers
 from stars.visualization import colors
 from stars.data_manager import StarsDatabase
+import datetime
 #from stars.timeSeries import TimeSeries
 import pysal
+
+
+config_file = os.path.expanduser('~/stars_demo/stars.config')
+if os.path.exists(config_file):
+    cfg = open(config_file,'r').read()
+    config = eval(cfg)
+else:
+    config = {"step":120,"window":120}
+    cfg = open(config_file,'w').write(str(config))
 
 class SelectionLinker:
     def __init__(self, layers = []):
@@ -30,22 +41,29 @@ class SelectionLinker:
     
 class MapFrameApp(wx.App):
     def OnInit(self):
+        import os
         self.SetAppName("STARS")
         #shellFrame = wx.Frame(None)
         #sh = Shell(shellFrame)
         self.frame = mapFrame(None)#,shellFrame)
         self.SetTopWindow(self.frame)
         self.frame.Show()
+        self.frame.SetTitle("Map View")
 
-        self.frame.model.addPath("/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Burglaries_Mesagrids0609/projected.shp")
+        self.frame.model.addPath(os.path.expanduser("~/stars_demo/projected.shp"))
         layer = self.frame.model.layers[0]
         layer.colors = colors.lisa_color_scheme
     
-        self.db = StarsDatabase("../test.starsdb")
+        self.db = StarsDatabase(os.path.expanduser("~/stars_demo/test.starsdb"))
         regions = self.db.region_tables[0]
+        ###### CONFIG
+        if regions.evtTable:
+            regions._evtTable.step = datetime.timedelta(days=config['step'])
+            regions._evtTable.window = datetime.timedelta(days=config['window'])
+        ###### END CONFIG
         y_by_t, meta = regions.event_count_by_period()
         self.ts = layers.TimeSeriesPlot(y_by_t,meta)
-        w = pysal.queen_from_shapefile("/Users/charlie/Documents/Work/NIJ/Target1/Mesa Data/Burglaries_Mesagrids0609/projected.shp")
+        w = pysal.queen_from_shapefile(os.path.expanduser("~/stars_demo/projected.shp"))
         lm = pysal.Moran_Local(y_by_t[:,0],w,permutations=99)
         pts = map(pysal.cg.Point,zip(lm.z, pysal.esda.moran.slag(w,lm.z)))
         for i,pt in enumerate(pts):
@@ -91,7 +109,9 @@ class MapFrameApp(wx.App):
         self.ts_layer = self.ts
         frame.model.addLayer(self.ts)
         frame.Show()
+        frame.SetTitle("Time Line")
         frame = CanvasFrame(None)
+        frame.SetTitle("Moran Scatter Plot")
         #y = self.ts.y_by_t
         #y = (y - y.mean()) / y.std()
         #self.ts.y_by_t = y
