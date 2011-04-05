@@ -95,7 +95,7 @@ class ColorScheme(list):
 #2 - LH
 #3 - LL
 #4 - HL
-lisa_color_scheme = ColorScheme( [ (255,255,255,0), (255,0  ,0  ,255), (173,161,255,255), (65 ,0  ,255,255), (255,161,164,255) ] )
+lisa_color_scheme = ColorScheme( [ (255,255,255,0), (255,0  ,0  ,255), (150,150,255,255), (0  ,0  ,255,255), (255,150,150,255) ] )
 
 def brewer(k,device="desktop",legendType="sequential"):
     cs = colorSchemes.getScheme(device,legendType,k)
