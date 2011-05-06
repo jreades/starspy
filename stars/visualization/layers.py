@@ -404,10 +404,12 @@ class KernelDensityLayer(BaseLayer):
         kd = KernelDensity(self._data['extent'],400,3500)
         self._points = points
         random.shuffle(self._points)
-        for x,y in points:
-            kd.update(x,y)
+        #for x,y in points:
+        #    kd.update(x,y)
         self._data['data'] = kd
         self._cur = 0
+    def __len__(self):
+        return len(self._points)
     def animate(self):
         kd = KernelDensity(self._data['extent'],400,3500)
         self._data['data'] = kd

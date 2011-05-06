@@ -150,8 +150,8 @@ class wxPolygonLayer:
             class EmptyCL:
                 classes = [range(len(self.layer.data))]
             cl = EmptyCL()
-            #cs = {0:(255,0,0)}
-            cs = self.layer.colors
+            cs = {0:(255,255,255,1)}
+            #cs = self.layer.colors
         for i,cls in enumerate(cl.classes):
             r,g,b,a = cs[i]
             pth = gc.CreatePath()
