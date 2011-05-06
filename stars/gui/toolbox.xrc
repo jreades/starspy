@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxFrame" name="toolbox">
+    <object class="wxToolBar">
+      <object class="tool">
+        <bitmap stock_id="wxART_FOLDER_OPEN"/>
+      </object>
+      <object class="tool">
+        <bitmap stock_id="wxART_FOLDER"/>
+      </object>
+      <object class="tool">
+        <bitmap stock_id="wxART_FILE_OPEN"/>
+      </object>
+    </object>
+    <object class="wxStaticBoxSizer">
+      <label>Toolbox</label>
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxTreeCtrl">
+          <style>wxTR_HIDE_ROOT</style>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+      </object>
+    </object>
+  </object>
+  <object class="wxFrame"/>
+</resource>
