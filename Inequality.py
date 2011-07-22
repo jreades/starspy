@@ -26,10 +26,9 @@ Classes:
 
 """
 from stars import *
-from MLab import *
-from Numeric import *
+from numpy.oldnumeric import *
 from Utility import *
-from RandomArray import *
+from numpy.oldnumeric.random_array import *
 SMALL = 0.0000001
 
 class Theil:

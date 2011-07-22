@@ -16,7 +16,7 @@ Contains various smoothing algorithms for STARS.
 
 """
 from smoothing import *
-from Numeric import *
+from numpy.oldnumeric import *
 class SWeight:
     """Facade class for STARS weights to work with PySAL Smoothing Class"""
     def __init__(self,w):

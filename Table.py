@@ -12,7 +12,7 @@ Version 2.  See the file COPYING for more details.
 OVERVIEW
 """
 
-from Numeric import *
+from numpy.oldnumeric import *
 class Table:
     """Pretty table class for STARS"""
     def __init__(self,body,head=[],rowNames=[],colNames=[],fmt=[[8,3]],rowFmt=[8,3],colFmt=[8,3],origin=""):

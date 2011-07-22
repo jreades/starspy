@@ -23,9 +23,8 @@ This module implements the primitive graphics classes for STARS.
 
 """
 
-from Numeric import *
-from MLab import *
-from RandomArray import *
+from numpy.oldnumeric import *
+from numpy.oldnumeric.random_array import *
 
 
 class Kmeans:

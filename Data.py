@@ -12,9 +12,9 @@ Version 2.  See the file COPYING for more details.
 ======================================================================
 """
 
-from Numeric import *
-from MLab import *
-from UserArray import *
+from numpy.oldnumeric.user_array import UserArray
+
+from numpy import *
 from copy import copy
 import os.path
 
@@ -405,7 +405,7 @@ class DataReader(FileReader):
             self.timeClass = apply(timeFreqMenu[self.timeFreq],self.timeInfo[1:])
         regionInfo = self.header[1:]
         self.regionType = regionInfo[0].strip()
-        self.regionNames = map(string.strip,regionInfo[1:])
+        self.regionNames = [ name.strip() for name in regionInfo[1:]]
         self.parse()
         
 

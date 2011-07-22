@@ -1,3 +1,5 @@
+## Automatically adapted for numpy.oldnumeric Jul 20, 2011 by ipython
+
 """
 gui start file for Space-Time Analysis of Regional Systems
 ----------------------------------------------------------------------
@@ -21,7 +23,7 @@ import sys, os, string
 from Tkinter import *                        # widget classes
 from guimixin import *        # mix-in methods
 from guimaker import *        # frame, plus menu/toolbar builder
-from Numeric import *
+from numpy import *
 import pickle
 import os.path
 import version
@@ -1817,10 +1819,10 @@ class App(GuiMixin, GuiMaker):   # or GuiMakerFrameMenu
             var=[[id] for id in [variableName]*nt]
             values = variable
             csids = array( [ [i] * t for i in range(n) ])
-            csids = csids.flat
+            csids = csids.ravel()
             ts =range(t)
             tsids = array(  ts * n )
-            tsids = tsids.flat
+            tsids = tsids.ravel()
             csids = [ [cs] for cs in csids]
             tsids = [ [ts] for ts in tsids]
             columnLabels = self.project.timeString
@@ -1869,12 +1871,12 @@ class App(GuiMixin, GuiMaker):   # or GuiMakerFrameMenu
                 tsids.extend(range(variable.t))
                 columnLabels.extend(labels)
             tsids = array(tsids * variable.n)
-            tsids = tsids.flat
+            tsids = tsids.ravel()
             tsids = [ [ts] for ts in tsids]
             n=variable.n
             k = len(columnLabels)
             csids = array( [ [i] * k for i in range(n) ])
-            csids = csids.flat
+            csids = csids.ravel()
             csids = [ [cs] for cs in csids]
             fmt = [ int(width),int(decimals) ]
             title='CSTS Variables'
