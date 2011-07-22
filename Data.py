@@ -464,12 +464,12 @@ class spMatrix:
         """Returns a full row standardized weights matrix."""
         #print self.dict
         n = len(self.dict)
-        w = zeros([n,n],Float)
+        w = zeros((n,n),float)
         ids = self.dict.keys()
         for id in ids:
             neighborids = self.dict[id][1]
             nNeighbors = self.dict[id][0]
-            vals = ones([1,nNeighbors],Float) * 1./nNeighbors
+            vals = ones((1,nNeighbors),float) * 1./nNeighbors
             put(w[id,],neighborids,vals)
         return w
     
@@ -641,7 +641,7 @@ class DistanceMatrix(fMatrix):
     def __init__(self,x,y):
         n = len(x)
         ijs = ij(n)
-        d = zeros((n,n),Float)
+        d = zeros((n,n),float)
         for i,j in ijs:
             d[i,j] = d[j,i] = sqrt ( (x[i] - x[j])**2 + (y[i] - y[j])**2 )[0]
         self.values = d
@@ -765,7 +765,7 @@ class CovarianceMatrix:
         # our own cuz MLab is broken
         n = self.n
         ijs = ij(n)
-        mat = zeros((n,n),Float)
+        mat = zeros((n,n),float)
         n1 = n - 1
         for i,j in ijs:
             x = self.values[:,i]
