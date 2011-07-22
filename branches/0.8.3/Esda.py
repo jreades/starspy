@@ -658,7 +658,7 @@ class GlobalG:
             gp = array(gp)
             self.gp = gp
             meang = mean(gp)
-            stdg = std(gp)
+            stdg = gp.std()
             self.permZ = (self.g - meang)/stdg
             ppermZ = array(map(pdf.zprob,abs(self.permZ)))
             self.ppermZ = 2*(1.0-ppermZ)

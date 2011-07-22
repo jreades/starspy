@@ -1990,8 +1990,8 @@ class App(GuiMixin, GuiMaker):   # or GuiMakerFrameMenu
             varName = d.results[0]['Variable']
             newName = d.results[1]
             variable = self.project.dataBase.getVariable(varName)
-            mx = mean(variable)
-            sx = std(variable)
+            mx = variable.mean()
+            sx = variable.std()
             xd = variable - mx
             result = xd/sx
             varType = variable.varType

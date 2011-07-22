@@ -48,7 +48,7 @@ class Summary:
         minx = min(x)
         maxx = max(x)
         medx = median(x)
-        meanx = mean(x)
+        meanx = x.mean()
 
         self.minx = minx
         self.maxx = maxx
@@ -91,7 +91,7 @@ class Dist:
         self.k = k
         minx = min(x)
         maxx = max(x)
-        sx = std(x)
+        sx = x.std()
         vx = sx**2
         self.sd=sx
         self.var=vx

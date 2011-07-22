@@ -1915,8 +1915,8 @@ class Plot(View):
         if not y:
             y = array(self.scaledYCords)
 
-        mx = mean(x)
-        my = mean(y)
+        mx = x.mean()
+        my = y.mean()
         xd = x - mx
         yd = y - my
         x2 = sum(xd*xd)
@@ -2310,9 +2310,9 @@ class MoranScatter(Plot,Subscriber):
         """
         Set pixel locations of average x and y value on axes
         """
-        self.xMean = mean(self.x)
+        self.xMean = self.x.mean()
         self.xMeanPix = self.x0Buffer + (self.xMean - self.MinX) * self.xratio
-        self.yMean = mean(self.y)
+        self.yMean = self.y.mean()
         self.yMeanPix = self.y0Buffer + (self.yMean - self.MinY) * self.yratio
 
     def drawScatterAxis(self):
@@ -4529,7 +4529,7 @@ class BoxPlot(View,Subscriber):
         self.origColors[s1] = "black"
         self.origColors[s2] = "black"
         self.widgets2Ids[s2] = []
-        meanY = screenBottom - (mean(self.x) - bottom) * vscale
+        meanY = screenBottom - (self.x.mean() - bottom) * vscale
         self.canvas.create_oval(midx-2,meanY+2,midx+2,meanY-2,fill="pink")
         if self.stemPoints:
             self.selectableWidgets = [b1,b2] 
@@ -4915,8 +4915,8 @@ class CScatterPlot(Plot,Subscriber):
         if not y:
             y = array(self.scaledYCords)
 
-        mx = mean(x)
-        my = mean(y)
+        mx = x.mean()
+        my = y.mean()
         xd = x - mx
         yd = y - my
         x2 = sum(xd*xd)
