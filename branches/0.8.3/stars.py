@@ -199,16 +199,12 @@ class Project:
             #print "data files"
 
             # read any gal matricies
-            try:
-                galFiles = self.options["weight"]["gal"][0].split()
-                print galFiles
-                for galFile in galFiles:
-           #         print galFile
-                    gfile = os.path.join(projectDir,galFile)
-                    self.ReadGalMatrix(gfile)
+            galFiles = self.options["weight"]["gal"][0].split()
+            for galFile in galFiles:
+                gfile = os.path.join(projectDir,galFile)
+                self.ReadGalMatrix(gfile)
             #print "gal"
-            except:
-                print "No Weights Matrices"
+                #print "No Weights Matrices"
 
             # read any gis boundary files
             self.listGISNames = []
