@@ -26,11 +26,11 @@ import sys
 import re
 import math
 from random import *
-from RandomArray import *
+from numpy.oldnumeric.random_array import *
 
-from Numeric import *
-from MLab import *
-from LinearAlgebra import *
+from numpy.oldnumeric import *
+#from LinearAlgebra import *
+from numpy.linalg import *
 
 from Subscriber import *
 from iview import *

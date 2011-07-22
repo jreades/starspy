@@ -22,15 +22,15 @@ Classes:
     GlobalG       Getis-Ord statistic for spatial association
     LocalG        Local versions of Getis-Ord statistics.
 """
-from Numeric import *
-from MLab import *
+from numpy.oldnumeric  import *
+#from MLab import *
 
 # stars imports
 from stars import *
 from Data import *
 from Messages import *
 from Utility import *
-from RandomArray import *
+from numpy.oldnumeric.random_array  import *
 import pdf
 import Markov
 

@@ -1,3 +1,5 @@
+## Automatically adapted for numpy.oldnumeric Jul 20, 2011 by ipython
+
 #!/usr/bin/python
 
 """
@@ -20,8 +22,8 @@ This module implements spatial weights classes for STARS.
 
 import time
 from shapereader import *
-import Numeric
-import LinearAlgebra
+import numpy.oldnumeric as Numeric
+import numpy.oldnumeric.linear_algebra as LinearAlgebra
 
 import Gis # for centroids on disconnected island polygons
 

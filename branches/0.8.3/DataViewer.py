@@ -1,3 +1,5 @@
+## Automatically adapted for numpy.oldnumeric Jul 20, 2011 by ipython
+
 """
 Spreadsheet like grid for displaying (editing/selecting) arrays.
 ----------------------------------------------------------------------
@@ -22,7 +24,7 @@ and numeric values).
 
 from Tkinter import *
 from Utility import format
-from Numeric import shape
+from numpy.oldnumeric import shape
 from types import *
 
 import tkFont
@@ -284,7 +286,8 @@ class DataTable:
             master.update_idletasks()
         self.id2cell = id2cell
         self.fillColors = fillColors
-        self.flattenedIds = flattenedIds
+        self.ravel()
+        tenedIds = flattenedIds
         # set up event-widget-callback bindings
         self.widget2cell = widget2cell
         self.cell2widget = cell2widget
@@ -554,7 +557,7 @@ class DataTable:
         """
         cids = [ self.widget2cell[id] for id in self.selected 
             if 'label' not in self.canvas.gettags(id) ]
-        return [ self.flattenedIds[cid] for cid in cids ]
+        return [ tenedIds[cid] for cid in cids ]
         
 
 class MixedDataTable(DataTable):
@@ -824,7 +827,8 @@ class MixedDataTable(DataTable):
             master.update_idletasks()
         self.id2cell = id2cell
         self.fillColors = fillColors
-        self.flattenedIds = flattenedIds
+        self.ravel()
+        tenedIds = flattenedIds
         # set up event-widget-callback bindings
         self.widget2cell = widget2cell
         self.cell2widget = cell2widget

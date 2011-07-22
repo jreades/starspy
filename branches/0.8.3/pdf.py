@@ -40,8 +40,7 @@ OVERVIEW
 
 
 import math
-from Numeric import *
-from MLab import *
+from numpy.oldnumeric import *
 def chicdf(chisq,df):
     """
 Returns the (1-tailed) probability value associated with the provided

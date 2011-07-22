@@ -20,13 +20,13 @@ Classes:
        SpMarkov
        LocalMarkov
 """
-from Numeric import *
+from numpy.oldnumeric import *
 # stars imports
 from stars import *
 from Data import *
 from Messages import *
 from Utility import *
-from RandomArray import *
+from numpy.oldnumeric.random_array import *
 from Utility import *
 import pdf
 

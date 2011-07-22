@@ -1,3 +1,5 @@
+## Automatically adapted for numpy.oldnumeric Jul 20, 2011 by ipython
+
 """
 Interaction classes for views 
 ----------------------------------------------------------------------
@@ -31,8 +33,8 @@ Observation objects that it manages.
 
 """
 
-from Numeric import *
-from MLab import *
+from numpy.oldnumeric import *
+#from MLab import *
 import classifier
 from pdf import *
 import sets
@@ -1129,7 +1131,7 @@ class ITable(IView):
         ts2id = {}
         cs2id = {}
         var2id = {}
-        vflat = values.flat
+        vflat = values.ravel()
         for id in rn:
             obs = Observation(ts=tsid[id],
                     cs = csid[id],
@@ -1321,10 +1323,10 @@ if __name__ == '__main__':
     values = arange(nt)
     values = reshape(values,(n,t))
     csids = array( [ [i] * t for i in range(n) ])
-    csids = csids.flat
+    csids = csids.ravel()
     ts =range(t)
     tsids = array(  ts * n )
-    tsids = tsids.flat
+    tsids = tsids.ravel()
     csids = [ [cs] for cs in csids]
     tsids = [ [ts] for ts in tsids]
     table = ITable(values,var,tsids,csids)

@@ -1,3 +1,5 @@
+## Automatically adapted for numpy.oldnumeric Jul 20, 2011 by ipython
+
 """  Utility.py
 Utility module for Space-Time Analysis of Regional Systems
 ----------------------------------------------------------------------
@@ -17,9 +19,8 @@ This module implements various handy utilities for STARS.
 
 """
 """Utility functions for STARS"""
-from Numeric import *
-from MLab import *
-from RandomArray import permutation
+from numpy import *
+from numpy.oldnumeric.random_array import permutation
 
 def unique(y):
     """returns the unique values of an array."""

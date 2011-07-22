@@ -14,8 +14,7 @@ OVERVIEW:
 """
 
 
-from Numeric import *
-from MLab import *
+from numpy.oldnumeric import *
 
 def ranki(x):
     rx=sort(x)

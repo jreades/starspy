@@ -1,3 +1,5 @@
+## Automatically adapted for numpy.oldnumeric Jul 20, 2011 by ipython
+
 """
 Distributional mobility metrics
 ----------------------------------------------------------------------
@@ -18,9 +20,8 @@ Classes:
 """
 
 from stars import *
-from RandomArray import permutation
-from MLab import *
-from Numeric import *
+from numpy.oldnumeric.random_array import permutation
+from numpy.oldnumeric import *
 from Messages import *
 from pdf import *
 
