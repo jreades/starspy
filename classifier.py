@@ -226,12 +226,12 @@ class Classifier:
     def stdev(self):
         x = self.x
         print x.shape
-        xbar =mean(x)
+        xbar =x.mean()
         #print type(x),type(xbar)
         #roll our own std function as MLab std changed from version 21.0
         #to 21.3
         xr = reshape(x,(len(x),1))
-        s = std(xr)
+        s = xr.std()
         #print s,xbar
         #s = sqrt(cov(x))
         z = (x-xbar)/s[0]

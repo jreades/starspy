@@ -52,7 +52,7 @@ class Kmeans:
         """
         xm = mean(self.data)
         xd = self.data - xm
-        xs = std(self.data)
+        xs = self.data.std()
         z = xd/xs
         self.z = z
 

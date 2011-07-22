@@ -141,7 +141,7 @@ def rankValues(X,axis=0,high=0,ties=1):
                 ids =  [ nonzero(col==i) for i in dups ]
                 for id in ids:
                     oldRanks = ([ rks[i,j] for i in id ])
-                    avgRank = mean(oldRanks)
+                    avgRank = oldRanks.mean()
                     for i in id:
                         rks[i,j] = avgRank
 
@@ -268,8 +268,8 @@ class Tau:
                     tres.append(tau)
                 sim.append(tres)
             self.sim = sim
-            evtau = mean(sim)
-            stau =  std(sim)
+            evtau = sim.mean()
+            stau =  sim.std()
             z = (self.tau - evtau) / stau
             self.perm_zTau = z
             self.perm_pzTau = array([ (1. - zprob(abs(zi))) for zi in z ]) 
@@ -301,8 +301,8 @@ class Tau:
 
             pvalues = sum(pvalues)/ (permutations * 1.)
             self.pvalues = pvalues
-            mcount = mean(presults)
-            scount = std(presults)
+            mcount = presults.mean()
+            scount = presults.std()
             d = self.contConcordCount - mcount
             z= d/scount
             zpvalues = array([ (1. - zprob(abs(zi))) for zi in z ])
@@ -464,8 +464,8 @@ class Theta:
         head="Parition Mobility Summary"
         rowLabels = [str(x) for x in sort(unique(self.pid))]
         colLabels = [ "n","Relative Change","Cohesion"]
-        mrel = mean(self.relChange,1)
-        mcoh = mean(self.pCohesion,1)
+        mrel = self.relChange.mean(axis=1)
+        mcoh = self.pCohesion.mean(axis=1)
         body = transpose(array([self.np,mrel,mcoh]))
         tab1 = Table(body,head=head,
             rowNames=rowLabels,colNames=colLabels,

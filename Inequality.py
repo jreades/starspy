@@ -235,22 +235,22 @@ class TheilDSim:
         self.WGs = array(self.WGs)
         self.Ts = array(self.Ts)
         self.Ds = array(self.Ds)
-        self.meanBG = mean(self.BGs)
-        self.stdBG = std(self.BGs)
-        self.meanWG = mean(self.WGs)
-        self.stdWG = std(self.WGs)
-        self.meanD = mean(self.Ds)
-        self.stdD = std(self.Ds)
+        self.meanBG = self.BGs.mean()
+        self.stdBG = self.BGs.std()
+        self.meanWG = self.WGs.mean()
+        self.stdWG = self.WGs.std()
+        self.meanD = self.Ds.mean()
+        self.stdD = self.Ds.std()
         z = (self.Doriginal - self.meanD)/self.stdD
         self.z = z
         self.BGPs = array(self.BGPs)
-        self.meanBGP = mean(self.BGPs)
-        self.stdBGP = std(self.BGPs)
+        self.meanBGP = self.BGPs.mean()
+        self.stdBGP = self.BGPs.std()
         zBGP = (self.BGP - self.meanBGP)/self.stdBGP 
         self.zBGP = zBGP
         self.WGPs = array(self.WGPs)
-        self.meanWGP = mean(self.WGPs)
-        self.stdWGP = std(self.WGPs)
+        self.meanWGP = self.WGPs.mean()
+        self.stdWGP = self.WGPs.std()
         zWGP = (self.WGP - self.meanWGP)/self.stdWGP
         self.zWGP = zWGP
 
@@ -302,7 +302,7 @@ class Gini:
     def __init__(self,y):
         n = y.n
         self.variable=y
-        ybar = mean(y)
+        ybar = y.mean()
         yd = sort(y - ybar,0)
         fy = arange(1.0,(n+1)) / n - (1/2.0)
         #self.yd = yd
@@ -431,8 +431,8 @@ class GiniD:
         self.strat = strat
 
     def covariance(self,a1,a2):
-        a1 = a1 - mean(a1)
-        a2 = a2 - mean(a2)
+        a1 = a1 - a1.mean()
+        a2 = a2 - a2.mean()
         cv = sum(a1*a2)
         return cv/shape(a1)[0]
 
@@ -503,18 +503,18 @@ class GiniDSim:
         self.realizations = realizations
 
         self.STs = array(STs)
-        self.meanST = mean(self.STs)
-        self.stdST = std(self.STs)
+        self.meanST = self.STs.mean()
+        self.stdST = self.STs.std()
         self.zST = (original.strat - self.meanST)/self.stdST
         
         self.BGs = array(BGs)
-        self.meanBG = mean(self.BGs)
-        self.stdBG = std(self.BGs)
+        self.meanBG = self.BGs.mean()
+        self.stdBG = self.BGs.std()
         self.zBG = (original.bgc - self.meanBG)/self.stdBG
         
         self.WGs = array(WGs)
-        self.meanWG = mean(self.WGs)
-        self.stdWG = std(self.WGs)
+        self.meanWG = self.WGs.mean()
+        self.stdWG = self.WGs.std()
         self.zWG = (original.wgc - self.meanWG)/self.stdWG
         
         self.pqi = pqi
@@ -560,7 +560,7 @@ class GiniS:
         G=sum(sum(g))
         WG=sum(sum(wg))
         NG=G-WG
-        den=2*n2*mean(y1)
+        den=2*n2*y1.mean()
         avgD=G*1./(n2)
         EWG= avgD * nc
         ENG= avgD * nn

@@ -773,8 +773,8 @@ class CovarianceMatrix:
             xd = x - mean(x)
             yd = y - mean(y)
             cv = sum(xd*yd)/n1
-            sy = std(y)
-            sx = std(x)
+            sy = y.std()
+            sx = x.std()
             mat[i,j] = cv/(sy*sx)
             mat[j,i] = mat[i,j]
         return mat

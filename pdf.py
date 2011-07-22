@@ -358,7 +358,7 @@ class Kde:
         n=len(y)
         if h == 0:
 
-            sy = std(reshape(y,(len(y),1)))
+            sy = reshape(y,(len(y),1)).std()
             iqr1 = iqr(y)/1.34
             if sy < iqr1:
                 H = sy
