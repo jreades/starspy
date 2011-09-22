@@ -1,5 +1,5 @@
 for i in range(10):
-    print 'Hellow world!!!'
+    print 'Hello world!!!'
     print i * i
 
 
