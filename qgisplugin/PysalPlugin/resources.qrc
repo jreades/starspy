@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/plugins/pysalplugin/" >
+        <file>resources/icon.png</file>
+		<file>resources/error.html</file>
+		<file>resources/cluster_icon.png</file>
+		<file>resources/compgeo_icon.png</file>
+		<file>resources/spatdyn_icon.png</file>
+		<file>resources/spatecon_icon.png</file>
+		<file>resources/esda_icon.png</file>
+		<file>resources/weights_icon.png</file>
+    </qresource>
+</RCC>
