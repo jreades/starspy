@@ -1,2 +1,2 @@
-print 'dddd Hello World'
+print 'Hello World'
 
