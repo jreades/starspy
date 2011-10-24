@@ -63,7 +63,7 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>10</x>
      <y>140</y>
      <width>313</width>
      <height>138</height>
@@ -270,8 +270,7 @@
   <tabstop>pbnInput</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

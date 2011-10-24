@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_weights.ui'
 #
-# Created: Mon Oct 17 21:57:34 2011
+# Created: Sun Oct 23 20:37:52 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -37,7 +37,7 @@ class Ui_Weights(object):
         self.label_3.setText(QtGui.QApplication.translate("Weights", "Spatial Weights Matrix", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.groupBox = QtGui.QGroupBox(Weights)
-        self.groupBox.setGeometry(QtCore.QRect(0, 140, 313, 138))
+        self.groupBox.setGeometry(QtCore.QRect(10, 140, 313, 138))
         self.groupBox.setTitle(QtGui.QApplication.translate("Weights", "Output", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
         self.groupBox_2 = QtGui.QGroupBox(self.groupBox)

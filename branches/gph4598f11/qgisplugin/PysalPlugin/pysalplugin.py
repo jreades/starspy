@@ -46,120 +46,95 @@ class PysalPlugin:
         ############ Create different sublists for the different PySal functions ########
         self.menu1 = QMenu("PySal")
 
-        self.menu2 = QMenu("Computational Geometry")
-        self.menu2.setIcon(QIcon(":/plugins/pysalplugin/resources/compgeo_icon.png"))
+    
 
-        self.menu3 = QMenu("Clustering")
-        self.menu3.setIcon(QIcon(":/plugins/pysalplugin/resources/cluster_icon.png"))
+##############################################
+###  Set up the Spatial Dynamics Menu Tree  ##
+##############################################
 
-        self.menu4 = QMenu("ESDA")
-        self.menu4.setIcon(QIcon(":/plugins/pysalplugin/resources/esda_icon.png"))
+        self.menu2 = QMenu("Spatial Dynamics") #Main Spatial Dynamics Menu
+        self.menu2.setIcon(QIcon(":/plugins/pysalplugin/resources/spatdyn_icon.png")) #Give it a colorful Icon
+        
+        self.menu21 = QMenu("Markov Based Methods") #First SubMenu
+        
+### start of items in first Submenu
+        self.classicMarkovAction = QAction(QIcon(":/plugins/pysalplugin/icon1.png"), \
+            "Classic Markov", self.iface.mainWindow())
+        QObject.connect(self.classicMarkovAction, SIGNAL("triggered()"), self.classicMarkov)
 
-        self.menu5 = QMenu("Spatial Dynamics")
-        self.menu5.setIcon(QIcon(":/plugins/pysalplugin/resources/spatdyn_icon.png"))
-
-        self.menu6 = QMenu("Spatial Econometrics")
-        self.menu6.setIcon(QIcon(":/plugins/pysalplugin/resources/spatecon_icon.png"))
-
-        self.menu7 = QMenu("Weights")
-        self.menu7.setIcon(QIcon(":/plugins/pysalplugin/resources/weights_icon.png"))
-
-
-        ########### Create actions that will execute the different PySal functions #########
-        self.tool1Action = QAction(QIcon(":/plugins/pysalplugin/icon1.png"), \
-            "Voroni", self.iface.mainWindow())
-        QObject.connect(self.tool1Action, SIGNAL("triggered()"), self.tool1)
-
-        self.tool2Action = QAction(QIcon(":/plugins/pysalplugin/icon2.png"), \
-            "Hulls", self.iface.mainWindow())
-        QObject.connect(self.tool2Action, SIGNAL("triggered()"), self.tool2)
-
-        self.tool3Action = QAction(QIcon(":/plugins/pysalplugin/icon3.png"), \
-            "MST", self.iface.mainWindow())
-        QObject.connect(self.tool3Action, SIGNAL("triggered()"), self.tool3)
-
-        self.tool4Action = QAction(QIcon(":/plugins/pysalplugin/icon4.png"), \
-            "ARISEL", self.iface.mainWindow())
-        QObject.connect(self.tool4Action, SIGNAL("triggered()"), self.tool4)
-
-        self.tool5Action = QAction(QIcon(":/plugins/pysalplugin/icon5.png"), \
-            "AZP", self.iface.mainWindow())
-        QObject.connect(self.tool5Action, SIGNAL("triggered()"), self.tool5)
-
-        self.tool6Action = QAction(QIcon(":/plugins/pysalplugin/icon6.png"), \
-            "max-p", self.iface.mainWindow())
-        QObject.connect(self.tool6Action, SIGNAL("triggered()"), self.tool6)
-
-        self.tool7Action = QAction(QIcon(":/plugins/pysalplugin/icon7.png"), \
-            "Smoothing", self.iface.mainWindow())
-        QObject.connect(self.tool7Action, SIGNAL("triggered()"), self.tool7)
-
-        self.tool8Action = QAction(QIcon(":/plugins/pysalplugin/icon8.png"), \
-            "LISA", self.iface.mainWindow())
-        QObject.connect(self.tool8Action, SIGNAL("triggered()"), self.tool8)
-
-        self.tool9Action = QAction(QIcon(":/plugins/pysalplugin/icon9.png"), \
-            "spatial theta", self.iface.mainWindow())
-        QObject.connect(self.tool9Action, SIGNAL("triggered()"), self.tool9)
-
-        self.tool10Action = QAction(QIcon(":/plugins/pysalplugin/icon10.png"), \
-            "spatial tau", self.iface.mainWindow())
-        QObject.connect(self.tool10Action, SIGNAL("triggered()"), self.tool10)
-
-        self.tool11Action = QAction(QIcon(":/plugins/pysalplugin/icon11.png"), \
+        self.spatialMarkovAction = QAction(QIcon(":/plugins/pysalplugin/icon2.png"), \
             "Spatial Markov", self.iface.mainWindow())
-        QObject.connect(self.tool11Action, SIGNAL("triggered()"), self.tool11)
+        QObject.connect(self.spatialMarkovAction, SIGNAL("triggered()"), self.spatialMarkov)
 
-        self.tool12Action = QAction(QIcon(":/plugins/pysalplugin/icon12.png"), \
-            "Estimation", self.iface.mainWindow())
-        QObject.connect(self.tool12Action, SIGNAL("triggered()"), self.tool12)
+        self.lisaMarkovAction = QAction(QIcon(":/plugins/pysalplugin/icon3.png"), \
+            "LISA Markov", self.iface.mainWindow())
+        QObject.connect(self.lisaMarkovAction, SIGNAL("triggered()"), self.lisaMarkov)
+### End of items in first submenu
 
-        self.tool13Action = QAction(QIcon(":/plugins/pysalplugin/icon13.png"), \
-            "Testing", self.iface.mainWindow())
-        QObject.connect(self.tool13Action, SIGNAL("triggered()"), self.tool13)
+        self.menu22 = QMenu("Rank Based Methods") #Second SubMenu
+        
+### start of items in Second Submenu
+        
+        self.spRankCorAction = QAction(QIcon(":/plugins/pysalplugin/icon4.png"), \
+            "Spatial Rank Correlation", self.iface.mainWindow())
+        QObject.connect(self.spRankCorAction, SIGNAL("triggered()"), self.spRankCor)
 
-        self.tool14Action = QAction(QIcon(":/plugins/pysalplugin/icon14.png"), \
-            "Diagnostics", self.iface.mainWindow())
-        QObject.connect(self.tool14Action, SIGNAL("triggered()"), self.tool14)
+        self.rankDecompAction = QAction(QIcon(":/plugins/pysalplugin/icon5.png"), \
+            "Rank Decomposition", self.iface.mainWindow())
+        QObject.connect(self.rankDecompAction, SIGNAL("triggered()"), self.rankDecomp)
+        
+### End of items in Second submenu
 
-        self.tool15Action = QAction(QIcon(":/plugins/pysalplugin/icon15.png"), \
-            "Simulation", self.iface.mainWindow())
-        QObject.connect(self.tool15Action, SIGNAL("triggered()"), self.tool15)
+        self.menu23 = QMenu("Space-Time Interaction Tests")  # Third Submenu
+### start of items in Third Submenu
 
-        self.tool16Action = QAction(QIcon(":/plugins/pysalplugin/icon16.png"), \
-            "Diagnostics", self.iface.mainWindow())
-        QObject.connect(self.tool16Action, SIGNAL("triggered()"), self.tool16)
+        self.knoxTestAction = QAction(QIcon(":/plugins/pysalplugin/icon6.png"), \
+            "Knox Test", self.iface.mainWindow())
+        QObject.connect(self.knoxTestAction, SIGNAL("triggered()"), self.knoxTest)
 
-        self.tool17Action = QAction(QIcon(":/plugins/pysalplugin/icon17.png"), \
+        self.mantelTestAction = QAction(QIcon(":/plugins/pysalplugin/icon7.png"), \
+            "Mantel Test", self.iface.mainWindow())
+        QObject.connect(self.mantelTestAction, SIGNAL("triggered()"), self.mantelTest)
+
+        self.jacquezTestAction = QAction(QIcon(":/plugins/pysalplugin/icon8.png"), \
+            "Jacquez Test", self.iface.mainWindow())
+        QObject.connect(self.jacquezTestAction, SIGNAL("triggered()"), self.JacquezTest)
+## End of items in Third Submenu
+
+        
+        self.menu21.addActions([self.classicMarkovAction,self.spatialMarkovAction,self.lisaMarkovAction])  #put three tools in first Submenu
+        self.menu22.addActions([self.spRankCorAction,self.rankDecompAction]) #Put two tools in second Submenu
+        self.menu23.addActions([self.knoxTestAction,self.mantelTestAction,self.jacquezTestAction]) #Put three tools in third submenu
+        self.menu2.addMenu(self.menu21) #add these submenus to the Spatial Dynamics Menu
+        self.menu2.addMenu(self.menu22) #add these submenus to the Spatial Dynamics Menu
+        self.menu2.addMenu(self.menu23) #add these submenus to the Spatial Dynamics Menu
+
+#####################################
+### Set up the Weights Menu Tree  ###
+#####################################
+
+        self.menu3 = QMenu("Weights")  #Main Weights Menu
+        self.menu3.setIcon(QIcon(":/plugins/pysalplugin/resources/weights_icon.png"))
+
+        self.computeMatrixAction = QAction(QIcon(":/plugins/pysalplugin/icon9.png"), \
             "Compute Matrix", self.iface.mainWindow())
-        QObject.connect(self.tool17Action, SIGNAL("triggered()"), self.tool17)
+        QObject.connect(self.computeMatrixAction, SIGNAL("triggered()"), self.computeMatrix)
 
-        '''self.tool18Action = QAction(QIcon(":/plugins/pysalplugin/icon18.png"), \
-            "GWT", self.iface.mainWindow())
-        QObject.connect(self.tool18Action, SIGNAL("triggered()"), self.tool18)
+        self.menu3.addActions([self.computeMatrixAction])
+        
 
-        self.tool19Action = QAction(QIcon(":/plugins/pysalplugin/icon19.png"), \
-            "MAT", self.iface.mainWindow())
-        QObject.connect(self.tool19Action, SIGNAL("triggered()"), self.tool19)'''
 
-        ########### Organize the functions into the sublists ###########
+
+################################################################
+### Pack all the menus together and add them to QGIS MenuBar ###
+################################################################
         self.menu1.addActions([self.about])
-        self.menu2.addActions([self.tool1Action,self.tool2Action,self.tool3Action])
-        self.menu3.addActions([self.tool4Action,self.tool5Action,self.tool6Action])
-        self.menu4.addActions([self.tool7Action,self.tool8Action])
-        self.menu5.addActions([self.tool9Action,self.tool10Action,self.tool11Action,])
-        self.menu6.addActions([self.tool12Action,self.tool13Action,self.tool14Action,self.tool15Action,self.tool16Action])
-        self.menu7.addActions([self.tool17Action])#,self.tool18Action,self.tool19Action]) removed these
-
-        ########### Add these sublists to the main list
-        menuBar = self.iface.mainWindow().menuBar()
-        menuBar.addMenu(self.menu1)
         self.menu1.addMenu(self.menu2)
         self.menu1.addMenu(self.menu3)
-        self.menu1.addMenu(self.menu4)
-        self.menu1.addMenu(self.menu5)
-        self.menu1.addMenu(self.menu6)
-        self.menu1.addMenu(self.menu7)
+        menuBar = self.iface.mainWindow().menuBar()
+        menuBar.addMenu(self.menu1)
+
+
 
 
     def unload(self):
@@ -175,46 +150,34 @@ class PysalPlugin:
         results = dlg.exec_()
 
 
-    def tool1(self):
+    def classicMarkov(self):
         raise notImplemented()
-    def tool2(self):
+    
+    def spatialMarkov(self):
         raise notImplemented()
-    def tool3(self):
+    
+    def lisaMarkov(self):
         raise notImplemented()
-    def tool4(self):
+    
+    def spRankCor(self):
         raise notImplemented()
-    def tool5(self):
+    
+    def rankDecomp(self):
         raise notImplemented()
-    def tool6(self):
+    
+    def knoxTest(self):
         raise notImplemented()
-    def tool7(self):
+    
+    def mantelTest(self):
         raise notImplemented()
-    def tool8(self):
+    
+    def JacquezTest(self):
         raise notImplemented()
-    def tool9(self):
-        raise notImplemented()
-    def tool10(self):
-        raise notImplemented()
-    def tool11(self):
-        raise notImplemented()
-    def tool12(self):
-        raise notImplemented()
-    def tool13(self):
-        raise notImplemented()
-    def tool14(self):
-        raise notImplemented()
-    def tool15(self):
-        raise notImplemented()
-    def tool16(self):
-        raise notImplemented()
-    def tool17(self):
+    
+    def computeMatrix(self):
         dlg = WeightsDialog()
         dlg.show()
         results = dlg.exec_()
-    def tool18(self):
-        raise notImplemented()
-    def tool19(self):
-        raise notImplemented()
 
 class notImplemented(Exception):
     pass
