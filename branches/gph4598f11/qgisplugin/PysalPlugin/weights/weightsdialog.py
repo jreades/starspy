@@ -1,5 +1,5 @@
 """
-This dialog button is made for computing spatial weights in PySal-->Weights-->Compute Weights
+This dialog window is made for computing spatial weights in PySal-->Weights-->Compute Weights
 """
 
 from PyQt4 import QtCore, QtGui
@@ -7,20 +7,21 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from ui_weights import Ui_Weights
+import pysal
 import os.path
-# create the dialog for zoom to point
+# create the dialog
 class WeightsDialog(QtGui.QDialog):
     def __init__(self,iface):
         QtGui.QDialog.__init__(self)
-        # Set up the user interface from Designer.
+        # Set up the user interface from QTDesigner.
         self.ui = Ui_Weights()
         self.ui.setupUi(self)
         self.iface = iface
         self.dir = os.path.realpath(os.path.curdir)
         
         self.layers = []
-        for i in range(self.iface.mapCanvas().layerCount()):
-            layer = self.iface.mapCanvas().layer(i)
+        for i in range(self.iface.mapCanvas().layerCount()):    #this for loop adds current layers
+            layer = self.iface.mapCanvas().layer(i)             #to dropdown menu
             self.layers += [layer]
             self.ui.sourceLayer.addItem(layer.name())
             
@@ -52,6 +53,8 @@ class WeightsDialog(QtGui.QDialog):
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
         if not self.ui.rbUseActiveLayer.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
+            f = pysal.open(openfile)
+            #can pysal easily do all the work?          
         else:
             layer  = self.layers[self.ui.sourceLayer.currentIndex()]
         ###################################################################
@@ -59,8 +62,15 @@ class WeightsDialog(QtGui.QDialog):
         ### What are the next steps? Import Pysal?                      ###
         ###################################################################
         
+        if layer.type() == layer.VectorLayer:
+            pass
+        elif layer.type() == layer.RasterLayer:
+            pass
+            #Do weights have meaning for rasters?  We can limit the user to only choosing vectors at the
+            #dropdown menu. Also can choose geometry type like layer.geometryType() == QGis.Polygon
+        else: raise "unknown layer type"
         
-        
+        #qgis api http://doc.qgis.org/stable/annotated.html
         
         self.close() #close the dialog window
 
