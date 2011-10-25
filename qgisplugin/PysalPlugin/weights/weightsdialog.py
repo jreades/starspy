@@ -10,12 +10,20 @@ from ui_weights import Ui_Weights
 import os.path
 # create the dialog for zoom to point
 class WeightsDialog(QtGui.QDialog):
-    def __init__(self):
+    def __init__(self,iface):
         QtGui.QDialog.__init__(self)
         # Set up the user interface from Designer.
         self.ui = Ui_Weights()
         self.ui.setupUi(self)
+        self.iface = iface
         self.dir = os.path.realpath(os.path.curdir)
+        
+        self.layers = []
+        for i in range(self.iface.mapCanvas().layerCount()):
+            layer = self.iface.mapCanvas().layer(i)
+            self.layers += [layer]
+            self.ui.sourceLayer.addItem(layer.name())
+            
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_pbnInput_clicked(self):
@@ -35,19 +43,25 @@ class WeightsDialog(QtGui.QDialog):
 ###############################################################################################
     def accept(self):
         savefile = str(self.ui.outputFile.text()) #this will be a string like "c:\output"
-        ext = str(self.ui.outputExt.currentIndex())
+        ext = self.ui.outputExt.currentIndex()
         #these are the options for file extension.  We can say "if ext == GAL:"
         GAL = 0
         GWT = 1
         MAT = 2      
-        addX = self.ui.addX.checkState() #this will be 0 or 2 but we can treat it as False/True
+        addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
         if not self.ui.rbUseActiveLayer.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
         else:
-            pass #using the active layer
+            layer  = self.layers[self.ui.sourceLayer.currentIndex()]
+        ###################################################################
+        ### Now we have either a layer in QGIS or a path to a shapefile ###
+        ### What are the next steps? Import Pysal?                      ###
+        ###################################################################
         
-
+        
+        
+        
         self.close() #close the dialog window
 
 
