@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>370</width>
-    <height>345</height>
+    <height>428</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -23,7 +23,7 @@
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>300</y>
+     <y>400</y>
      <width>156</width>
      <height>23</height>
     </rect>
@@ -64,9 +64,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>140</y>
-     <width>313</width>
-     <height>138</height>
+     <y>250</y>
+     <width>351</width>
+     <height>131</height>
     </rect>
    </property>
    <property name="title">
@@ -76,8 +76,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>72</y>
-      <width>293</width>
+      <y>70</y>
+      <width>331</width>
       <height>56</height>
      </rect>
     </property>
@@ -167,34 +167,34 @@
      </property>
     </item>
    </widget>
-   <widget class="QCheckBox" name="addX">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>161</x>
+      <x>130</x>
       <y>24</y>
-      <width>92</width>
-      <height>17</height>
+      <width>211</width>
+      <height>42</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Add X as layer</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="addY">
-    <property name="geometry">
-     <rect>
-      <x>161</x>
-      <y>47</y>
-      <width>95</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Add Y as Layer</string>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QCheckBox" name="addNumNeighbors">
+       <property name="text">
+        <string>Add number of neighbors field to shp</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="addY">
+       <property name="text">
+        <string>Add Y as Layer</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_3">
+  <widget class="QGroupBox" name="inputBox">
    <property name="geometry">
     <rect>
      <x>9</x>
@@ -257,6 +257,117 @@
       </property>
       <property name="text">
        <string>...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" colspan="2">
+     <widget class="QComboBox" name="sourceLayer"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="optionBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>140</y>
+     <width>354</width>
+     <height>102</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Options</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="1" column="0">
+     <widget class="QRadioButton" name="rbDistance">
+      <property name="text">
+       <string>Distance-Based</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" colspan="2">
+     <widget class="QComboBox" name="contComboBox">
+      <item>
+       <property name="text">
+        <string>Rook</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Queen</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Bishop</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QRadioButton" name="rbContiguity">
+      <property name="text">
+       <string>Contiguity</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QComboBox" name="distMethod">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <item>
+       <property name="text">
+        <string>K Nearest Neighbors</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>r Nearest Neighbors</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Euclidean</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Manhattan</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Max nn-distance Band</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>I just kept listing slides from Serge</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>What fits/doesn't fit here</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="inputDistance">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
      </widget>
     </item>
@@ -365,6 +476,134 @@
     <hint type="destinationlabel">
      <x>437</x>
      <y>314</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbUseActiveLayer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sourceLayer</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>245</x>
+     <y>60</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSaveShapefile</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sourceLayer</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>245</x>
+     <y>60</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbContiguity</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>inputDistance</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>179</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>189</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbContiguity</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>distMethod</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>179</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>307</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbContiguity</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>contComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>179</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbDistance</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>contComboBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>212</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbDistance</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>distMethod</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>212</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>307</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbDistance</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>inputDistance</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>212</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>189</x>
+     <y>212</y>
     </hint>
    </hints>
   </connection>

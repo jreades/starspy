@@ -175,7 +175,7 @@ class PysalPlugin:
         raise notImplemented()
     
     def computeMatrix(self):
-        dlg = WeightsDialog()
+        dlg = WeightsDialog(self.iface)
         dlg.show()
         results = dlg.exec_()
 
