@@ -1,0 +1,10 @@
+filetypes on fileoutputmenu
+make sure things resize
+make things fit
+ImportError fixes
+weights and rasters? No
+break up weights into different submenus
+
+Cross-sectional autocorrelation analysis
+old pysal?
+
