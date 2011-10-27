@@ -1,0 +1,40 @@
+From the PEP description:
+> Implement KDE as a top-level module in PySAL
+> Core KDE methods that would be implemented include:
+	> triangular
+	> uniform
+	> quadratic
+	> quartic
+	> Gaussian
+
+> Develop a unified KDE api
+
+API (Application programming interface) documentation: 
+> Documentation that applies to a program and its interfaces; it explains to a user what methods there are to call, how the code works, and what the code is supposed to do
+> There can be more information that simply reference material: tutorials, histories, etc. can all be included in the API documentation
+> good API documentation means that “someone can show up, understand your code, and produce meaningful patches (help) all the more quickly” 
+(Source: http://techbase.kde.org/Development/Tutorials/API_Documentation)
+
+> Computational optimization
+
+
+Abstraction: 
+Objective: Provide a uniform interface for numerous Kernel Density Estimator methods available in PySAL. 
+
+Procedural Abstraction: (The actions to be performed)
+> A kernel density estimation is a smoothly curved surface that is fitted over each point, or other data type, of a data set. If we think about the kernel density surface in three dimensions, for each given point, the value is highest at the location of the point and diminishes further away from the point. The density at the point is calculated by adding the values of all kernel surfaces where they overlay with the raster cell center
+> A kernel function is utilized in calculations, as well as a bandwidth/smoothing parameter
+
+> Serge kind of mentioned in class last Thursday, and the PEP description kind of hints at it as well, but it seems like a lot of users have sort of reinvented the KDE wheel, so to say. This PEP attempts to centralize these various forms of KDEs
+> I assume that with centralized KDEs within PySAL, the user himself will be able to select a KDE that is most appropriate to her/his research
+	> To do this, the act of selecting a KDE, the user would need to know what types of KDEs available, the data requirements and parameters for each KDE, and the source code (probably) for the KDEs
+	> I think this is where the 5 methods of KDE mentioned above (triangular, uniform, quadratic, quartic, and Gaussian) come into play
+> When the PEP description mentions “interface” does this mean that we are trying to create something like a GUI with menus and options for the user to select and review the numerous KDEs available in PySAL, as well as some form of documentation about each KDE available in PySAL? 
+> With this centralization, the user will be able to: select an appropriate KDE; utilize an appropriate KDE in an analysis of spatial data; save time if he/she does not need to write a KDE himself/herself, but rather is satisfied with the KDEs of PySAL; save time by modifying current KDEs rather than write a new KDE class
+
+Data abstraction: (the objects in the program and how they interact)
+> User data, in the form of point and line shapefiles, will need to exist
+> PySAL KDE modules need to be able to manipulate the user’s data
+> Outputs need to be exported out of PySAL and into some visualization application(?)
+> a user will need to be able to interact with some form of interface that allows review and selection of KDE methods that are available through PySAL
+
