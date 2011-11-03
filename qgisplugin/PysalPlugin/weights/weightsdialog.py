@@ -53,10 +53,15 @@ class WeightsDialog(QtGui.QDialog):
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
         if not self.ui.rbUseActiveLayer.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
-            f = pysal.open(openfile)
+            f = pysal.open(openfile, 'r')
+            w = f.read()
+            output = pysal.open(savefile, 'w')
+            output.write(w)
+            f.close()
+            output.close()
             #can pysal easily do all the work?          
         else:
-            layer  = self.layers[self.ui.sourceLayer.currentIndex()]
+            layer = self.layers[self.ui.sourceLayer.currentIndex()]
         ###################################################################
         ### Now we have either a layer in QGIS or a path to a shapefile ###
         ### What are the next steps? Import Pysal?                      ###
