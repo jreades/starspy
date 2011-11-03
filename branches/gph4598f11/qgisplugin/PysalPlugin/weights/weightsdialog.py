@@ -54,28 +54,26 @@ class WeightsDialog(QtGui.QDialog):
             savefile += '.mat'
       
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
-        addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
+        addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True
+        layer = None      
         if not self.ui.rbUseActiveLayer.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
-            w = pysal.rook_from_shapefile(openfile)
+            w = pysal.queen_from_shapefile(openfile)
             output = pysal.open(savefile, 'w')
             output.write(w)
             output.close()
             #can pysal easily do all the work?          
         else:
             layer = self.layers[self.ui.sourceLayer.currentIndex()]
-        ###################################################################
-        ### Now we have either a layer in QGIS or a path to a shapefile ###
-        ### What are the next steps? Import Pysal?                      ###
-        ###################################################################
         
-        if layer.type() == layer.VectorLayer:
-            pass
-        elif layer.type() == layer.RasterLayer:
-            pass
-            #Do weights have meaning for rasters?  We can limit the user to only choosing vectors at the
-            #dropdown menu. Also can choose geometry type like layer.geometryType() == QGis.Polygon
-        else: raise "unknown layer type"
+        if layer:
+            if layer.type() == layer.VectorLayer:
+                pass
+            elif layer.type() == layer.RasterLayer:
+                pass
+                #Do weights have meaning for rasters?  We can limit the user to only choosing vectors at the
+                #dropdown menu. Also can choose geometry type like layer.geometryType() == QGis.Polygon
+            else: raise "unknown layer type"
         
         #qgis api http://doc.qgis.org/stable/annotated.html
         
