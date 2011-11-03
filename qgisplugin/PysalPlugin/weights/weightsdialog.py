@@ -57,9 +57,7 @@ class WeightsDialog(QtGui.QDialog):
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
         if not self.ui.rbUseActiveLayer.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
-            f = pysal.open(openfile, 'r')
-            w = f.read()
-            f.close()
+            w = pysal.rook_from_shapefile(openfile)
             output = pysal.open(savefile, 'w')
             output.write(w)
             output.close()
