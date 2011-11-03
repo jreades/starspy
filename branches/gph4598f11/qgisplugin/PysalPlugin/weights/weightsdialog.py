@@ -46,18 +46,22 @@ class WeightsDialog(QtGui.QDialog):
         savefile = str(self.ui.outputFile.text()) #this will be a string like "c:\output"
         ext = self.ui.outputExt.currentIndex()
         #these are the options for file extension.  We can say "if ext == GAL:"
-        GAL = 0
-        GWT = 1
-        MAT = 2      
+        if ext == 0:
+            savefile += '.gal'
+        elif ext == 1:
+            savefile += '.gwt'
+        elif ext == 2:
+            savefile += '.mat'
+      
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
         if not self.ui.rbUseActiveLayer.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
             f = pysal.open(openfile, 'r')
             w = f.read()
+            f.close()
             output = pysal.open(savefile, 'w')
             output.write(w)
-            f.close()
             output.close()
             #can pysal easily do all the work?          
         else:
