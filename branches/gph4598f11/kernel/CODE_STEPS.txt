@@ -1,0 +1,15 @@
+Steps for writing this code
+
+Variable = kernel.triangular (starting points, values, bandwidth = some default, output points = starting points by default)
+
+1. Check dimensions of starting points
+
+2. Check that #Columns in starting points = #Columns in values
+
+3. Run the KDE function (triangular in this case) to get the shapes of the PDFs
+    - This will use the starting points, the values, and the bandwidth
+
+4. Output an array
+	Use the starting points
+	OR
+	Use the user-defined output points
