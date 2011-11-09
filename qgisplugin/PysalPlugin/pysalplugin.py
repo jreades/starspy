@@ -23,6 +23,7 @@ except ImportError:
 
 from about.pysalplugindialog import PysalPluginDialog
 from weights.weightsdialog import WeightsDialog
+from spatial_dynamics.spatial_dynamicsdialog import spatial_dynamicsdialog
 
 class PysalPlugin:
 
@@ -154,7 +155,9 @@ class PysalPlugin:
         raise notImplemented()
     
     def spatialMarkov(self):
-        raise notImplemented()
+        dlg = spatial_dynamicsdialog(self.iface)
+        dlg.show()
+        results = dlg.exec_()
     
     def lisaMarkov(self):
         raise notImplemented()
