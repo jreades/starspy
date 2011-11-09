@@ -1,0 +1,121 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'spatial_dynamics.ui'
+#
+# Created: Sat Nov 05 16:24:50 2011
+#      by: PyQt4 UI code generator 4.8.6
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
+
+class Ui_spatial_dynamics(object):
+    def setupUi(self, spatial_dynamics):
+        spatial_dynamics.setObjectName(_fromUtf8("spatial_dynamics"))
+        spatial_dynamics.resize(471, 498)
+        spatial_dynamics.setWindowTitle(QtGui.QApplication.translate("spatial_dynamics", "spatial_dynamics", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox_2 = QtGui.QGroupBox(spatial_dynamics)
+        self.groupBox_2.setGeometry(QtCore.QRect(10, 60, 451, 161))
+        self.groupBox_2.setTitle(QtGui.QApplication.translate("spatial_dynamics", "Data Processing", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
+        self.comboBox = QtGui.QComboBox(self.groupBox_2)
+        self.comboBox.setGeometry(QtCore.QRect(120, 40, 181, 22))
+        self.comboBox.setObjectName(_fromUtf8("comboBox"))
+        self.comboBox.addItem(_fromUtf8(""))
+        self.comboBox.setItemText(0, QtGui.QApplication.translate("spatial_dynamics", "Quantiles", None, QtGui.QApplication.UnicodeUTF8))
+        self.label = QtGui.QLabel(self.groupBox_2)
+        self.label.setGeometry(QtCore.QRect(40, 40, 71, 16))
+        self.label.setText(QtGui.QApplication.translate("spatial_dynamics", "Classification", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setObjectName(_fromUtf8("label"))
+        self.label_2 = QtGui.QLabel(self.groupBox_2)
+        self.label_2.setGeometry(QtCore.QRect(30, 80, 81, 16))
+        self.label_2.setText(QtGui.QApplication.translate("spatial_dynamics", "Standardization", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.comboBox_2 = QtGui.QComboBox(self.groupBox_2)
+        self.comboBox_2.setGeometry(QtCore.QRect(120, 80, 51, 22))
+        self.comboBox_2.setObjectName(_fromUtf8("comboBox_2"))
+        self.comboBox_2.addItem(_fromUtf8(""))
+        self.comboBox_2.setItemText(0, QtGui.QApplication.translate("spatial_dynamics", "Yes", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox_2.addItem(_fromUtf8(""))
+        self.comboBox_2.setItemText(1, QtGui.QApplication.translate("spatial_dynamics", "No", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7 = QtGui.QLabel(self.groupBox_2)
+        self.label_7.setGeometry(QtCore.QRect(30, 120, 81, 16))
+        self.label_7.setText(QtGui.QApplication.translate("spatial_dynamics", "Save Output as", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setObjectName(_fromUtf8("label_7"))
+        self.lineEdit_4 = QtGui.QLineEdit(self.groupBox_2)
+        self.lineEdit_4.setGeometry(QtCore.QRect(120, 120, 281, 20))
+        self.lineEdit_4.setObjectName(_fromUtf8("lineEdit_4"))
+        self.pushButton_6 = QtGui.QPushButton(self.groupBox_2)
+        self.pushButton_6.setGeometry(QtCore.QRect(410, 120, 31, 23))
+        self.pushButton_6.setText(QtGui.QApplication.translate("spatial_dynamics", "...", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_6.setObjectName(_fromUtf8("pushButton_6"))
+        self.groupBox_4 = QtGui.QGroupBox(spatial_dynamics)
+        self.groupBox_4.setGeometry(QtCore.QRect(10, 290, 451, 141))
+        self.groupBox_4.setTitle(QtGui.QApplication.translate("spatial_dynamics", "Output", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
+        self.comboBox_3 = QtGui.QComboBox(self.groupBox_4)
+        self.comboBox_3.setGeometry(QtCore.QRect(120, 40, 301, 22))
+        self.comboBox_3.setObjectName(_fromUtf8("comboBox_3"))
+        self.label_5 = QtGui.QLabel(self.groupBox_4)
+        self.label_5.setGeometry(QtCore.QRect(70, 40, 31, 16))
+        self.label_5.setText(QtGui.QApplication.translate("spatial_dynamics", "Matrix", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setObjectName(_fromUtf8("label_5"))
+        self.label_6 = QtGui.QLabel(self.groupBox_4)
+        self.label_6.setGeometry(QtCore.QRect(30, 90, 81, 16))
+        self.label_6.setText(QtGui.QApplication.translate("spatial_dynamics", "Save Output as", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setObjectName(_fromUtf8("label_6"))
+        self.lineEdit_3 = QtGui.QLineEdit(self.groupBox_4)
+        self.lineEdit_3.setGeometry(QtCore.QRect(120, 90, 281, 20))
+        self.lineEdit_3.setObjectName(_fromUtf8("lineEdit_3"))
+        self.pushButton_5 = QtGui.QPushButton(self.groupBox_4)
+        self.pushButton_5.setGeometry(QtCore.QRect(410, 90, 31, 23))
+        self.pushButton_5.setText(QtGui.QApplication.translate("spatial_dynamics", "...", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_5.setObjectName(_fromUtf8("pushButton_5"))
+        self.label_3 = QtGui.QLabel(spatial_dynamics)
+        self.label_3.setGeometry(QtCore.QRect(40, 20, 71, 16))
+        self.label_3.setText(QtGui.QApplication.translate("spatial_dynamics", "Load New File", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.lineEdit = QtGui.QLineEdit(spatial_dynamics)
+        self.lineEdit.setGeometry(QtCore.QRect(130, 20, 291, 20))
+        self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
+        self.pushButton_3 = QtGui.QPushButton(spatial_dynamics)
+        self.pushButton_3.setGeometry(QtCore.QRect(430, 20, 31, 23))
+        self.pushButton_3.setText(QtGui.QApplication.translate("spatial_dynamics", "...", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
+        self.label_4 = QtGui.QLabel(spatial_dynamics)
+        self.label_4.setGeometry(QtCore.QRect(10, 240, 101, 16))
+        self.label_4.setText(QtGui.QApplication.translate("spatial_dynamics", "Input Spatial Weight ", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.lineEdit_2 = QtGui.QLineEdit(spatial_dynamics)
+        self.lineEdit_2.setGeometry(QtCore.QRect(130, 240, 281, 20))
+        self.lineEdit_2.setObjectName(_fromUtf8("lineEdit_2"))
+        self.pushButton_4 = QtGui.QPushButton(spatial_dynamics)
+        self.pushButton_4.setGeometry(QtCore.QRect(420, 240, 31, 23))
+        self.pushButton_4.setText(QtGui.QApplication.translate("spatial_dynamics", "...", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
+        self.layoutWidget = QtGui.QWidget(spatial_dynamics)
+        self.layoutWidget.setGeometry(QtCore.QRect(290, 440, 158, 25))
+        self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
+        self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget)
+        self.horizontalLayout.setMargin(0)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.pushButton = QtGui.QPushButton(self.layoutWidget)
+        self.pushButton.setText(QtGui.QApplication.translate("spatial_dynamics", "OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton.setObjectName(_fromUtf8("pushButton"))
+        self.horizontalLayout.addWidget(self.pushButton)
+        self.pushButton_2 = QtGui.QPushButton(self.layoutWidget)
+        self.pushButton_2.setText(QtGui.QApplication.translate("spatial_dynamics", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
+        self.horizontalLayout.addWidget(self.pushButton_2)
+
+        self.retranslateUi(spatial_dynamics)
+        QtCore.QMetaObject.connectSlotsByName(spatial_dynamics)
+
+    def retranslateUi(self, spatial_dynamics):
+        pass
+
