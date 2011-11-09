@@ -4,6 +4,7 @@ make things fit
 ImportError fixes
 weights and rasters? No
 break up weights into different submenus
+use in other computers without installing python and pysal?
 
 Cross-sectional autocorrelation analysis
 old pysal?
