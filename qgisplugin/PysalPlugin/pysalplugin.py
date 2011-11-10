@@ -9,19 +9,20 @@ from qgis.core import *
 import resources
 # Import the code for the dialog
 try:
+    from about.pysalplugindialog import PysalPluginDialog
     #import pysal module
     import pysal
 
 except ImportError:
-        dlg = PySalError()
-        dlg.ui.webView.setUrl(QUrl("Error.html"))
+        dlg = PysalPluginDialog()
         user_plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
-        PySal_dir = user_plugin_dir + "/python/plugins"
-        dlg.ui.webView.setUrl(QUrl("file:///%s/resources/error.html" % PySal_dir))
+        PySal_dir = user_plugin_dir + "/PySalPlugin/"
+        dlg.ui.webView.setUrl(QUrl("file:///%s//about/error.html" % PySal_dir))
         # show the dialog
         dlg.show()
+        results = dlg.exec_()
 
-from about.pysalplugindialog import PysalPluginDialog
+
 from weights.weightsdialog import WeightsDialog
 from spatial_dynamics.spatial_dynamicsdialog import spatial_dynamicsdialog
 
@@ -47,7 +48,7 @@ class PysalPlugin:
         ############ Create different sublists for the different PySal functions ########
         self.menu1 = QMenu("PySal")
 
-    
+
 
 ##############################################
 ###  Set up the Spatial Dynamics Menu Tree  ##
@@ -55,9 +56,9 @@ class PysalPlugin:
 
         self.menu2 = QMenu("Spatial Dynamics") #Main Spatial Dynamics Menu
         self.menu2.setIcon(QIcon(":/plugins/pysalplugin/resources/spatdyn_icon.png")) #Give it a colorful Icon
-        
+
         self.menu21 = QMenu("Markov Based Methods") #First SubMenu
-        
+
 ### start of items in first Submenu
         self.classicMarkovAction = QAction(QIcon(":/plugins/pysalplugin/icon1.png"), \
             "Classic Markov", self.iface.mainWindow())
@@ -73,9 +74,9 @@ class PysalPlugin:
 ### End of items in first submenu
 
         self.menu22 = QMenu("Rank Based Methods") #Second SubMenu
-        
+
 ### start of items in Second Submenu
-        
+
         self.spRankCorAction = QAction(QIcon(":/plugins/pysalplugin/icon4.png"), \
             "Spatial Rank Correlation", self.iface.mainWindow())
         QObject.connect(self.spRankCorAction, SIGNAL("triggered()"), self.spRankCor)
@@ -83,7 +84,7 @@ class PysalPlugin:
         self.rankDecompAction = QAction(QIcon(":/plugins/pysalplugin/icon5.png"), \
             "Rank Decomposition", self.iface.mainWindow())
         QObject.connect(self.rankDecompAction, SIGNAL("triggered()"), self.rankDecomp)
-        
+
 ### End of items in Second submenu
 
         self.menu23 = QMenu("Space-Time Interaction Tests")  # Third Submenu
@@ -102,7 +103,7 @@ class PysalPlugin:
         QObject.connect(self.jacquezTestAction, SIGNAL("triggered()"), self.JacquezTest)
 ## End of items in Third Submenu
 
-        
+
         self.menu21.addActions([self.classicMarkovAction,self.spatialMarkovAction,self.lisaMarkovAction])  #put three tools in first Submenu
         self.menu22.addActions([self.spRankCorAction,self.rankDecompAction]) #Put two tools in second Submenu
         self.menu23.addActions([self.knoxTestAction,self.mantelTestAction,self.jacquezTestAction]) #Put three tools in third submenu
@@ -122,7 +123,7 @@ class PysalPlugin:
         QObject.connect(self.computeMatrixAction, SIGNAL("triggered()"), self.computeMatrix)
 
         self.menu3.addActions([self.computeMatrixAction])
-        
+
 
 
 
@@ -153,30 +154,30 @@ class PysalPlugin:
 
     def classicMarkov(self):
         raise notImplemented()
-    
+
     def spatialMarkov(self):
         dlg = spatial_dynamicsdialog(self.iface)
         dlg.show()
         results = dlg.exec_()
-    
+
     def lisaMarkov(self):
         raise notImplemented()
-    
+
     def spRankCor(self):
         raise notImplemented()
-    
+
     def rankDecomp(self):
         raise notImplemented()
-    
+
     def knoxTest(self):
         raise notImplemented()
-    
+
     def mantelTest(self):
         raise notImplemented()
-    
+
     def JacquezTest(self):
         raise notImplemented()
-    
+
     def computeMatrix(self):
         dlg = WeightsDialog(self.iface)
         dlg.show()

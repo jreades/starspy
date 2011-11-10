@@ -1,4 +1,4 @@
-filetypes on fileoutputmenu
+filetypes on fileoutputmenu X Done
 make sure things resize
 make things fit
 ImportError fixes
