@@ -49,9 +49,8 @@ class WeightsDialog(QtGui.QDialog):
     def accept(self):
         savefile = str(self.ui.outputFile.text()) #this will be a string like "c:\output.(GAL OR GWT OR MAT)"
         cont = self.ui.contComboBox.currentIndex()
-        Rook = 0
-        Queen = 1
-        Bishop = 2
+        #Rook = 0
+        #Queen = 1
         methoddict = { 0: pysal.rook_from_shapefile, 1 : pysal.queen_from_shapefile}
 
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
