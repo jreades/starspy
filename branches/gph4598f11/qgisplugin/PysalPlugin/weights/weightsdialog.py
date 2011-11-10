@@ -64,14 +64,13 @@ class WeightsDialog(QtGui.QDialog):
                     return
             elif self.ui.rbDistance.isChecked():
                 distIdx = self.ui.distMethod.currentIndex()
-                # k = 2
-                #try:
-                #    k = int(str(self.ui.inputDistance.text()))
-                #except Exception:
-                #    raise Exception
+                k = 2
+                try:
+                    k = int(str(self.ui.inputDistance.text()))
+                except Exception:
+                    raise Exception
                 if distIdx == 0:
-                    # w = pysal.knnW_from_shapefile(openfile, k)
-                    w = pysal.knnW_from_shapefile(openfile)
+                    w = pysal.knnW_from_shapefile(openfile, k)
                 else:
                     return
 
