@@ -3,13 +3,13 @@
  <class>Weights</class>
  <widget class="QDialog" name="Weights">
   <property name="windowModality">
-   <enum>Qt::NonModal</enum>
+   <enum>Qt::WindowModal</enum>
   </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
+    <width>368</width>
     <height>428</height>
    </rect>
   </property>
@@ -19,360 +19,270 @@
   <property name="windowTitle">
    <string>Weights Matrix</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>400</y>
-     <width>156</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>press OK to render current raster</string>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-   </property>
-   <property name="centerButtons">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>9</y>
-     <width>131</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Spatial Weights Matrix</string>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>250</y>
-     <width>351</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Output</string>
-   </property>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>331</width>
-      <height>56</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-      <horstretch>0</horstretch>
-      <verstretch>200</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>0</width>
-      <height>13</height>
-     </size>
-    </property>
-    <property name="title">
-     <string>Output Location</string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>Output File</string>
-       </property>
-       <property name="buddy">
-        <cstring>outputFile</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="outputFile">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="toolTip">
-        <string>Select a directory where the computed weight matrix will be saved to.</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="pbnOutput">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>12</x>
-      <y>25</y>
-      <width>76</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Output File Ext.</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="outputExt">
-    <property name="geometry">
-     <rect>
-      <x>12</x>
-      <y>44</y>
-      <width>49</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>GAL</string>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
-    </item>
-    <item>
      <property name="text">
-      <string>GWT</string>
+      <string>Spatial Weights Matrix</string>
      </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>MAT</string>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="inputBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-    </item>
-   </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>24</y>
-      <width>211</width>
-      <height>42</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QCheckBox" name="addNumNeighbors">
-       <property name="text">
-        <string>Add number of neighbors field to shp</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="addY">
-       <property name="text">
-        <string>Add Y as Layer</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="inputBox">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>28</y>
-     <width>354</width>
-     <height>102</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Input</string>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
-     <widget class="QRadioButton" name="rbUseActiveLayer">
-      <property name="text">
-       <string>Active layer in map</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-      <attribute name="buttonGroup">
-       <string>buttonGroup</string>
-      </attribute>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QRadioButton" name="rbSaveShapefile">
-      <property name="text">
-       <string>Saved shapefile</string>
-      </property>
-      <attribute name="buttonGroup">
-       <string>buttonGroup</string>
-      </attribute>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Input Shapefile</string>
-      </property>
-      <property name="buddy">
-       <cstring>inputFile</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="inputFile">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="toolTip">
-       <string>Choose a shapefile from which to create the spatial weights matrix</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QPushButton" name="pbnInput">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>...</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1" colspan="2">
-     <widget class="QComboBox" name="sourceLayer"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="optionBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>140</y>
-     <width>354</width>
-     <height>102</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Options</string>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_5">
-    <item row="1" column="0">
-     <widget class="QRadioButton" name="rbDistance">
-      <property name="text">
-       <string>Distance-Based</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1" colspan="2">
-     <widget class="QComboBox" name="contComboBox">
+     <property name="title">
+      <string>Input</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="rbUseActiveLayer">
+        <property name="text">
+         <string>Active layer in map</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string>buttonGroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="sourceLayer"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="rbSaveShapefile">
+        <property name="text">
+         <string>Saved shapefile</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string>buttonGroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Input Shapefile</string>
+        </property>
+        <property name="buddy">
+         <cstring>inputFile</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="inputFile">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Choose a shapefile from which to create the spatial weights matrix</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QPushButton" name="pbnInput">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="optionBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="rbDistance">
+        <property name="text">
+         <string>Distance-Based</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="contComboBox">
+        <item>
+         <property name="text">
+          <string>Rook</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Queen</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Bishop</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="rbContiguity">
+        <property name="text">
+         <string>Contiguity</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="distMethod">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <item>
+         <property name="text">
+          <string>K Nearest Neighbors</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Threshhold Distance</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Inverse Distance</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Output</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <property name="text">
-        <string>Rook</string>
-       </property>
+       <widget class="QCheckBox" name="addNumNeighbors">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Add number of neighbors field to shp</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string>Queen</string>
-       </property>
+       <widget class="QCheckBox" name="addY">
+        <property name="text">
+         <string>Add Y as Layer</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string>Bishop</string>
-       </property>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>200</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>13</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Output Location</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Output File</string>
+           </property>
+           <property name="buddy">
+            <cstring>outputFile</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="outputFile">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="toolTip">
+            <string>Select a directory where the computed weight matrix will be saved to.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="pbnOutput">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QRadioButton" name="rbContiguity">
-      <property name="text">
-       <string>Contiguity</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QComboBox" name="distMethod">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <item>
-       <property name="text">
-        <string>K Nearest Neighbors</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>r Nearest Neighbors</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Euclidean</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Manhattan</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Max nn-distance Band</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>I just kept listing slides from Serge</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>What fits/doesn't fit here</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="inputDistance">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="toolTip">
+      <string>press OK to render current raster</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <tabstops>
   <tabstop>rbUseActiveLayer</tabstop>
@@ -514,22 +424,6 @@
   <connection>
    <sender>rbContiguity</sender>
    <signal>toggled(bool)</signal>
-   <receiver>inputDistance</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>68</x>
-     <y>179</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>189</x>
-     <y>212</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rbContiguity</sender>
-   <signal>toggled(bool)</signal>
    <receiver>distMethod</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
@@ -587,22 +481,6 @@
     </hint>
     <hint type="destinationlabel">
      <x>307</x>
-     <y>212</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rbDistance</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>inputDistance</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>68</x>
-     <y>212</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>189</x>
      <y>212</y>
     </hint>
    </hints>
