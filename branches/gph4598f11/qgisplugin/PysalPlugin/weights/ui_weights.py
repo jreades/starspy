@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_weights.ui'
 #
-# Created: Wed Nov 09 20:15:11 2011
+# Created: Thu Nov 10 09:32:43 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -92,8 +92,6 @@ class Ui_Weights(object):
         self.contComboBox.setItemText(0, QtGui.QApplication.translate("Weights", "Rook", None, QtGui.QApplication.UnicodeUTF8))
         self.contComboBox.addItem(_fromUtf8(""))
         self.contComboBox.setItemText(1, QtGui.QApplication.translate("Weights", "Queen", None, QtGui.QApplication.UnicodeUTF8))
-        self.contComboBox.addItem(_fromUtf8(""))
-        self.contComboBox.setItemText(2, QtGui.QApplication.translate("Weights", "Bishop", None, QtGui.QApplication.UnicodeUTF8))
         self.gridLayout_5.addWidget(self.contComboBox, 0, 1, 1, 2)
         self.rbContiguity = QtGui.QRadioButton(self.optionBox)
         self.rbContiguity.setText(QtGui.QApplication.translate("Weights", "Contiguity", None, QtGui.QApplication.UnicodeUTF8))
