@@ -9,3 +9,7 @@ use in other computers without installing python and pysal?
 Cross-sectional autocorrelation analysis
 old pysal?
 
+qstackedwidget for distance-based inputs
+nearest neighbors = slider
+threshold = text input
+inverse = both
