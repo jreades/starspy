@@ -1,40 +1,66 @@
 """
-This dialog window is made for computing spatial weights in PySal-->spatial_dynamics-->spatial Markovs
+This dialog window is made for computing spatial markovs in PySal-->spatial_dynamics-->Markov Based methods-->spatial markovs
 """
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import * 
 from PyQt4.QtGui import *
 from qgis.core import *
-from ui_spatial_dynamics import Ui_spatial_dynamics
+from ui_spatial_dynamics import ui_spatial_dynamics #in order to make functions of buttons and comboBoxs
 import pysal
 import os.path
+from weights.weightsdialog import WeightsDialog # in order to create spatial weights for spatial markov 
+import numpy as np # for markov methods
+
 # create the dialog
-class spatial_dynamicsdialog(QtGui.QDialog):
+class spatial_dynamicsdialog(QtGui.QWidget):
     def __init__(self,iface):
-        QtGui.QDialog.__init__(self)
+        QtGui.QWidget.__init__(self)
         # Set up the user interface from QTDesigner.
-        self.ui = Ui_spatial_dynamics()
-        self.ui.setupUi(self)
+        self.ui = ui_spatial_dynamics() # read GUI 
+	self.ui.setupui(self)
         self.iface = iface
-        self.dir = os.path.realpath(os.path.curdir)
-        
-        self.layers = []
+        self.dir = os.path.realpath(os.path.curdir)# Return the canonical path of the specified filename
+	        
+        self.layers = [] #set a empty list?(is it necessary steps?)
         for i in range(self.iface.mapCanvas().layerCount()):    #this for loop adds current layers
             layer = self.iface.mapCanvas().layer(i)             #to dropdown menu
             self.layers += [layer]
             self.ui.sourceLayer.addItem(layer.name())
             
+    @pyqtSignature('') #prevents actions being handled twice
+    def on_pushButton_3_clicked(self):
+	myFile = QFileDialog.getOpenFileName (self, "Select a Datafile","", "comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
+        self.ui.lineEdit.setText(myFile)
 
     @pyqtSignature('') #prevents actions being handled twice
-    def on_pbnInput_clicked(self):
-        myFile = QFileDialog.getOpenFileName (self, "Select a shapefile")
-        self.ui.inputFile.setText(myFile)
+    def on_pushButton_6_clicked(self):
+	myFile = QFileDialog.getSaveFileName(self, "Save Data After Processing","","comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
+        self.ui.lineEdit_4.setText(myFile)
+	#save?
 
     @pyqtSignature('') #prevents actions being handled twice
-    def on_pbnOutput_clicked(self):
-        myFile = QFileDialog.getSaveFileName(self, "Select a file for the spatial dynamics")
-        self.ui.outputFile.setText(myFile)
+    def on_pushButton_4_clicked(self):
+        myFile = QFileDialog.getOpenFileName (self, "Input Spatial Weights","", "*.gal;;*.gwt;;*.mat")
+        self.ui.lineEdit_2.setText(myFile)
+    
+    @pyqtSignature('') #prevents actions being handled twice
+    def on_pushButton_7_clicked(self):
+	dlg = WeightsDialog(self.iface)
+        dlg.show()
+        results = dlg.exec_()
+	self.ui.outputFile.setText(myFile)
+	#how to use the file that generates in the weights module?
+
+    @pyqtSignature('') #prevents actions being handled twice
+    def on_pushButton_5_clicked(self):
+        myFile = QFileDialog.getSaveFileName(self, "Save Matrixs","","comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
+        self.ui.lineEdit_3.setText(myFile)
+	#save?
+    
+
+#pysal seems not to support all filetypes I know. (write here for backup)"comma_separatedfile(*.csv);;textfile(*.txt);;excelfile(*.xls);;pythonfile(*.py);;accessfile(*.asc);;arcgisfile(*.dbf);;spssfile(*.sav);;multi_usagefile(*.dat)"
+
 ###############################################################################################
 ####                                                                                       #### 
 ####                                                                                       ####     
@@ -42,44 +68,70 @@ class spatial_dynamicsdialog(QtGui.QDialog):
 ####                                                                                       #### 
 ####                                                                                       ####  
 ###############################################################################################
+    
     def accept(self):
-        savefile = str(self.ui.outputFile.text()) #this will be a string like "c:\output"
-        ext = self.ui.outputExt.currentIndex()
-        #these are the options for file extension.  We can say "if ext == GAL:"
-        if ext == 0:
-            savefile += '.gal'
-        elif ext == 1:
-            savefile += '.gwt'
-        elif ext == 2:
-            savefile += '.mat'
-      
-        addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
-        addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True
-        layer = None      
-        if not self.ui.rbUseActiveLayer.isChecked():
-            openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
-            w = pysal.queen_from_shapefile(openfile)
-            output = pysal.open(savefile, 'w')
-            output.write(w)
-            output.close()
-            #can pysal easily do all the work?          
-        else:
-            layer = self.layers[self.ui.sourceLayer.currentIndex()]
+
+#save a result from data processing
+	savefile_processing = str(self.ui.lineEdit_4.text()) #this will be a string like "c:\output.filename"
         
-        if layer:
-            if layer.type() == layer.VectorLayer:
-                pass
-            elif layer.type() == layer.RasterLayer:
-                pass
-                #dropdown menu. Also can choose geometry type like layer.geometryType() == QGis.Polygon
-            else: raise "unknown layer type"
-        
-        #qgis api http://doc.qgis.org/stable/annotated.html
-        
+	#first comboBox
+	classification = self.ui.comboBox.currentIndex()
+	User_Defined = 0
+	Equal_Interval = 1
+	Natural_Breaks = 2
+	Quantiles = 3
+	Percentiles = 4
+	Standard_Mean = 5
+	Maximum_Breaks = 6
+	Fisher_Jenks = 7
+	Jenks_Caspall = 8
+	Jenks_Caspall_Forced = 9
+	Jenks_Caspall_Sampled = 10
+	Max_P_Classifier = 11
+	K_classifiers = 12
+	gadf =13
+	None_of_the_Above = 14 # how to avoid some keywords, such as none?
+	methoddict_classification ={ 0 : User_Defined, 1 : Equal_Interval, 2 : Natural_Breaks, 3 : Quantiles, 4 : Percentiles, 5 : Standard_Mean, 6 : Maximum_Breaks, 7 : Fisher_Jenks, 8 : Jenks_Caspall, 9 : Jenks_Caspall_Forced, 10 : Jenks_Caspall_Sampled, 11 : Max_P_Classifier, 12 : K_classifiers, 13 : gadf, 14 : None_of_the_above}
+
+	#another comboBox
+	standardization = self.ui.comboBox_2.currentIndex()
+	Yes = 1
+	No = 2
+	methoddict_standardization = { 0 : Yes, 1 : No}
+	
+
+#save matrixs
+        savefile_matrix = str(self.ui.lineEdit_3.text()) #this will be a string like "c:\output.(GAL OR GWT OR MAT)"
+
+        #Matrix comboBox
+	matrix = self.ui.comboBox_3.currentIndex()
+        Transition_Matrix = 0
+        Transition_Probabilities = 1
+        Steady_State_Distribution = 2
+	First_Mean_Passage_Time = 3
+	ALL = 4
+	methoddict_matrix = { 0 : Transition_Matrix, 1 : Transition_Probabilities, 2 : Steady_State_Distribution, 3 : First_Mean_Passage_Time, 4 : ALL}
+
+
+
+#read data and make it readable, try a csv file first
+	opendatafile=str(self.ui.lineEdit.text())
+	
+	C=methoddict_classification[classification](opendatafile) #dictionary [index](file), for selecting methods
+	S=methoddict_standardization[standardization](opendatafile)
+	
+	openweightsfile=str(self.ui.lineEdit_2.text())
+	#
+	readindata=pysal.open(savefile_matrix, 'w')
+	arraydata=array(readindata.write(w).strip())
+	readindata.close()
+
         self.close() #close the dialog window
 
+    def reject(self):
+	self.close() #when press the cancel button, then close the window. 
 
-        '''
+""" 
         # example code from a hillshade plugin
         myEngine = ShadedReliefEngine()
         myEngine.minSlopeParam = self.ui.spinBoxMinSlope.value()
@@ -109,7 +161,7 @@ class spatial_dynamicsdialog(QtGui.QDialog):
           myEngine.heightParam = layer.height()
           myEngine.noDataParam = layer.noDataValue()
           myEngine.outFileParam = f
-          myEngine.sourceFileParam = layer.source()
+	  myEngine.sourceFileParam = layer.source()
           myEngine.wktParam = layer.srs().toWkt()
           myEngine.run()
           if len(f) > 0:
@@ -154,6 +206,6 @@ class spatial_dynamicsdialog(QtGui.QDialog):
             myNewLayer.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")
             myNewLayer.triggerRepaint()
         return
-        '''
+        """
 
 

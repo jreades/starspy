@@ -8,15 +8,17 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import *
 from pysal import *
+import sys
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-class Ui_spatial_dynamics(object):
-    def setupUi(self, spatial_dynamics):
+class ui_spatial_dynamics(object):
+    def setupui(self, spatial_dynamics):
         spatial_dynamics.setObjectName(_fromUtf8("spatial_dynamics"))
         spatial_dynamics.resize(471, 498) 
 	spatial_dynamics.setMinimumSize(QtCore.QSize(471, 498)) # restrict the minimum size
@@ -34,6 +36,8 @@ class Ui_spatial_dynamics(object):
         self.pushButton_3.setGeometry(QtCore.QRect(430, 20, 31, 23))
         self.pushButton_3.setText(QtGui.QApplication.translate("spatial_dynamics", "...", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
+	#QtCore.QObject.connect(self.pushButton_3, QtCore.SIGNAL('clicked'), self.openfile1())
+	#self.pushButton_3.clicked.connect(self.openfile1()) 
         
 #"""--------------------------------------------------------------------------------------------------------------"""
 
@@ -43,36 +47,55 @@ class Ui_spatial_dynamics(object):
         self.groupBox_2.setTitle(QtGui.QApplication.translate("spatial_dynamics", "Data Processing", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
 	       
-	##### Map Classification functions #####
+	#####    Classification functions   #####
 	self.comboBox = QtGui.QComboBox(self.groupBox_2)
         self.comboBox.setGeometry(QtCore.QRect(120, 40, 181, 22))
         self.comboBox.setObjectName(_fromUtf8("comboBox"))
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(0, QtGui.QApplication.translate("spatial_dynamics", "User_Defined", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(0, QtGui.QApplication.translate("spatial_dynamics", "User Defined", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(1, QtGui.QApplication.translate("spatial_dynamics", "Equal_Interval", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(1, QtGui.QApplication.translate("spatial_dynamics", "Equal Interval", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(2, QtGui.QApplication.translate("spatial_dynamics", "Natural_Breaks", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(2, QtGui.QApplication.translate("spatial_dynamics", "Natural Breaks", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
         self.comboBox.setItemText(3, QtGui.QApplication.translate("spatial_dynamics", "Quantiles", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
         self.comboBox.setItemText(4, QtGui.QApplication.translate("spatial_dynamics", "Percentiles", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(5, QtGui.QApplication.translate("spatial_dynamics", "Standard_Mean", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(5, QtGui.QApplication.translate("spatial_dynamics", "Standard Mean", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(6, QtGui.QApplication.translate("spatial_dynamics", "Box_Plot", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(6, QtGui.QApplication.translate("spatial_dynamics", "Maximum_Breaks", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(7, QtGui.QApplication.translate("spatial_dynamics", "Fisher_Jenks", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(7, QtGui.QApplication.translate("spatial_dynamics", "Fisher Jenks", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(8, QtGui.QApplication.translate("spatial_dynamics", "Jenks_Caspall", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(8, QtGui.QApplication.translate("spatial_dynamics", "Jenks Caspall", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(9, QtGui.QApplication.translate("spatial_dynamics", "Jenks_Caspall_Forced", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(9, QtGui.QApplication.translate("spatial_dynamics", "Jenks Caspall Forced", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(10, QtGui.QApplication.translate("spatial_dynamics", "Jenks_Caspall_Sampled", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(10, QtGui.QApplication.translate("spatial_dynamics", "Jenks Caspall Sampled", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(11, QtGui.QApplication.translate("spatial_dynamics", "Max_P_Classifier", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(11, QtGui.QApplication.translate("spatial_dynamics", "Max P Classifier", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.setItemText(12, QtGui.QApplication.translate("spatial_dynamics", "Maximum_Breaks", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(12, QtGui.QApplication.translate("spatial_dynamics", "K classifiers", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
+	self.comboBox.addItem(_fromUtf8(""))
+        self.comboBox.setItemText(13, QtGui.QApplication.translate("spatial_dynamics", "gadf", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
+	self.comboBox.addItem(_fromUtf8(""))
+        self.comboBox.setItemText(14, QtGui.QApplication.translate("spatial_dynamics", "None of the Above", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
 
 	#####         Standardization         #####
 	self.comboBox_2 = QtGui.QComboBox(self.groupBox_2)
@@ -127,12 +150,19 @@ class Ui_spatial_dynamics(object):
         self.comboBox_3.setObjectName(_fromUtf8("comboBox_3"))
         self.comboBox_3.addItem(_fromUtf8(""))
         self.comboBox_3.setItemText(0, QtGui.QApplication.translate("spatial_dynamics", "Transition Matrix", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox_3.addItem(_fromUtf8(""))
         self.comboBox_3.setItemText(1, QtGui.QApplication.translate("spatial_dynamics", "Transition Probabilities", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox_3.addItem(_fromUtf8(""))
         self.comboBox_3.setItemText(2, QtGui.QApplication.translate("spatial_dynamics", "Steady State Distribution", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
         self.comboBox_3.addItem(_fromUtf8(""))
         self.comboBox_3.setItemText(3, QtGui.QApplication.translate("spatial_dynamics", "First Mean Passage Time", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
+	self.comboBox_3.addItem(_fromUtf8(""))
+        self.comboBox_3.setItemText(4, QtGui.QApplication.translate("spatial_dynamics", "ALL", None, QtGui.QApplication.UnicodeUTF8))
+	#QtCore.QObject.connect(self., QtCore.SIGNAL('activated(QString)'), self.)
 	
 	##### a space for saving file after getting matrixs #####
         self.lineEdit_3 = QtGui.QLineEdit(self.groupBox_4)
@@ -157,17 +187,18 @@ class Ui_spatial_dynamics(object):
         self.pushButton = QtGui.QPushButton(self.layoutWidget)
         self.pushButton.setText(QtGui.QApplication.translate("spatial_dynamics", "OK", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.pushButton_2 = QtGui.QPushButton(self.layoutWidget)
+	#QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL('clicked()'), self.okbutton)
+	self.horizontalLayout.addWidget(self.pushButton)
+        
+	self.pushButton_2 = QtGui.QPushButton(self.layoutWidget)
         self.pushButton_2.setText(QtGui.QApplication.translate("spatial_dynamics", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.horizontalLayout.addWidget(self.pushButton_2)
-	QtCore.QObject.connect(self.pushButton_2, QtCore.SIGNAL('clicked()'), self.myquit) #make effects for a button
-	#QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL('clicked()'), self.myquit)	
-	
 
+	#self.pushButton_2.clicked.connect(QtGui.QApplication.instance().quit) #close all, including QGIS :(
+	#self.pushButton_2=QtGui.QWidget(spatial_dynamics)
+	#QtCore.QObject.connect(self.pushButton_2, QtCore.SIGNAL('clicked()'), self.myquit()) #make effects for a button
 	
-
 #"""--------------------------------------------------------------------------------------------------------------"""
 
 	#####            Labels              #####
@@ -202,15 +233,40 @@ class Ui_spatial_dynamics(object):
 	##########################################
 
 #"""--------------------------------------------------------------------------------------------------------------"""
-	self.retranslateUi(spatial_dynamics)
-        QtCore.QMetaObject.connectSlotsByName(spatial_dynamics)
+	##### make effects for buttons and comboboxs #####
+
+    	self.retranslateUi(spatial_dynamics)
+	QtCore.QObject.connect(self.pushButton_2, QtCore.SIGNAL(_fromUtf8("rejected()")), spatial_dynamics.reject) #cancel button
+	QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("accepted()")), spatial_dynamics.accept) #ok button
+	QtCore.QMetaObject.connectSlotsByName(spatial_dynamics) #link buttons with functions in spatial_dynamicsdialog
+
 #"""--------------------------------------------------------------------------------------------------------------"""
-	##### make effects for buttons and menubars #####
-    def myquit(self):
-	self.exit()
-    #def okbutton(self):
-	
 
     def retranslateUi(self, spatial_dynamics):
-        pass
+	pass
 
+
+
+
+
+
+
+
+
+
+	"""
+    def openfile1(self):
+	myFile = QFileDialog.getOpenFileName ("Select a datafile","","*.csv")
+        self.ui.lineEdit.setText(myFile)    
+    #def okbutton(self):
+    def openfile1(self):
+	#read by string
+	filecontents=self.askopenfilename(filetypes=[ ("comma_separatedfiles","*.csv"),("textfiles","*.txt"),("excelfiles","*.xls"),("pythonfiles","*.py"),("accessfiles","*.asc"),("arcgisfiles","*.dbf"), ("spssfiles","*.sav"), ("multi_usagefiles","*.dat")])
+	if filecontents != None:
+		fp=open(filecontents) #fp is just the tag to open
+		mydata=fp.read().strip() #mydata truly read the file in.
+
+    def myquit(self):
+	QtGui.QWidget.close()
+	
+"""
