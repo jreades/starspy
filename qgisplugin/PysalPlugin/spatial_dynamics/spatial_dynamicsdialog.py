@@ -8,6 +8,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from ui_spatial_dynamics import ui_spatial_dynamics #in order to make functions of buttons and comboBoxs
 import pysal
+from pysal import *
 import os.path
 from weights.weightsdialog import WeightsDialog # in order to create spatial weights for spatial markov 
 import numpy as np # for markov methods
@@ -30,32 +31,37 @@ class spatial_dynamicsdialog(QtGui.QWidget):
             
     @pyqtSignature('') #prevents actions being handled twice
     def on_pushButton_3_clicked(self):
-	myFile = QFileDialog.getOpenFileName (self, "Select a Datafile","", "comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
-        self.ui.lineEdit.setText(myFile)
+	myFile1 = QFileDialog.getOpenFileName (self, "Select a Datafile","", "comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
+        self.ui.lineEdit.setText(myFile1)
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_pushButton_6_clicked(self):
-	myFile = QFileDialog.getSaveFileName(self, "Save Data After Processing","","comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
-        self.ui.lineEdit_4.setText(myFile)
+	myFile2 = QFileDialog.getSaveFileName(self, "Save Data After Processing","","comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
+        self.ui.lineEdit_4.setText(myFile2)
 	#save?
+#	if methoddict_classification == 14 or methoddict_standardization == 2:
+#		pass
+#	else:
+
+
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_pushButton_4_clicked(self):
-        myFile = QFileDialog.getOpenFileName (self, "Input Spatial Weights","", "*.gal;;*.gwt;;*.mat")
-        self.ui.lineEdit_2.setText(myFile)
+        myFile3 = QFileDialog.getOpenFileName (self, "Input Spatial Weights","", "*.gal;;*.gwt;;*.mat")
+        self.ui.lineEdit_2.setText(myFile3)
     
     @pyqtSignature('') #prevents actions being handled twice
     def on_pushButton_7_clicked(self):
 	dlg = WeightsDialog(self.iface)
         dlg.show()
         results = dlg.exec_()
-	self.ui.outputFile.setText(myFile)
+	self.ui.outputFile.setText(myFile3)
 	#how to use the file that generates in the weights module?
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_pushButton_5_clicked(self):
-        myFile = QFileDialog.getSaveFileName(self, "Save Matrixs","","comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
-        self.ui.lineEdit_3.setText(myFile)
+        myFile4 = QFileDialog.getSaveFileName(self, "Save Matrixs","","comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
+        self.ui.lineEdit_3.setText(myFile4)
 	#save?
     
 
@@ -113,19 +119,21 @@ class spatial_dynamicsdialog(QtGui.QWidget):
 	methoddict_matrix = { 0 : Transition_Matrix, 1 : Transition_Probabilities, 2 : Steady_State_Distribution, 3 : First_Mean_Passage_Time, 4 : ALL}
 
 
-
 #read data and make it readable, try a csv file first
+#classical markov procedures: transfer data from string to array, read data by each columns, data classification, transpose, matrixs 
+#spatial markov procedures: transfer data from string to array, read data by each columns, data classification, transpose, standardization, input spatial weights with transform, matrixs
 	opendatafile=str(self.ui.lineEdit.text())
 	
 	C=methoddict_classification[classification](opendatafile) #dictionary [index](file), for selecting methods
 	S=methoddict_standardization[standardization](opendatafile)
-	
+		
 	openweightsfile=str(self.ui.lineEdit_2.text())
-	#
-	readindata=pysal.open(savefile_matrix, 'w')
-	arraydata=array(readindata.write(w).strip())
-	readindata.close()
-
+				
+	M=methoddict_matrix[matrix](opendatafile)
+	
+	
+	
+	
         self.close() #close the dialog window
 
     def reject(self):
