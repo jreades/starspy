@@ -159,6 +159,8 @@ class PysalPlugin:
         dlg = spatial_dynamicsdialog(self.iface)
         dlg.show()
         results = dlg.exec_()
+	self.iface.addPluginToDatabaseMenu("&PostGIS", self.action)
+	
 
     def lisaMarkov(self):
         raise notImplemented()
