@@ -22,12 +22,13 @@ class Moran_scatter: #(wx.Frame):
 #    def __init__(self, args, **kwargs):
 #        super(Moran_scatter, self).__init__(args, **kwargs) 
 
-    def __init__(self, figure):     
+    def __init__(self, figure, comma, gal):     
 
         '''
         Constructor
         '''
-        read_data = open("C:/Users/Daehyun You/workspace/Project/stl_hom.txt", "r")
+        #read_data = open("C:/Users/Daehyun You/workspace/Project/stl_hom.txt", "r")
+        read_data = open(comma, "r")
         read_data.readline()
         read_data.readline()
         
@@ -43,7 +44,8 @@ class Moran_scatter: #(wx.Frame):
         
         read_data.close()
         
-        read_gal = open("C:/Users/Daehyun You/workspace/Project/stl.gal", "r")
+        #read_gal = open("C:/Users/Daehyun You/workspace/Project/stl.gal", "r")
+        read_gal = open(gal, "r")
         numNode = int(read_gal.readline())
         
         wz = []
