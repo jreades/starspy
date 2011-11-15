@@ -57,7 +57,7 @@ class PysalPlugin:
         self.menu2 = QMenu("Spatial Dynamics") #Main Spatial Dynamics Menu
         self.menu2.setIcon(QIcon(":/plugins/pysalplugin/resources/spatdyn_icon.png")) #Give it a colorful Icon
 
-        self.menu21 = QMenu("Markov Based Methods") #First SubMenu
+        #self.menu21 = QMenu("Markov Based Methods") #First SubMenu
 
 ### start of items in first Submenu
         self.classicMarkovAction = QAction(QIcon(":/plugins/pysalplugin/icon1.png"), \
@@ -103,13 +103,13 @@ class PysalPlugin:
         QObject.connect(self.jacquezTestAction, SIGNAL("triggered()"), self.JacquezTest)
 ## End of items in Third Submenu
 
-
-        self.menu21.addActions([self.classicMarkovAction,self.spatialMarkovAction,self.lisaMarkovAction])  #put three tools in first Submenu
-        self.menu22.addActions([self.spRankCorAction,self.rankDecompAction]) #Put two tools in second Submenu
-        self.menu23.addActions([self.knoxTestAction,self.mantelTestAction,self.jacquezTestAction]) #Put three tools in third submenu
-        self.menu2.addMenu(self.menu21) #add these submenus to the Spatial Dynamics Menu
-        self.menu2.addMenu(self.menu22) #add these submenus to the Spatial Dynamics Menu
-        self.menu2.addMenu(self.menu23) #add these submenus to the Spatial Dynamics Menu
+        self.menu2.addActions([self.spatialMarkovAction])
+        #self.menu21.addActions([self.spatialMarkovAction])  #put three tools in first Submenu
+        #self.menu22.addActions([self.spRankCorAction,self.rankDecompAction]) #Put two tools in second Submenu
+        #self.menu23.addActions([self.knoxTestAction,self.mantelTestAction,self.jacquezTestAction]) #Put three tools in third submenu
+        #self.menu2.addMenu(self.menu21) #add these submenus to the Spatial Dynamics Menu
+        #self.menu2.addMenu(self.menu22) #add these submenus to the Spatial Dynamics Menu
+        #self.menu2.addMenu(self.menu23) #add these submenus to the Spatial Dynamics Menu
 
 #####################################
 ### Set up the Weights Menu Tree  ###
