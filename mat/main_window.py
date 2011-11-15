@@ -19,6 +19,7 @@ import os
 import wx
 from moran_autocorrelation import *
 from moran_pvalue import *
+from moran_boxplot import *
 
 class Project_GPH(wx.Frame):
   
@@ -72,7 +73,7 @@ class Project_GPH(wx.Frame):
 
         self.Bind(wx.EVT_MENU, self.showScatter, plot1)
         self.Bind(wx.EVT_MENU, self.showPvalue, plot2)
-        self.Bind(wx.EVT_MENU, self.onExit, plot3)
+        self.Bind(wx.EVT_MENU, self.showBoxplot, plot3)
         
         menubar.Append(plotMenu, '&Plots')
         self.SetMenuBar(menubar)
@@ -128,17 +129,26 @@ class Project_GPH(wx.Frame):
             figure = Figure(figsize=(6, 4), dpi=80)
             moran = Moran_pvalue(figure, self.localmi)
             self.figure = moran.figure
-            self.canvas = FigureCanvas(self.infPanel, -1, self.figure)          
+            self.canvas = FigureCanvas(self.infPanel, -1, self.figure)   
+            
+    def showBoxplot(self,e):
+        if self.localmi <> None:
+            figure = Figure(figsize=(6, 4), dpi=80)
+            moran = Moran_boxplot(figure, self.y)
+            self.figure = moran.figure
+            self.canvas = FigureCanvas(self.infPanel, -1, self.figure)       
         
     def openPysal(self):
 
         if len(self.commapath) > 0 and len(self.galpath) > 0:
             f = pysal.open(self.commapath)
-            y = np.array(f.by_col['HR8893'])
+            self.y = np.array(f.by_col['HR8893'])
+            print "y-values"
+            print self.y
             w = pysal.open(self.galpath).read()
             
-            self.mi = pysal.Moran(y,w)
-            self.localmi = pysal.Moran_Local(y,w)
+            self.mi = pysal.Moran(self.y,w)
+            self.localmi = pysal.Moran_Local(self.y,w)
             print self.mi.I
             print self.mi.EI
             print self.mi.p_norm
