@@ -20,4 +20,4 @@ for point in table:
         x2 = other[2]
         y2 = other[3]
         dist = sqrt((x2-x1)**2 + (y2-y1)**2)
-        distances.append([point[0], other[0], dist])
+        distances.append([point[0], dist, other[0] ])
