@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_weights.ui'
 #
-# Created: Wed Nov 09 20:15:11 2011
+# Created: Tue Nov 15 10:38:49 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,8 @@ class Ui_Weights(object):
     def setupUi(self, Weights):
         Weights.setObjectName(_fromUtf8("Weights"))
         Weights.setWindowModality(QtCore.Qt.WindowModal)
-        Weights.resize(368, 428)
+        Weights.setEnabled(True)
+        Weights.resize(368, 452)
         Weights.setAcceptDrops(True)
         Weights.setWindowTitle(QtGui.QApplication.translate("Weights", "Weights Matrix", None, QtGui.QApplication.UnicodeUTF8))
         self.verticalLayout_2 = QtGui.QVBoxLayout(Weights)
@@ -92,8 +93,6 @@ class Ui_Weights(object):
         self.contComboBox.setItemText(0, QtGui.QApplication.translate("Weights", "Rook", None, QtGui.QApplication.UnicodeUTF8))
         self.contComboBox.addItem(_fromUtf8(""))
         self.contComboBox.setItemText(1, QtGui.QApplication.translate("Weights", "Queen", None, QtGui.QApplication.UnicodeUTF8))
-        self.contComboBox.addItem(_fromUtf8(""))
-        self.contComboBox.setItemText(2, QtGui.QApplication.translate("Weights", "Bishop", None, QtGui.QApplication.UnicodeUTF8))
         self.gridLayout_5.addWidget(self.contComboBox, 0, 1, 1, 2)
         self.rbContiguity = QtGui.QRadioButton(self.optionBox)
         self.rbContiguity.setText(QtGui.QApplication.translate("Weights", "Contiguity", None, QtGui.QApplication.UnicodeUTF8))
@@ -114,6 +113,37 @@ class Ui_Weights(object):
         self.distMethod.addItem(_fromUtf8(""))
         self.distMethod.setItemText(2, QtGui.QApplication.translate("Weights", "Inverse Distance", None, QtGui.QApplication.UnicodeUTF8))
         self.gridLayout_5.addWidget(self.distMethod, 1, 2, 1, 1)
+        self.horizontalSlider = QtGui.QSlider(self.optionBox)
+        self.horizontalSlider.setEnabled(True)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.horizontalSlider.sizePolicy().hasHeightForWidth())
+        self.horizontalSlider.setSizePolicy(sizePolicy)
+        self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider.setTickPosition(QtGui.QSlider.TicksAbove)
+        self.horizontalSlider.setTickInterval(10)
+        self.horizontalSlider.setObjectName(_fromUtf8("horizontalSlider"))
+        self.gridLayout_5.addWidget(self.horizontalSlider, 3, 1, 1, 2)
+        self.groupBox_3 = QtGui.QGroupBox(self.optionBox)
+        font = QtGui.QFont()
+        font.setKerning(False)
+        self.groupBox_3.setFont(font)
+        self.groupBox_3.setTitle(_fromUtf8(""))
+        self.groupBox_3.setObjectName(_fromUtf8("groupBox_3"))
+        self.horizontalLayout = QtGui.QHBoxLayout(self.groupBox_3)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.label = QtGui.QLabel(self.groupBox_3)
+        self.label.setEnabled(True)
+        self.label.setText(QtGui.QApplication.translate("Weights", "# Neighbors", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setObjectName(_fromUtf8("label"))
+        self.horizontalLayout.addWidget(self.label)
+        self.inputDistance = QtGui.QLabel(self.groupBox_3)
+        self.inputDistance.setText(QtGui.QApplication.translate("Weights", "0", None, QtGui.QApplication.UnicodeUTF8))
+        self.inputDistance.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.inputDistance.setObjectName(_fromUtf8("inputDistance"))
+        self.horizontalLayout.addWidget(self.inputDistance)
+        self.gridLayout_5.addWidget(self.groupBox_3, 3, 0, 1, 1)
         self.verticalLayout_2.addWidget(self.optionBox)
         self.groupBox = QtGui.QGroupBox(Weights)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Expanding)
@@ -124,6 +154,7 @@ class Ui_Weights(object):
         self.groupBox.setTitle(QtGui.QApplication.translate("Weights", "Output", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
         self.verticalLayout = QtGui.QVBoxLayout(self.groupBox)
+        self.verticalLayout.setSizeConstraint(QtGui.QLayout.SetDefaultConstraint)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.addNumNeighbors = QtGui.QCheckBox(self.groupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)

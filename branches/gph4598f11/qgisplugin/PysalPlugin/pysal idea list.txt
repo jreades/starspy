@@ -6,6 +6,7 @@ weights and rasters? No
 break up weights into different submenus
 If without installing pysal and python in computer, is it possible to use this plugin?
 assign specific save or open places
+Avoid repeating to open windows
 
 Cross-sectional autocorrelation analysis
 old pysal?

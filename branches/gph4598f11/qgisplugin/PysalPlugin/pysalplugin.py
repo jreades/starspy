@@ -25,6 +25,7 @@ except ImportError:
 
 from weights.weightsdialog import WeightsDialog
 from spatial_dynamics.spatial_dynamicsdialog import spatial_dynamicsdialog
+from spatial_autocorrelation.spatial_autocorrelationdialog import spatial_autocorrelationDialog
 
 class PysalPlugin:
 
@@ -124,7 +125,18 @@ class PysalPlugin:
 
         self.menu3.addActions([self.computeMatrixAction])
 
+#############################################
+### Set up the Autocorrelation Menu Tree  ###
+#############################################
 
+        self.menu4 = QMenu("ESDA")  #Main ESDA Menu
+        self.menu4.setIcon(QIcon(":/plugins/pysalplugin/resources/esda_icon.png"))
+
+        self.computeMatrixAction = QAction(QIcon(":/plugins/pysalplugin/icon8.png"), \
+            "Moran's I", self.iface.mainWindow())
+        QObject.connect(self.computeMatrixAction, SIGNAL("triggered()"), self.MoransI)
+
+        self.menu4.addActions([self.computeMatrixAction])
 
 
 ################################################################
@@ -133,6 +145,7 @@ class PysalPlugin:
         self.menu1.addActions([self.about])
         self.menu1.addMenu(self.menu2)
         self.menu1.addMenu(self.menu3)
+	self.menu1.addMenu(self.menu4)
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.addMenu(self.menu1)
 
@@ -159,9 +172,7 @@ class PysalPlugin:
         dlg = spatial_dynamicsdialog(self.iface)
         dlg.show()
         results = dlg.exec_()
-	self.iface.addPluginToDatabaseMenu("&PostGIS", self.action)
 	
-
     def lisaMarkov(self):
         raise notImplemented()
 
@@ -179,6 +190,11 @@ class PysalPlugin:
 
     def JacquezTest(self):
         raise notImplemented()
+
+    def MoransI(self):
+	dlg = spatial_autocorrelationDialog(self.iface)
+        dlg.show()
+        results = dlg.exec_()
 
     def computeMatrix(self):
         dlg = WeightsDialog(self.iface)
