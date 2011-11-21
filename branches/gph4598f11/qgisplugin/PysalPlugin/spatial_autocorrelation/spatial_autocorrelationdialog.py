@@ -9,7 +9,9 @@ from qgis.core import *
 from ui_spatial_autocorrelation import Ui_spatial_autocorrelation
 import pysal
 import os.path
+import subprocess #for Chinese characters?
 from weights.weightsdialog import WeightsDialog # in order to create spatial weights for spatial autocorrelation
+import numpy as np # for Moran's I module
 
 # create the dialog
 class spatial_autocorrelationDialog(QtGui.QDialog):
@@ -47,10 +49,10 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_outputbutton_clicked(self):
-        dlg = QFileDialog()
-        myFile3 = dlg.getSaveFileName(self, "Select a file for the weights matrix", "Save Files", "comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
-        self.ui.outputline.setText(myFile3)
-
+	dlg = QFileDialog()
+	myFile3 = dlg.getSaveFileName(self, "Save Output", "", "comma_separatedfile(*.csv)")
+	myFile3 += dlg.selectedNameFilter()[0] #?
+        self.ui.outputline.setText(myFile3[0:-1])
 
 ###############################################################################################
 ####                                                                                       ####
@@ -60,42 +62,70 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 ####                                                                                       ####
 ###############################################################################################
     def accept(self):
-        savefile = str(self.ui.outputFile.text()) #this will be a string like "c:\output.(GAL OR GWT OR MAT)"
-        cont = self.ui.contComboBox.currentIndex()
-        Rook = 0
-        Queen = 1
-        Bishop = 2
-        methoddict = { 0: pysal.rook_from_shapefile, 1 : pysal.queen_from_shapefile}
+        	
+	#normalradioButton = self.ui.normalradioButton.checkState() #this will be 0 or 2 but we can treat it as False/True
+        #randomradiobutton = self.ui.randomradiobutton.checkState() #this will be 0 or 2 but we can treat it as False/True
 
-        addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
-        addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True
-        layer = None
-        if not self.ui.rbUseActiveLayer.isChecked():
+	if self.ui.savedshpradio.isChecked(): #when selecting saved shp
+		openfile=str(self.ui.inputshpline.text()) #make a string of saved file
+		savefile = str(self.ui.outputline.text()) #this will be a string like "c:\output.(.csv)"
+		if self.ui.MoranIcheck.checkState(): #run moran's I value
+			#openfile=str(self.ui.inputshpline.text()) 
+			f=pysal.open(openfile).read() #read a shp file
+			w=pysal.open(Inputweightsline).read() #read a weights file
+			y=np.array(f.by_col['HR8893']) #change one column into array
+		#maybe need to create a new window to select from a column
 
-            openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
+			mi=pysal.moran(y,w) #value of Moran's I
+		
+			output=pysal.open(savefile, 'mi')
+			try:
+				output.write(mi)
+				output.write(mi.encode('utf-8'))
+			finally:
+				output.close()
+		#elif:
+		else:
+			return
+
+	elif self.ui.activecombobox.ischecked(): #when selecting active shp
+		layer = self.layers[self.ui.sourceLayer.currentIndex()]
+		if layer.type() == layer.VectorLayer:
+                	pass
+            	elif layer.type() == layer.RasterLayer:
+                	pass
+		else: raise "unknown layer type"
+
+	self.close() #close the dialog window
+	
+"""
+        #normalradioButton = self.ui.normalradioButton.checkState() #this will be 0 or 2 but we can treat it as False/True
+        #randomradiobutton = self.ui.randomradiobutton.checkState() #this will be 0 or 2 but we can treat it as False/True
+        layer = None #for Active Layer in Map
+	if not self.ui.rbUseActiveLayer.isChecked(): #not Active layer in map
+
+            openfile = str(self.ui.inputshpline.text()) #using a saved file this will be a string like "c:\shapefile.shp"
 
 
-            if self.ui.rbContiguity.isChecked(): #use shapefile and rook/queen/bishop
-                w = methoddict[cont](openfile)
-                output = pysal.open(savefile, 'w')
-                output.write(w)
-                output.close()
+            if self.ui.MoranIcheck.checkState(): #check Moran I as one of outputs
+            #w = methoddict[cont](openfile)
+            	output = pysal.open(openfile) #open by pysal
+	    	output.write(savefile) #save a new file
+            	output.close()
             else: #use shapefile at location: openfile and distance based method
                 pass
         else:
-            layer = self.layers[self.ui.sourceLayer.currentIndex()]
+            layer = self.layers[self.ui.activecombobox.currentIndex()]
 
-        if layer:
-            if layer.type() == layer.VectorLayer:
-                pass
+        #if layer: #?
+        #    if layer.type() == layer.VectorLayer:
+        #        pass
 
 
         #qgis api http://doc.qgis.org/stable/annotated.html
 
-        self.close() #close the dialog window
 
 
-        '''
         # example code from a hillshade plugin
         myEngine = ShadedReliefEngine()
         myEngine.minSlopeParam = self.ui.spinBoxMinSlope.value()
@@ -170,6 +200,6 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
             myNewLayer.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")
             myNewLayer.triggerRepaint()
         return
-        '''
+"""
 
 

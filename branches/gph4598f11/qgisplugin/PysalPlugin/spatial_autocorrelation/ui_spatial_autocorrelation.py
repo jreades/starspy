@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'spatial_autocorrelation.ui'
 #
-# Created: Sun Nov 20 10:23:12 2011
+# Created: Sun Nov 20 18:04:51 2011
 #      by: PyQt4 UI code generator 4.8.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -99,6 +99,9 @@ class Ui_spatial_autocorrelation(object):
         self.Pcheckbox.setObjectName(_fromUtf8("Pcheckbox"))
         self.MoranIlabel = QtGui.QLabel(spatial_autocorrelation)
         self.MoranIlabel.setGeometry(QtCore.QRect(20, 10, 91, 16))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Times New Roman"))
+        self.MoranIlabel.setFont(font)
         self.MoranIlabel.setText(QtGui.QApplication.translate("spatial_autocorrelation", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

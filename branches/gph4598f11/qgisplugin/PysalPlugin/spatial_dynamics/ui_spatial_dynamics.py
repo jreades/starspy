@@ -18,7 +18,9 @@ class Ui_spatial_dynamics(object):
     def setupUi(self, spatial_dynamics):
         spatial_dynamics.setObjectName(_fromUtf8("spatial_dynamics"))
         spatial_dynamics.resize(400, 419)
-        spatial_dynamics.setWindowTitle(QtGui.QApplication.translate("spatial_dynamics", "Spatial Dynamics", None, QtGui.QApplication.UnicodeUTF8))
+	spatial_dynamics.setMinimumSize(QtCore.QSize(400, 419)) # restrict the minimum size
+	spatial_dynamics.setMaximumSize(QtCore.QSize(400, 419)) # restrict the maximum size
+	spatial_dynamics.setWindowTitle(QtGui.QApplication.translate("spatial_dynamics", "Spatial Dynamics", None, QtGui.QApplication.UnicodeUTF8))
         spatial_dynamics.setLocale(QtCore.QLocale(QtCore.QLocale.Chinese, QtCore.QLocale.Taiwan))
         self.Loadlabel = QtGui.QLabel(spatial_dynamics)
         self.Loadlabel.setGeometry(QtCore.QRect(20, 40, 81, 16))

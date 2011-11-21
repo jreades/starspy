@@ -7,6 +7,7 @@ break up weights into different submenus
 If without installing pysal and python in computer, is it possible to use this plugin?
 assign specific save or open places
 Avoid repeating to open windows
+New error information: UnicodeEncodeError: 'ascii' codec can't encode characters in position 40-41: ordinal not in range(128) (It sounds that I have some Chinese characters in my code, but I do not find. By Vicky)
 
 Cross-sectional autocorrelation analysis
 old pysal?
