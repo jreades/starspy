@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'spatial_autocorrelation.ui'
 #
-# Created: Sun Nov 20 18:04:51 2011
+# Created: Tue Nov 22 14:28:26 2011
 #      by: PyQt4 UI code generator 4.8.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,17 +17,15 @@ except AttributeError:
 class Ui_spatial_autocorrelation(object):
     def setupUi(self, spatial_autocorrelation):
         spatial_autocorrelation.setObjectName(_fromUtf8("spatial_autocorrelation"))
-        spatial_autocorrelation.resize(400, 462)
-	spatial_autocorrelation.setMinimumSize(QtCore.QSize(400, 462)) # restrict the minimum size
-	spatial_autocorrelation.setMaximumSize(QtCore.QSize(400, 462)) # restrict the maximum size
-	spatial_autocorrelation.setMouseTracking(False)
+        spatial_autocorrelation.resize(400, 517)
+        spatial_autocorrelation.setMouseTracking(False)
         spatial_autocorrelation.setWindowTitle(QtGui.QApplication.translate("spatial_autocorrelation", "Spatial Autocorrelation", None, QtGui.QApplication.UnicodeUTF8))
         self.buttonBox = QtGui.QDialogButtonBox(spatial_autocorrelation)
-        self.buttonBox.setGeometry(QtCore.QRect(230, 430, 156, 23))
+        self.buttonBox.setGeometry(QtCore.QRect(230, 470, 156, 23))
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.input_groupbox = QtGui.QGroupBox(spatial_autocorrelation)
-        self.input_groupbox.setGeometry(QtCore.QRect(20, 30, 361, 111))
+        self.input_groupbox.setGeometry(QtCore.QRect(20, 30, 361, 151))
         self.input_groupbox.setTitle(QtGui.QApplication.translate("spatial_autocorrelation", "Input", None, QtGui.QApplication.UnicodeUTF8))
         self.input_groupbox.setObjectName(_fromUtf8("input_groupbox"))
         self.activeradio = QtGui.QRadioButton(self.input_groupbox)
@@ -42,18 +40,25 @@ class Ui_spatial_autocorrelation(object):
         self.activecombobox.setGeometry(QtCore.QRect(140, 20, 211, 22))
         self.activecombobox.setObjectName(_fromUtf8("activecombobox"))
         self.inputshplabel = QtGui.QLabel(self.input_groupbox)
-        self.inputshplabel.setGeometry(QtCore.QRect(20, 80, 111, 16))
+        self.inputshplabel.setGeometry(QtCore.QRect(20, 70, 111, 16))
         self.inputshplabel.setText(QtGui.QApplication.translate("spatial_autocorrelation", "Input Shapefile", None, QtGui.QApplication.UnicodeUTF8))
         self.inputshplabel.setObjectName(_fromUtf8("inputshplabel"))
         self.inputshpline = QtGui.QLineEdit(self.input_groupbox)
-        self.inputshpline.setGeometry(QtCore.QRect(100, 80, 211, 20))
+        self.inputshpline.setGeometry(QtCore.QRect(100, 70, 211, 20))
         self.inputshpline.setObjectName(_fromUtf8("inputshpline"))
         self.inputshpbutton = QtGui.QPushButton(self.input_groupbox)
-        self.inputshpbutton.setGeometry(QtCore.QRect(320, 80, 31, 23))
+        self.inputshpbutton.setGeometry(QtCore.QRect(320, 70, 31, 23))
         self.inputshpbutton.setText(QtGui.QApplication.translate("spatial_autocorrelation", "...", None, QtGui.QApplication.UnicodeUTF8))
         self.inputshpbutton.setObjectName(_fromUtf8("inputshpbutton"))
+        self.comboBox = QtGui.QComboBox(self.input_groupbox)
+        self.comboBox.setGeometry(QtCore.QRect(100, 110, 251, 22))
+        self.comboBox.setObjectName(_fromUtf8("comboBox"))
+        self.label = QtGui.QLabel(self.input_groupbox)
+        self.label.setGeometry(QtCore.QRect(20, 110, 71, 20))
+        self.label.setText(QtGui.QApplication.translate("spatial_autocorrelation", "Select Column", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setObjectName(_fromUtf8("label"))
         self.output_groupBox = QtGui.QGroupBox(spatial_autocorrelation)
-        self.output_groupBox.setGeometry(QtCore.QRect(20, 210, 361, 211))
+        self.output_groupBox.setGeometry(QtCore.QRect(20, 250, 361, 211))
         self.output_groupBox.setTitle(QtGui.QApplication.translate("spatial_autocorrelation", "Output", None, QtGui.QApplication.UnicodeUTF8))
         self.output_groupBox.setObjectName(_fromUtf8("output_groupBox"))
         self.MoranIcheck = QtGui.QCheckBox(self.output_groupBox)
@@ -111,18 +116,18 @@ class Ui_spatial_autocorrelation(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Moran\'s I</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.MoranIlabel.setObjectName(_fromUtf8("MoranIlabel"))
         self.Inputweighslabel = QtGui.QLabel(spatial_autocorrelation)
-        self.Inputweighslabel.setGeometry(QtCore.QRect(30, 150, 111, 16))
+        self.Inputweighslabel.setGeometry(QtCore.QRect(30, 190, 111, 16))
         self.Inputweighslabel.setText(QtGui.QApplication.translate("spatial_autocorrelation", "Input Spatial Weights", None, QtGui.QApplication.UnicodeUTF8))
         self.Inputweighslabel.setObjectName(_fromUtf8("Inputweighslabel"))
         self.Inputweightsline = QtGui.QLineEdit(spatial_autocorrelation)
-        self.Inputweightsline.setGeometry(QtCore.QRect(140, 150, 191, 20))
+        self.Inputweightsline.setGeometry(QtCore.QRect(140, 190, 191, 20))
         self.Inputweightsline.setObjectName(_fromUtf8("Inputweightsline"))
         self.Inputweightsbutton = QtGui.QPushButton(spatial_autocorrelation)
-        self.Inputweightsbutton.setGeometry(QtCore.QRect(340, 150, 31, 23))
+        self.Inputweightsbutton.setGeometry(QtCore.QRect(340, 190, 31, 23))
         self.Inputweightsbutton.setText(QtGui.QApplication.translate("spatial_autocorrelation", "...", None, QtGui.QApplication.UnicodeUTF8))
         self.Inputweightsbutton.setObjectName(_fromUtf8("Inputweightsbutton"))
         self.Inputweightscreate = QtGui.QPushButton(spatial_autocorrelation)
-        self.Inputweightscreate.setGeometry(QtCore.QRect(140, 180, 75, 23))
+        self.Inputweightscreate.setGeometry(QtCore.QRect(140, 220, 75, 23))
         self.Inputweightscreate.setText(QtGui.QApplication.translate("spatial_autocorrelation", "Create", None, QtGui.QApplication.UnicodeUTF8))
         self.Inputweightscreate.setObjectName(_fromUtf8("Inputweightscreate"))
 
