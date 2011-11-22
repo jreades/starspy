@@ -6,7 +6,7 @@ class Kernel:
         def __init__(self, points, bandwidth=2, resolution=10):
             self.points = points
             self.bandwidth = bandwidth
-            self.resolution = resolution
+            self.resolution =resolution
 
         def preplists(self):
 
@@ -35,31 +35,24 @@ class Kernel:
             highy = max(yvals) + self.bandwidth
 
             #Create a set of output x and y values (for the output grid)
-            xspacing = int((highx - lowx)/self.resolution)
-
-            outputgrid_x = []
-            outputgrid_x.append(lowx)
-
-            for i in range(lowx, highx, self.resolution):
-                xx = i + xspacing
-                outputgrid_x.append(xx)
-
-            yspacing = int((highy - lowy)/self.resolution)
-
-            outputgrid_y = []
-            outputgrid_y = [lowy]
-
-            for i in range(lowy, highy, self.resolution):
-                yy = i + yspacing
-                outputgrid_y.append(yy)
+            
+            outputgrid_x = numpy.linspace(lowx, highx, self.resolution)
+            outputgrid_y = numpy.linspace(lowy, highy, self.resolution)
 
             #Zips the x, y values for the output grid together to create
 	    #coordinate pairs.  We may not need this, but we can append
 	    #z-values later if we want	
             r = zip(outputgrid_x, outputgrid_y)
+            
+            self.outputgrid_x = outputgrid_x
+            self.outputgrid_y = outputgrid_y
+            self.xvals = xvals
+            self.yvals = yvals
 
-            return r
- 
+            return outputgrid_x, outputgrid_y, xvals, yvals
+            
+    def gaussian(self):
+        
 
     #Now we just need to find the kernel value at each output grid x,y    
 
