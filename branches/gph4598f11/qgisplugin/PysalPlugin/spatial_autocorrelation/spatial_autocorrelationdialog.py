@@ -8,6 +8,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from ui_spatial_autocorrelation import Ui_spatial_autocorrelation
 import pysal
+from pysal import *
 import os.path
 import subprocess #for Chinese characters?
 from weights.weightsdialog import WeightsDialog # in order to create spatial weights for spatial autocorrelation
@@ -69,26 +70,31 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 	if self.ui.savedshpradio.isChecked(): #when selecting saved shp
 		openfile=str(self.ui.inputshpline.text()) #make a string of saved file
 		savefile = str(self.ui.outputline.text()) #this will be a string like "c:\output.(.csv)"
+		weightsfile=str(self.ui.Inputweightsline.text())
+			
 		if self.ui.MoranIcheck.checkState(): #run moran's I value
-			#openfile=str(self.ui.inputshpline.text()) 
-			f=pysal.open(openfile).read() #read a shp file
-			w=pysal.open(Inputweightsline).read() #read a weights file
-			y=np.array(f.by_col['HR8893']) #change one column into array
-		#maybe need to create a new window to select from a column
+			np.random.seed(10) #? Is this step necessary?
+			f=pysal.open(openfile) #read a shp file, not need to read
+			w=pysal.open(weightsfile).read() #read a weights file
+			opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+			f_dbf = pysal.open(opendbf) #read the dbf attribute file
+			
+			#create a new combobox to select a column
+			
 
-			mi=pysal.moran(y,w) #value of Moran's I
-		
-			output=pysal.open(savefile, 'mi')
-			try:
-				output.write(mi)
-				output.write(mi.encode('utf-8'))
-			finally:
-				output.close()
+
+			y=np.array(f_dbf.by_col['HR8893']) #change one column into array, by_col function is only for dbf file			
+			mi=pysal.Moran(y,w) #value of Moran's I
+			a=mi.I
+			savestring=str(a) #change in string for saving
+			output=pysal.open(savefile, 'w')
+			output.write(savestring)
+			output.close()
 		#elif:
 		else:
 			return
 
-	elif self.ui.activecombobox.ischecked(): #when selecting active shp
+	elif self.ui.activecombobox.ischecked(): #when selecting active shp?
 		layer = self.layers[self.ui.sourceLayer.currentIndex()]
 		if layer.type() == layer.VectorLayer:
                 	pass

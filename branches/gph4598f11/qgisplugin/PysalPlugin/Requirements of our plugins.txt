@@ -1,0 +1,2 @@
+Install pysal 1.2, python2.5, numpy2.5, scipy2.5
+The plugin can not identify Chinese, so any path with Chinese can result in breaking down
