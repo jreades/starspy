@@ -13,6 +13,12 @@ import os.path
 import subprocess #for Chinese characters?
 from weights.weightsdialog import WeightsDialog # in order to create spatial weights for spatial autocorrelation
 import numpy as np # for Moran's I module
+from weights.ui_weights import Ui_Weights
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
 
 # create the dialog
 class spatial_autocorrelationDialog(QtGui.QDialog):
@@ -35,7 +41,20 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
     def on_inputshpbutton_clicked(self):
         myFile = QFileDialog.getOpenFileName (self, "Select a shapefile","","*.shp")
         self.ui.inputshpline.setText(myFile)
-    
+
+	#create a new combobox(1)use pysal to open file(2) read  in
+	openfile=str(self.ui.inputshpline.text()) 
+	f=pysal.open(openfile)
+	opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+	f_dbf = pysal.open(opendbf)
+	self.fileheader=f_dbf.header #find columns, already in a list
+	
+	#self.columns=[]
+	for i in self.fileheader: #i is in a string
+		self.ui.selectcombobox.addItem(i)
+		#self.columns+=fileheader #can not use i+=1, due to i is a string, not a list
+	
+	
     @pyqtSignature('') #prevents actions being handled twice
     def on_Inputweightsbutton_clicked(self):
         myFile2 = QFileDialog.getOpenFileName (self, "Select a weights file","","*.gal")
@@ -46,7 +65,13 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 	dlg = WeightsDialog(self.iface)
         dlg.show()
         results = dlg.exec_()
-	self.ui.Inputweightsline.setText(myFile2)
+	if self.ui.Inputweightsline != None: #how to call variable from other files?
+		#self.ci=WeightsDialog(WeightsDialog.accept)
+		#myfile4=WeightsDialog.accept(savefile)
+		#self.ui.Inputweightsline.setText(myfile4)
+		pass
+	else:
+		pass
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_outputbutton_clicked(self):
@@ -54,7 +79,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 	myFile3 = dlg.getSaveFileName(self, "Save Output", "", "comma_separatedfile(*.csv)")
 	myFile3 += dlg.selectedNameFilter()[0] #?
         self.ui.outputline.setText(myFile3[0:-1])
-
+   
 ###############################################################################################
 ####                                                                                       ####
 ####                                                                                       ####
@@ -78,18 +103,13 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			w=pysal.open(weightsfile).read() #read a weights file
 			opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
 			f_dbf = pysal.open(opendbf) #read the dbf attribute file
+			fileheader=f_dbf.header
+
+			#select a column and let it function
 			
-			#create a new combobox(1) use column in (2) select a column
-			#fileheader=f_dbf.header #find columns
-			#Nheader=len(fileheader)
-			#for i in fileheader: 
-				#layer = len(i) #to dropdown menu
-            		#	value=fileheader.currentIndex(i)
-				#a=str(value)
-			#	self.ui.activecombobox.addItem(a)
+			columnindex=self.ui.selectcombobox.currentText() #when select a column
+			y=np.array(f_dbf.by_col[columnindex]) #change into array, by_col function is only for dbf file
 			
-			
-			y=np.array(f_dbf.by_col['HR8893']) #change into array, by_col function is only for dbf file
 			mi=pysal.Moran(y,w) #value of Moran's I
 			MI=mi.I #list
 			
@@ -102,31 +122,31 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			if self.ui.normalradioButton.isChecked(): #under the assumption of normal distribution 
 				if self.ui.expectedcheckbox.checkState():
 					NE=mi.EI
-					savestring1='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Expected Value'+','+str(NE)
+					savestring1=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Expected Value'+','+str(NE)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring1)
 					output.close()
 				elif self.ui.variancecheckbox.checkState():
 					NV=mi.VI_norm
-					savestring2='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Variance'+','+str(NV)
+					savestring2=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Variance'+','+str(NV)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring2)
 					output.close()
 				elif self.ui.standardcheckbox.checkState():
 					NS=mi.seI_norm
-					savestring3='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Standard Deviation'+','+str(NS)
+					savestring3=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Standard Deviation'+','+str(NS)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring3)
 					output.close()
 				elif self.ui.Zcheckbox.checkState():
 					Nz=mi.z_norm
-					savestring4='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'z-value'+','+str(Nz)
+					savestring4=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'z-value'+','+str(Nz)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring4)
 					output.close()
 				elif self.ui.Pcheckbox.checkState():
 					Np=mi.p_norm
-					savestring5='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'p-value'+','+str(Np)
+					savestring5=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'p-value'+','+str(Np)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring5)
 					output.close()
@@ -136,25 +156,25 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			elif self.ui.randomradiobutton.isChecked(): #under the assumption of random distribution
 				if self.ui.variancecheckbox.checkState():
 					RV=mi.VI_rand
-					savestring6='Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Variance'+','+str(RV)
+					savestring6=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Variance'+','+str(RV)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring6)
 					output.close()
 				elif self.ui.standardcheckbox.checkState():
 					RS=mi.seI_rand
-					savestring7='Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Standard Deviation'+','+str(RS)
+					savestring7=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Standard Deviation'+','+str(RS)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring7)
 					output.close()
 				elif self.ui.Zcheckbox.checkState():
 					Rz=mi.z_rand
-					savestring8='Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'z-value'+','+str(Rz)
+					savestring8=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'z-value'+','+str(Rz)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring8)
 					output.close()
 				elif self.ui.Pcheckbox.checkState():
 					Rp=mi.p_rand
-					savestring9='Moron\'s I'+','+savestring+'\n'+'\n'+'p-value'+','+str(Rp)
+					savestring9=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'p-value'+','+str(Rp)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring9)
 					output.close()

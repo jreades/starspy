@@ -18,6 +18,8 @@ class Ui_spatial_autocorrelation(object):
     def setupUi(self, spatial_autocorrelation):
         spatial_autocorrelation.setObjectName(_fromUtf8("spatial_autocorrelation"))
         spatial_autocorrelation.resize(400, 489)
+	spatial_autocorrelation.setMinimumSize(QtCore.QSize(400, 489)) # restrict the minimum size
+	spatial_autocorrelation.setMaximumSize(QtCore.QSize(400, 489)) # restrict the maximum size
         spatial_autocorrelation.setMouseTracking(False)
         spatial_autocorrelation.setWindowTitle(QtGui.QApplication.translate("spatial_autocorrelation", "Spatial Autocorrelation", None, QtGui.QApplication.UnicodeUTF8))
         self.buttonBox = QtGui.QDialogButtonBox(spatial_autocorrelation)
