@@ -25,10 +25,10 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
         self.dir = os.path.realpath(os.path.curdir)
 
         self.layers = []
-        for i in range(self.iface.mapCanvas().layerCount()):    #this for loop adds current layers
+	for i in range(self.iface.mapCanvas().layerCount()):    #this for loop adds current layers; layercount: current map layer 
             layer = self.iface.mapCanvas().layer(i)             #to dropdown menu
             self.layers += [layer]
-            self.ui.sourceLayer.addItem(layer.name())
+            self.ui.activecombobox.addItem(layer.name())
 
 
     @pyqtSignature('') #prevents actions being handled twice
@@ -79,31 +79,107 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
 			f_dbf = pysal.open(opendbf) #read the dbf attribute file
 			
-			#create a new combobox to select a column
+			#create a new combobox(1) use column in (2) select a column
+			#fileheader=f_dbf.header #find columns
+			#Nheader=len(fileheader)
+			#for i in fileheader: 
+				#layer = len(i) #to dropdown menu
+            		#	value=fileheader.currentIndex(i)
+				#a=str(value)
+			#	self.ui.activecombobox.addItem(a)
 			
-
-
-			y=np.array(f_dbf.by_col['HR8893']) #change one column into array, by_col function is only for dbf file			
+			
+			y=np.array(f_dbf.by_col['HR8893']) #change into array, by_col function is only for dbf file
 			mi=pysal.Moran(y,w) #value of Moran's I
-			a=mi.I
-			savestring=str(a) #change in string for saving
+			MI=mi.I #list
+			
+			savestring=str(MI)
+			#savestring=','.join(str(n) for n in MI) #change from list to string for saving
 			output=pysal.open(savefile, 'w')
 			output.write(savestring)
 			output.close()
-		#elif:
-		else:
-			return
+			
+			if self.ui.normalradioButton.isChecked(): #under the assumption of normal distribution 
+				if self.ui.expectedcheckbox.checkState():
+					NE=mi.EI
+					savestring1='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Expected Value'+','+str(NE)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring1)
+					output.close()
+				elif self.ui.variancecheckbox.checkState():
+					NV=mi.VI_norm
+					savestring2='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Variance'+','+str(NV)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring2)
+					output.close()
+				elif self.ui.standardcheckbox.checkState():
+					NS=mi.seI_norm
+					savestring3='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Standard Deviation'+','+str(NS)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring3)
+					output.close()
+				elif self.ui.Zcheckbox.checkState():
+					Nz=mi.z_norm
+					savestring4='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'z-value'+','+str(Nz)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring4)
+					output.close()
+				elif self.ui.Pcheckbox.checkState():
+					Np=mi.p_norm
+					savestring5='Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'p-value'+','+str(Np)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring5)
+					output.close()
+				else:
+					pass
 
-	elif self.ui.activecombobox.ischecked(): #when selecting active shp?
-		layer = self.layers[self.ui.sourceLayer.currentIndex()]
+			elif self.ui.randomradiobutton.isChecked(): #under the assumption of random distribution
+				if self.ui.variancecheckbox.checkState():
+					RV=mi.VI_rand
+					savestring6='Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Variance'+','+str(RV)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring6)
+					output.close()
+				elif self.ui.standardcheckbox.checkState():
+					RS=mi.seI_rand
+					savestring7='Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Standard Deviation'+','+str(RS)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring7)
+					output.close()
+				elif self.ui.Zcheckbox.checkState():
+					Rz=mi.z_rand
+					savestring8='Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'z-value'+','+str(Rz)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring8)
+					output.close()
+				elif self.ui.Pcheckbox.checkState():
+					Rp=mi.p_rand
+					savestring9='Moron\'s I'+','+savestring+'\n'+'\n'+'p-value'+','+str(Rp)
+					output=pysal.open(savefile, 'w')
+					output.write(savestring9)
+					output.close()
+				else:
+					pass
+			
+			else:
+				pass
+			
+		else:
+			return	#differences between pass and return: "pass" just skip the code, while "return" will terminate the program
+
+	elif self.ui.activecombobox.isChecked(): #when selecting active shp? import pysal?
+		layer = self.layers[self.ui.activecombobox.currentIndex()]
 		if layer.type() == layer.VectorLayer:
                 	pass
             	elif layer.type() == layer.RasterLayer:
                 	pass
 		else: raise "unknown layer type"
+	
+	
 
 	self.close() #close the dialog window
-	
+
+
 """
         #normalradioButton = self.ui.normalradioButton.checkState() #this will be 0 or 2 but we can treat it as False/True
         #randomradiobutton = self.ui.randomradiobutton.checkState() #this will be 0 or 2 but we can treat it as False/True
