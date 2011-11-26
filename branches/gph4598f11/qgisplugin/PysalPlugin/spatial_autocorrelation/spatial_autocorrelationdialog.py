@@ -13,46 +13,63 @@ import os.path
 import subprocess #for Chinese characters?
 from weights.weightsdialog import WeightsDialog # in order to create spatial weights for spatial autocorrelation
 import numpy as np # for Moran's I module
-from weights.ui_weights import Ui_Weights
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
+from weights.ui_weights import Ui_Weights #try to inherent the path from the weights module? Not succeed
 
 # create the dialog
 class spatial_autocorrelationDialog(QtGui.QDialog):
     def __init__(self,iface):
-        QtGui.QDialog.__init__(self)
+	    QtGui.QDialog.__init__(self)
         # Set up the user interface from QTDesigner.
-        self.ui = Ui_spatial_autocorrelation()
-        self.ui.setupUi(self)
-        self.iface = iface
-        self.dir = os.path.realpath(os.path.curdir)
+    	    self.ui = Ui_spatial_autocorrelation()
+	    self.ui.setupUi(self)
+	    self.iface = iface
+	    self.dir = os.path.realpath(os.path.curdir)
 
-        self.layers = []
-	for i in range(self.iface.mapCanvas().layerCount()):    #this for loop adds current layers; layercount: current map layer 
-            layer = self.iface.mapCanvas().layer(i)             #to dropdown menu
-            self.layers += [layer]
-            self.ui.activecombobox.addItem(layer.name())
+            self.layers = []  	
+	    for i in range(self.iface.mapCanvas().layerCount()):    #this for loop adds current layers; layercount: current map layer
+            	layer = self.iface.mapCanvas().layer(i) #to dropdown menu #get the currently active layer
+            	self.layers += [layer] #can not use i+=1, due to i is a string, not a list. In order to do calculations, set a empty list first.
+#set a filter to select vector layers into combobox. It is necessary to set a filter to exclude the raster layers because whole pysal can not include any raster, and pysal can handle data by columns only in .dbf files. 
+            	if layer.type() ==layer.VectorLayer:
+			self.ui.activecombobox.addItem(layer.name()) #set dynamic labels in the combobox
+		elif layer.type == layer.RasterLayer:
+			pass
+		else:
+			pass
 
+#for revised records: if not right operation, raise: QMessageBox.information(None,"Raster Scale","Layer is ok")
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_inputshpbutton_clicked(self):
         myFile = QFileDialog.getOpenFileName (self, "Select a shapefile","","*.shp")
         self.ui.inputshpline.setText(myFile)
 
-	#create a new combobox(1)use pysal to open file(2) read  in
+#create a new combobox(1)use pysal to open file(2) read  in
+    #for saved shapefile to show columns
 	openfile=str(self.ui.inputshpline.text()) 
 	f=pysal.open(openfile)
 	opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
 	f_dbf = pysal.open(opendbf)
 	self.fileheader=f_dbf.header #find columns, already in a list
 	
-	#self.columns=[]
 	for i in self.fileheader: #i is in a string
 		self.ui.selectcombobox.addItem(i)
-		#self.columns+=fileheader #can not use i+=1, due to i is a string, not a list
+
+    @pyqtSignature('') #prevents actions being handled twice
+    def on_activecombobox_currentIndexChanged(self):	#when selecting	any shapefile from active layers, but do not know how to get the file path from active layers?
+    #for active layer to show columns
+    	self.ui.activecombobox.currentIndexChanged(int)
+	QMessageBox.information(self,"Vector file","Layer is ok")
+	#self.ui.activecombobox.text()
+    	openfile=str(self.ui.activecombobox.getPath().Text())
+	f=pysal.open(openfile)
+	opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+	f_dbf = pysal.open(opendbf)
+	self.fileheader=f_dbf.header #find columns, already in a list
+	
+	for i in self.fileheader: #i is in a string
+		self.ui.selectcombobox.addItem(i)
+
 	
 	
     @pyqtSignature('') #prevents actions being handled twice
@@ -89,9 +106,6 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 ###############################################################################################
     def accept(self):
         	
-	#normalradioButton = self.ui.normalradioButton.checkState() #this will be 0 or 2 but we can treat it as False/True
-        #randomradiobutton = self.ui.randomradiobutton.checkState() #this will be 0 or 2 but we can treat it as False/True
-
 	if self.ui.savedshpradio.isChecked(): #when selecting saved shp
 		openfile=str(self.ui.inputshpline.text()) #make a string of saved file
 		savefile = str(self.ui.outputline.text()) #this will be a string like "c:\output.(.csv)"
@@ -106,7 +120,6 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			fileheader=f_dbf.header
 
 			#select a column and let it function
-			
 			columnindex=self.ui.selectcombobox.currentText() #when select a column
 			y=np.array(f_dbf.by_col[columnindex]) #change into array, by_col function is only for dbf file
 			
@@ -119,6 +132,8 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			output.write(savestring)
 			output.close()
 			
+			#should rewrite the following part, because they can not do multi-selection?
+			
 			if self.ui.normalradioButton.isChecked(): #under the assumption of normal distribution 
 				if self.ui.expectedcheckbox.checkState():
 					NE=mi.EI
@@ -126,6 +141,15 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 					output=pysal.open(savefile, 'w')
 					output.write(savestring1)
 					output.close()
+
+					#show in the screen?
+					#if self.ui.showcheck.checkState():
+					#	dlg = WeightsDialog(self.iface)
+        				#	dlg.show()
+        				#	results = dlg.exec_()
+					#else:
+					#	pass
+	
 				elif self.ui.variancecheckbox.checkState():
 					NV=mi.VI_norm
 					savestring2=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Variance'+','+str(NV)
@@ -185,17 +209,22 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 				pass
 			
 		else:
-			return	#differences between pass and return: "pass" just skip the code, while "return" will terminate the program
+			return	#without checking Moran's I, close directly
+	#differences between pass and return: "pass" just skip the code, while "return" will terminate the program
 
-	elif self.ui.activecombobox.isChecked(): #when selecting active shp? import pysal?
-		layer = self.layers[self.ui.activecombobox.currentIndex()]
-		if layer.type() == layer.VectorLayer:
-                	pass
-            	elif layer.type() == layer.RasterLayer:
-                	pass
-		else: raise "unknown layer type"
-	
-	
+	elif self.ui.activecombobox.isChecked(): #when selecting active shp and then 000import pysal
+		layer = self.layers[self.ui.activecombobox.currentIndex()] #select a shp layer
+		savefile = str(self.ui.outputline.text())
+		weightsfile=str(self.ui.Inputweightsline.text())
+		
+		pass
+		
+		if self.ui.MoranIcheck.checkState(): 
+			np.random.seed(10)
+			#f=pysal.open() #calculate Moran's I and other value, but do not know how to get the file path from active layers?
+		else:
+			return
+	#how to show all results in the screen by creating a new dialogue?
 
 	self.close() #close the dialog window
 
