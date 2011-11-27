@@ -6,7 +6,9 @@ class Kernel:
         def __init__(self, points, bandwidth=2, resolution=10):
             self.points = points
             self.bandwidth = bandwidth
-            self.resolution =resolution
+            self.resolution = resolution
+            self.xvals = []
+            self.yvals = []
 
         def preplists(self):
 
@@ -51,10 +53,34 @@ class Kernel:
 
             return outputgrid_x, outputgrid_y, xvals, yvals
             
-    def gaussian(self):
-        
+        #Function for Gaussian calculation
+        def normd(self,xi,mu,sig):
+            constant = 1 / (numpy.sqrt(2*numpy.pi * sig*sig))
+            exponent = (xi-mu)**2
+            exponent /= 2*sig*sig
+            return constant * numpy.exp(-exponent)
 
-    #Now we just need to find the kernel value at each output grid x,y    
+        #Calculate Gaussin Kernel
+        def gaussian(self):
+            x = numpy.array(self.xvals) #Pass x-values into array
+            X = self.outputgrid_x #Set x linespace
+            f = numpy.zeros((5,X.shape[0]))
+            for i,Xi in enumerate(X):
+                for j, xj in enumerate(x):
+                    f[j,i] = self.normd(Xi,xj,self.bandwidth)
+
+            y = numpy.array(self.yvals) #Pass y-values into array
+            Y = self.outputgrid_y #Set y linespace
+            g = numpy.zeros((5,Y.shape[0]))
+            for i,Yi in enumerate(Y):
+                for j, yj in enumerate(y):
+                    g[j,i] = self.normd(Yi,yj,self.bandwidth)
+
+            gaus_kernel = f * g #Calculate 2-dimensional kernel
+            
+            return gaus_kernel
+                    
+            #Now we just need to find the kernel value at each output grid x,y    
 
 if __name__ == '__main__':
 
@@ -63,8 +89,6 @@ if __name__ == '__main__':
     r = 10
 
     k = Kernel(points, b, r)
-    print 'The input x values are', #xvals
-    print 'The input y values are', #yvals
-    print 'The output grid x values are', #outputgrid_x
-    print 'The output grid y values are', #outputgrid_y
-    print 'The output grid coordinate pairs are', k.preplists()
+
+    print 'The input/output grid coordinate pairs are', k.preplists()
+    print 'The Gaussian Kernel output is', k.gaussian()
