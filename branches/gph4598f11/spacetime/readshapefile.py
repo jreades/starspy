@@ -5,7 +5,7 @@ i = pysal.open('shapefile.shp', 'r')
 o = pysal.open(fname, 'w')
 for shp in i:
     o.write(shp)
-o.close
+o.close()
 open('shapefile.shp','rb').read() == open(fname,'rb').read()
 open('shapefile.shx','rb').read() == open(fname[:-1]+'x','rb').read()
 import os
