@@ -18,29 +18,40 @@ class WeightsDialog(QtGui.QDialog):
         self.ui.setupUi(self)
         self.iface = iface
         self.dir = os.path.realpath(os.path.curdir)
-
+        self.scount = -1
+        self.lcount = -1
         self.layers = []
         for i in range(self.iface.mapCanvas().layerCount()):   #this for loop adds current layers
             layer = self.iface.mapCanvas().layer(i)             #to dropdown menu
             if layer.type()== 0:
                 self.layers += [layer]
                 self.ui.sourceLayer.addItem(layer.name())
-
-
+                
+    @pyqtSignature('') #prevents actions being handled twice
+    def on_rbUseActiveLayer_clicked(self):
+        if self.lcount != -1:
+            self.ui.horizontalSlider.setMaximum(self.lcount-1)
+            self.ui.horizontalSlider.setTickInterval((self.lcount-1)/10 or 1)
+    @pyqtSignature('') #prevents actions being handled twice
+    def on_rbSaveShapefile_clicked(self):
+        if self.scount != -1:
+            self.ui.horizontalSlider.setMaximum(self.scount-1)
+            self.ui.horizontalSlider.setTickInterval((self.scount-1)/10 or 1) 
     @pyqtSignature('') #prevents actions being handled twice
     def on_pbnInput_clicked(self):
         myFile = QFileDialog.getOpenFileName (self, "Select a shapefile","","*.shp")
         self.ui.inputFile.setText(myFile)
         vlayer = QgsVectorLayer(myFile, "temp", "ogr")
         pr = vlayer.dataProvider()
-        count = pr.featureCount()
-        self.ui.horizontalSlider.setMaximum(count-1)
+        self.scount = pr.featureCount()
+        self.ui.horizontalSlider.setMaximum(self.scount-1)
+        self.ui.horizontalSlider.setTickInterval((self.scount-1)/10 or 1)
     @pyqtSignature('int') #prevents actions being handled twice    
     def on_sourceLayer_currentIndexChanged(self,i):
         l = self.layers[i]
-        count = l.featureCount()
-        self.ui.horizontalSlider.setMaximum(count-1)
-        self.ui.horizontalSlider.setTickInterval((count-1)/10 or 1)
+        self.lcount = l.featureCount()
+        self.ui.horizontalSlider.setMaximum(self.lcount-1)
+        self.ui.horizontalSlider.setTickInterval((self.lcount-1)/10 or 1)
         
     @pyqtSignature('') #prevents actions being handled twice
     def on_pbnOutput_clicked(self):
@@ -63,7 +74,7 @@ class WeightsDialog(QtGui.QDialog):
         
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
-        k = self.ui.horizontalSlider.value()
+        k = self.ui.horizontalSlider.value() #nearest neighbor
         threshDist = self.ui.threshDist.text()
         invDist = self.ui.invDist.text()
         
