@@ -71,16 +71,18 @@ class WeightsDialog(QtGui.QDialog):
 ###############################################################################################
     def accept(self):
         savefile = str(self.ui.outputFile.text()) #this will be a string like "c:\output"
-        
+            
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
         k = self.ui.horizontalSlider.value() #nearest neighbor
         threshDist = self.ui.threshDist.text()
         invDist = self.ui.invDist.text()
-        
+            
+        # use shapefile
         if self.ui.rbSaveShapefile.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
             w = 0
+            # contiguity-based
             if self.ui.rbContiguity.isChecked():
                 contIdx = self.ui.contComboBox.currentIndex()
                 if contIdx == 0:
@@ -89,18 +91,22 @@ class WeightsDialog(QtGui.QDialog):
                     w = pysal.queen_from_shapefile(openfile)
                 else:
                     return
+            # distance-based
             elif self.ui.rbDistance.isChecked():
                 distIdx = self.ui.distMethod.currentIndex()
-                k = 2
-                try:
-                    k = int(str(self.ui.inputDistance.text()))
-                except Exception:
-                    raise Exception
                 if distIdx == 0:
+                    threshDist = float(threshDist)
+                    w = pysal.threshold_binaryW_from_shapefile(openfile,
+                                                                threshDist)
+                elif distIdx == 1:
+                    invDist = float(invDist)
+                    w = pysal.threshold_continuousW_from_shapefile(openfile,
+                                                                   invDist)
+                elif distIdx == 2:
                     w = pysal.knnW_from_shapefile(openfile, k)
                 else:
                     return
-
+    
             output = pysal.open(savefile, 'w')
             output.write(w)
             output.close()
@@ -111,7 +117,7 @@ class WeightsDialog(QtGui.QDialog):
         ### Now we have either a layer in QGIS or a path to a shapefile ###
         ### What are the next steps? Import Pysal?                      ###
         ###################################################################
-        
+            
             if layer.type() == layer.VectorLayer:
                 pass
             elif layer.type() == layer.RasterLayer:
@@ -119,9 +125,9 @@ class WeightsDialog(QtGui.QDialog):
             #Do weights have meaning for rasters?  We can limit the user to only choosing vectors at the
             #dropdown menu. Also can choose geometry type like layer.geometryType() == QGis.Polygon
             else: raise "unknown layer type"
-        
+            
         #qgis api http://doc.qgis.org/stable/annotated.html
-        
+            
         self.close() #close the dialog window
 
 
