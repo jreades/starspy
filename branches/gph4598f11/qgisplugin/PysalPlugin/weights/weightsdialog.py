@@ -20,23 +20,35 @@ class WeightsDialog(QtGui.QDialog):
         self.dir = os.path.realpath(os.path.curdir)
 
         self.layers = []
-        for i in range(self.iface.mapCanvas().layerCount()):    #this for loop adds current layers
+        for i in range(self.iface.mapCanvas().layerCount()):   #this for loop adds current layers
             layer = self.iface.mapCanvas().layer(i)             #to dropdown menu
-            self.layers += [layer]
-            self.ui.sourceLayer.addItem(layer.name())
+            if layer.type()== 0:
+                self.layers += [layer]
+                self.ui.sourceLayer.addItem(layer.name())
 
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_pbnInput_clicked(self):
         myFile = QFileDialog.getOpenFileName (self, "Select a shapefile","","*.shp")
         self.ui.inputFile.setText(myFile)
-
+        vlayer = QgsVectorLayer(myFile, "temp", "ogr")
+        pr = vlayer.dataProvider()
+        count = pr.featureCount()
+        self.ui.horizontalSlider.setMaximum(count-1)
+    @pyqtSignature('int') #prevents actions being handled twice    
+    def on_sourceLayer_currentIndexChanged(self,i):
+        l = self.layers[i]
+        count = l.featureCount()
+        self.ui.horizontalSlider.setMaximum(count-1)
+        self.ui.horizontalSlider.setTickInterval((count-1)/10 or 1)
+        
     @pyqtSignature('') #prevents actions being handled twice
     def on_pbnOutput_clicked(self):
         dlg = QFileDialog()
         myFile = dlg.getSaveFileName(self, "Select a file for the weights matrix", "Saved File", "*.gal;;*.gwt;;*.mat")
         myFile += dlg.selectedNameFilter()[0]
         self.ui.outputFile.setText(myFile[0:-1])
+        
 
 
 ###############################################################################################
@@ -51,6 +63,10 @@ class WeightsDialog(QtGui.QDialog):
         
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
+        k = self.ui.horizontalSlider.value()
+        threshDist = self.ui.threshDist.text()
+        invDist = self.ui.invDist.text()
+        
         if self.ui.rbSaveShapefile.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
             w = 0
