@@ -10,7 +10,6 @@ from ui_spatial_autocorrelation import Ui_spatial_autocorrelation
 import pysal
 from pysal import *
 import os.path
-import subprocess #for Chinese characters?
 from weights.weightsdialog import WeightsDialog # in order to create spatial weights for spatial autocorrelation
 import numpy as np # for Moran's I module
 from weights.ui_weights import Ui_Weights #try to inherent the path from the weights module? Not succeed
@@ -212,7 +211,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			return	#without checking Moran's I, close directly
 	#differences between pass and return: "pass" just skip the code, while "return" will terminate the program
 
-	elif self.ui.activecombobox.isChecked(): #when selecting active shp and then 000import pysal
+	elif self.ui.activecombobox.isChecked(): #when selecting active shp and then import pysal
 		layer = self.layers[self.ui.activecombobox.currentIndex()] #select a shp layer
 		savefile = str(self.ui.outputline.text())
 		weightsfile=str(self.ui.Inputweightsline.text())
