@@ -44,7 +44,7 @@ class Kernel:
             #Zips the x, y values for the output grid together to create
 	    #coordinate pairs.  We may not need this, but we can append
 	    #z-values later if we want	
-            r = zip(outputgrid_x, outputgrid_y)
+            #r = zip(outputgrid_x, outputgrid_y)
             
             self.outputgrid_x = outputgrid_x
             self.outputgrid_y = outputgrid_y
@@ -64,21 +64,25 @@ class Kernel:
         def gaussian(self):
             x = numpy.array(self.xvals) #Pass x-values into array
             X = self.outputgrid_x #Set x linespace
-            f = numpy.zeros((5,X.shape[0]))
+            rows = len(self.points)/2
+            f = numpy.zeros((rows,X.shape[0]))
             for i,Xi in enumerate(X):
                 for j, xj in enumerate(x):
                     f[j,i] = self.normd(Xi,xj,self.bandwidth)
+            kernx = numpy.sum(f, axis = 0)        
 
             y = numpy.array(self.yvals) #Pass y-values into array
             Y = self.outputgrid_y #Set y linespace
-            g = numpy.zeros((5,Y.shape[0]))
+            g = numpy.zeros((rows,Y.shape[0]))
             for i,Yi in enumerate(Y):
                 for j, yj in enumerate(y):
                     g[j,i] = self.normd(Yi,yj,self.bandwidth)
+            kerny = numpy.sum(g, axis = 0)        
 
-            gaus_kernel = f * g #Calculate 2-dimensional kernel
+            gaus_kernel = kernx * kerny #Calculate 2-dimensional kernel
             
-            return gaus_kernel
+            r = zip(self.outputgrid_x, self.outputgrid_y, gaus_kernel)
+            return r
                     
             #Now we just need to find the kernel value at each output grid x,y    
 
@@ -89,6 +93,9 @@ if __name__ == '__main__':
     r = 10
 
     k = Kernel(points, b, r)
+    k.preplists()
+    #test1 = k.gaussian()
+    #print test1
 
-    print 'The input/output grid coordinate pairs are', k.preplists()
-    print 'The Gaussian Kernel output is', k.gaussian()
+   # print 'The input/output grid coordinate pairs are', k.preplists()
+    print 'The x-coordinate, y-coordinate, and gaussian kernel values are:', k.gaussian()
