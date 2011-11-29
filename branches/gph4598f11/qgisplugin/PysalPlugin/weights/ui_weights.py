@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_weights.ui'
 #
-# Created: Tue Nov 29 01:51:53 2011
+# Created: Tue Nov 29 09:14:49 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -265,7 +265,7 @@ class Ui_Weights(object):
         self.label_9.setBuddy(self.outputFile)
 
         self.retranslateUi(Weights)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), Weights.reject)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), Weights.accept)
         QtCore.QObject.connect(self.rbUseActiveLayer, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.inputFile.setDisabled)
