@@ -1,19 +1,15 @@
-filetypes on fileoutputmenu X Done
-make sure things resize
-make things fit
-ImportError fixes
-weights and rasters? No
-break up weights into different submenus
-If without installing pysal and python in computer, is it possible to use this plugin?
-assign specific save or open places
-Avoid repeating to open windows
+If without installing pysal and python in computer, is it possible to use this plugin?NO
+
+assign specific save or open places--keep track of last file folder user accessed
+
 Although I can select a column from a .dbf file, it can only work once. When I reopen a new one, the column can not change into the new columns. (by Vicky)
+
 separate some functions as tools, in order to avoid over complex in one window? e.g. map classification
 
 Cross-sectional autocorrelation analysis
 old pysal?
 
-qstackedwidget for distance-based inputs
-nearest neighbors = slider
-threshold = text input
-inverse = both
+
+
+add y should be create chloropleth map of # of NN
+how to retrieive layer information (file path, geometric data, etc)
