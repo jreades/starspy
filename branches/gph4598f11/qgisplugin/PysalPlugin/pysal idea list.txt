@@ -8,6 +8,7 @@ If without installing pysal and python in computer, is it possible to use this p
 assign specific save or open places
 Avoid repeating to open windows
 Although I can select a column from a .dbf file, it can only work once. When I reopen a new one, the column can not change into the new columns. (by Vicky)
+separate some functions as tools, in order to avoid over complex in one window? e.g. map classification
 
 Cross-sectional autocorrelation analysis
 old pysal?

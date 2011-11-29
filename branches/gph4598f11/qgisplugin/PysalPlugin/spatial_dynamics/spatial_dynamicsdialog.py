@@ -27,43 +27,74 @@ class spatial_dynamicsdialog(QtGui.QDialog):
         for i in range(self.iface.mapCanvas().layerCount()):    #this for loop adds current layers
             layer = self.iface.mapCanvas().layer(i)             #to dropdown menu
             self.layers += [layer]
-            self.ui.sourceLayer.addItem(layer.name())
-            
+            if layer.type() ==layer.VectorLayer:
+		self.ui.activecombobox.addItem(layer.name()) #set dynamic labels in the combobox
+	    elif layer.type == layer.RasterLayer:
+	    	pass
+	    else:
+		pass
+
+
     @pyqtSignature('') #prevents actions being handled twice
-    def on_Loadbutton_clicked(self):
-	myFile1 = QFileDialog.getOpenFileName (self, "Select a Datafile","", "comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
-        self.ui.Loadline.setText(myFile1)
+    def on_inputbutton_clicked(self):
+	myFile1 = QFileDialog.getOpenFileName(self, "Select a shapefile","","*.shp")
+	if self.ui.inputbutton != None:
+		self.ui.inputline.setText(myFile1)
+	else:
+		pass
 
+	#create a new combobox(1)use pysal to open file(2) read  in
+    #for saved shapefile to show columns
+	openfile=str(self.ui.inputline.text()) 
+	f=pysal.open(openfile)
+	opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+	f_dbf = pysal.open(opendbf)
+	self.fileheader=f_dbf.header #find columns, already in a list
+	
+	for i in self.fileheader: #i is in a string
+		self.ui.startcombobox.addItem(i)
+		self.ui.endcombobox.addItem(i)
+
+##########
     @pyqtSignature('') #prevents actions being handled twice
-    def on_savedatabutton_clicked(self):
-	myFile2 = QFileDialog.getSaveFileName(self, "Save Data After Processing","","comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
-        self.ui.savedataline.setText(myFile2)
-	#save?
-#	if methoddict_classification == 14 or methoddict_standardization == 2:
-#		pass
-#	else:
-
-
+    def on_activecombobox_currentIndexChanged(self):	#when selecting	any shapefile from active layers, but do not know how to get the file path from active layers?
+    #for active layer to show columns
+    	self.ui.activecombobox.currentIndexChanged(int)
+	QMessageBox.information(self,"Vector file","Layer is ok")
+	#self.ui.activecombobox.text()
+    	openfile=str(self.ui.activecombobox.getPath().Text())
+	f=pysal.open(openfile)
+	opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+	f_dbf = pysal.open(opendbf)
+	self.fileheader=f_dbf.header #find columns, already in a list
+	
+	for i in self.fileheader: #i is in a string
+		self.ui.selectcombobox.addItem(i)
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_inputweightsbutton_clicked(self):
-        myFile3 = QFileDialog.getOpenFileName (self, "Select a weightsfile","", "*.gal;;*.gwt;;*.mat")
-        self.ui.inputweightsline.setText(myFile3)
+        myFile2 = QFileDialog.getOpenFileName (self, "Select a weights file","","*.gal")
+        self.ui.inputweightsline.setText(myFile2)
     
     @pyqtSignature('') #prevents actions being handled twice
     def on_inputweightscreate_clicked(self):
 	dlg = WeightsDialog(self.iface)
         dlg.show()
         results = dlg.exec_()
-	self.ui.inputweightsline.setText(myFile3)
-	#how to use the file that generates in the weights module?
+	if self.ui.inputweightscreate != None: #how to call variable from other files?
+		#self.ci=WeightsDialog(WeightsDialog.accept)
+		#myfile4=WeightsDialog.accept(savefile)
+		#self.ui.Inputweightsline.setText(myfile4)
+		pass
+	else:
+		pass
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_saveoutputbutton_clicked(self):
-        myFile4 = QFileDialog.getSaveFileName(self, "Save Matrixs","","comma_separatedfile(*.csv);;textfile(*.txt);;arcgisfile(*.dbf);;multi_usagefile(*.dat)")
-        self.ui.saveoutputline.setText(myFile4)
-	#save?
-    
+	dlg = QFileDialog()
+	myFile3 = dlg.getSaveFileName(self, "Save Matrix", "", "comma_separatedfile(*.csv)")
+	myFile3 += dlg.selectedNameFilter()[0] #?
+        self.ui.saveoutputline.setText(myFile3[0:-1])
 
 #pysal seems not to support all filetypes I know. (write here for backup)"comma_separatedfile(*.csv);;textfile(*.txt);;excelfile(*.xls);;pythonfile(*.py);;accessfile(*.asc);;arcgisfile(*.dbf);;spssfile(*.sav);;multi_usagefile(*.dat)"
 
@@ -74,57 +105,66 @@ class spatial_dynamicsdialog(QtGui.QDialog):
 ####                                                                                       #### 
 ####                                                                                       ####  
 ###############################################################################################
-    
-    def accept(self):
-
-#save a result from data processing
-	savefile_processing = str(self.ui.savedataline.text()) #this will be a string like "c:\output.filename"
-        
-	#first comboBox
-	classification = self.ui.classcombobox.currentIndex()
-	User_Defined = 0
-	Equal_Interval = 1
-	Natural_Breaks = 2
-	Quantiles = 3
-	Percentiles = 4
-	Standard_Mean = 5
-	Maximum_Breaks = 6
-	Fisher_Jenks = 7
-	Jenks_Caspall = 8
-	Jenks_Caspall_Forced = 9
-	Jenks_Caspall_Sampled = 10
-	Max_P_Classifier = 11
-	K_classifiers = 12
-	gadf =13
-	methoddict_classification ={ 0 : User_Defined, 1 : Equal_Interval, 2 : Natural_Breaks, 3 : Quantiles, 4 : Percentiles, 5 : Standard_Mean, 6 : Maximum_Breaks, 7 : Fisher_Jenks, 8 : Jenks_Caspall, 9 : Jenks_Caspall_Forced, 10 : Jenks_Caspall_Sampled, 11 : Max_P_Classifier, 12 : K_classifiers, 13 : gadf}
-
-	#another comboBox
-	standardization = self.ui.standardcombox.currentIndex()
-	Yes = 1
-	No = 2
-	methoddict_standardization = { 0 : Yes, 1 : No}
-	
-
-#save matrixs
-        savefile_matrix = str(self.ui.saveoutputline.text()) #this will be a string like "c:\output.(GAL OR GWT OR MAT)"
-
-
-
-#read data and make it readable, try a csv file first
 #classical markov procedures: transfer data from string to array, read data by each columns, data classification, transpose, matrixs 
-#spatial markov procedures: transfer data from string to array, read data by each columns, data classification, transpose, standardization, input spatial weights with transform, matrixs
-	opendatafile=str(self.ui.Loadline.text())
-	
-	C=methoddict_classification[classification](opendatafile) #dictionary [index](file), for selecting methods
-	S=methoddict_standardization[standardization](opendatafile)
+#spatial markov procedures: transfer data from string to array, read data by each columns, data classification, transpose, standardization, input spatial weights with transform, matrix
+
+    def accept(self):
+	if self.ui.savedshpradio.isChecked(): #when selecting saved shp
+		openfile=str(self.ui.inputline.text()) #make a string of saved file
+		savefile = str(self.ui.saveoutputline.text()) #this will be a string like "c:\output.(.csv)"
+		weightsfile=str(self.ui.inputweightsline.text())
+		if self.ui.matrixcheckbox.checkState():
+
+		#run spatial Matrix
+			f=pysal.open(openfile) #read a shp file, not need to read
+			w=pysal.open(weightsfile).read() #read a weights file
+			pci=np.array
+			opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+			f_dbf = pysal.open(opendbf) #read the dbf attribute file
+			fileheader=f_dbf.header
+
+		#select a column and let it function
+			columnindex1=self.ui.startcombobox.currentText() #when select a column
+			columnindex2=self.ui.endcombobox.currentText() #avoid random selection?
 		
-	openweightsfile=str(self.ui.inputweightsline.text())
-				
-	M=methoddict_matrix[matrix](opendatafile)
+		#change into array, by_col function is only for dbf file
+			pci=np.array(f_dbf.by_col[str(y)] for y in range(columnindex1, columnindex2)) 
+			#only number? by_col works for dbf, but the sample data use csv?
+			q5 = np.array([pysal.Quantiles(y).yb for y in pci]) #map classification?
+
+			pci=pci.transpose()
+			rpci=pci/(pci.mean(axis=0)) #standardization
+			w.transform='r'
+		
+			sm=pysal.Spatial_Markov(rpci, w, fixed=True, k=5) #what did k mean? does it equal to quantile?
+		
+		#results
+			Transition_Matrix=sm.p #numpy.matrixlib.defmatrix.matrix
+			#how to change into string and save?
+
+			for p in sm.P:
+				Transition_Probabilities=p
+		
+			Steady_State_Distribution=sm.S
+		
+			for f in sm.F:
+				First_Mean_Passage_Time=f
+		else:
+			pass
 	
-	
-	
-	
+	elif self.ui.activecombobox.isChecked(): #when selecting active shp and then import pysal
+		layer = self.layers[self.ui.activecombobox.currentIndex()] #select a shp layer
+		savefile = str(self.ui.outputline.text())
+		weightsfile=str(self.ui.Inputweightsline.text())
+		
+		pass
+		
+		if self.ui.MoranIcheck.checkState(): 
+			np.random.seed(10)
+			#f=pysal.open() #calculate Moran's I and other value, but do not know how to get the file path from active layers?
+		else:
+			return
+
         self.close() #close the dialog window
 
 """ 
