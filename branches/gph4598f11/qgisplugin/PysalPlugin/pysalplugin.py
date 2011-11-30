@@ -40,14 +40,14 @@ class PysalPlugin:
 
         # Create about pysal menu item that will start plugin configuration
         self.about = QAction(QIcon(":/plugins/pysalplugin/resources/icon.png"), \
-            "About Pysal", self.iface.mainWindow())
+            "About PySAL", self.iface.mainWindow())
         # connect the action to the run method
         QObject.connect(self.about, SIGNAL("triggered()"), self.runAbout)
         # Add toolbar button and menu item
-        self.iface.addPluginToMenu("&Pysal", self.about)
+        self.iface.addPluginToMenu("&PySAL", self.about)
 
         ############ Create different sublists for the different PySal functions ########
-        self.menu1 = QMenu("PySal")
+        self.menu1 = QMenu("PySAL")
 
 
 
