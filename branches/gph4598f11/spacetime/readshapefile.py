@@ -1,6 +1,6 @@
 import pysal
-shp = pysal.open('Arizona_Counties_2010.shp', 'r')
-db = pysal.open('Arizona_Counties_2010.dbf')
+shp = pysal.open('Shapefiles/Arizona_Counties_2010.shp', 'r')
+db = pysal.open('Shapefiles/Arizona_Counties_2010.dbf')
 table = []
 p =0
 
@@ -9,3 +9,5 @@ for poly in shp:
   data = db.next()
   table.append([p,c,data])
   p = p+1
+
+print table
