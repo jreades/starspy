@@ -6,8 +6,10 @@ p =0
 
 for poly in shp:
   c = poly.centroid
+  c = list(c)
   data = db.next()
   table.append([p,c,data])
   p = p+1
 
-print table
+for i in table:
+    print i
