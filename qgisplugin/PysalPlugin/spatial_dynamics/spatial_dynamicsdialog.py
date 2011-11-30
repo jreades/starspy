@@ -37,7 +37,7 @@ class spatial_dynamicsdialog(QtGui.QDialog):
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_inputbutton_clicked(self):
-	myFile1 = QFileDialog.getOpenFileName(self, "Select a shapefile","","*.shp")
+	myFile1 = QFileDialog.getOpenFileName(self, "Select a shapefile","","shapefile(*.shp);;comma_separatedfile(*.csv)")
 	if self.ui.inputbutton != None:
 		self.ui.inputline.setText(myFile1)
 	else:
@@ -47,29 +47,30 @@ class spatial_dynamicsdialog(QtGui.QDialog):
     #for saved shapefile to show columns
 	openfile=str(self.ui.inputline.text()) 
 	f=pysal.open(openfile)
-	opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
-	f_dbf = pysal.open(opendbf)
-	self.fileheader=f_dbf.header #find columns, already in a list
+	#opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+	#f_dbf = pysal.open(opendbf)
+	self.fileheader=f.header #find columns, already in a list
 	
 	for i in self.fileheader: #i is in a string
 		self.ui.startcombobox.addItem(i)
 		self.ui.endcombobox.addItem(i)
 
-##########
-    @pyqtSignature('') #prevents actions being handled twice
-    def on_activecombobox_currentIndexChanged(self):	#when selecting	any shapefile from active layers, but do not know how to get the file path from active layers?
+
+    #@pyqtSignature('') #prevents actions being handled twice
+    #def on_activecombobox_currentIndexChanged(self):	#when selecting	any shapefile from active layers, but do not know how to get the file path from active layers?
     #for active layer to show columns
-    	self.ui.activecombobox.currentIndexChanged(int)
-	QMessageBox.information(self,"Vector file","Layer is ok")
+    	#self.ui.activecombobox.currentIndexChanged(int)
+	#QMessageBox.information(self,"Vector file","Layer is ok")
 	#self.ui.activecombobox.text()
-    	openfile=str(self.ui.activecombobox.getPath().Text())
-	f=pysal.open(openfile)
-	opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
-	f_dbf = pysal.open(opendbf)
-	self.fileheader=f_dbf.header #find columns, already in a list
+    	#openfile=str(self.ui.activecombobox.getPath().Text())
+	#f=pysal.open(openfile)
+	#opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+	#f_dbf = pysal.open(opendbf)
+	#self.fileheader=f.header #find columns, already in a list
 	
-	for i in self.fileheader: #i is in a string
-		self.ui.selectcombobox.addItem(i)
+	#for i in self.fileheader: #i is in a string
+	#	self.ui.selectcombobox.addItem(i)
+
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_inputweightsbutton_clicked(self):
@@ -118,37 +119,70 @@ class spatial_dynamicsdialog(QtGui.QDialog):
 		#run spatial Matrix
 			f=pysal.open(openfile) #read a shp file, not need to read
 			w=pysal.open(weightsfile).read() #read a weights file
-			pci=np.array
-			opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
-			f_dbf = pysal.open(opendbf) #read the dbf attribute file
-			fileheader=f_dbf.header
+			#opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+			#f_dbf = pysal.open(opendbf) #read the dbf attribute file
+			fileheader=f.header
 
 		#select a column and let it function
-			columnindex1=self.ui.startcombobox.currentText() #when select a column
-			columnindex2=self.ui.endcombobox.currentText() #avoid random selection?
+			columnindex1=int(self.ui.startcombobox.currentText()) #when select a column
+			columnindex2=int(self.ui.endcombobox.currentText())+1 #avoid random selection?
 		
 		#change into array, by_col function is only for dbf file
-			pci=np.array(f_dbf.by_col[str(y)] for y in range(columnindex1, columnindex2)) 
+			pci=np.array([f.by_col[str(y)] for y in range(columnindex1, columnindex2)]) 
 			#only number? by_col works for dbf, but the sample data use csv?
-			q5 = np.array([pysal.Quantiles(y).yb for y in pci]) #map classification?
+
+			#q5 = np.array([pysal.Quantiles(y).yb for y in pci]) #map classification?
 
 			pci=pci.transpose()
-			rpci=pci/(pci.mean(axis=0)) #standardization
+			rpci = pci / (pci.mean(axis = 0)) #standardization
 			w.transform='r'
 		
 			sm=pysal.Spatial_Markov(rpci, w, fixed=True, k=5) #what did k mean? does it equal to quantile?
 		
 		#results
-			Transition_Matrix=sm.p #numpy.matrixlib.defmatrix.matrix
-			#how to change into string and save?
+			transition_matrix=sm.p #numpy.matrixlib.defmatrix.matrix
+			results = "\n".join([ "\t".join(map(str,row)) for row in transition_matrix])
+			#results=repr(transition_matrix).replace('matrix',' ')
+			#results='      '+''.join([ c for c in s if c not in ('(', ')','[',']',',')])
+			output=pysal.open(savefile,'w')
+			output.write(results)
+			output.close
 
-			for p in sm.P:
-				Transition_Probabilities=p
-		
-			Steady_State_Distribution=sm.S
-		
-			for f in sm.F:
-				First_Mean_Passage_Time=f
+			if self.ui.probabilitiescheckbox.checkState():
+				for p in sm.P:
+					transition_probabilities=p
+					#results=repr(transition_probabilities).replace('matrix',' ')
+					#results='      '+''.join([ c for c in s if c not in ('(', ')','[',']',',')])
+					results = "\n".join([ "\t".join(map(str,row)) for row in transition_probabilities])
+					output=pysal.open(savefile,'w')
+					output.write(results)
+					output.close
+			#else:
+			#	pass
+
+			elif self.ui.steadystatecheckbox.checkState():
+				steady_state_distribution=sm.S
+				#results=repr(Steady_State_Distribution).replace('matrix',' ')
+				#results='      '+''.join([ c for c in s if c not in ('(', ')','[',']',',')])
+				results = "\n".join([ "\t".join(map(str,row)) for row in steady_state_distribution])
+				output=pysal.open(savefile,'w')
+				output.write(results)
+				output.close
+			#else:
+				#pass
+
+			elif self.ui.firstcheckbox.checkState():
+				for f in sm.F:
+					first_mean_passage_time=f
+					#resultss=repr(first_mean_passage_time).replace('matrix',' ')
+					#results='      '+''.join([ c for c in s if c not in ('(', ')','[',']',',')])
+					results = "\n".join([ "\t".join(map(str,row)) for row in first_mean_passage_time])
+					output=pysal.open(savefile,'w')
+					output.write(results)
+					output.close
+			else:
+				pass
+
 		else:
 			pass
 	
@@ -159,11 +193,10 @@ class spatial_dynamicsdialog(QtGui.QDialog):
 		
 		pass
 		
-		if self.ui.MoranIcheck.checkState(): 
-			np.random.seed(10)
+		#if 
 			#f=pysal.open() #calculate Moran's I and other value, but do not know how to get the file path from active layers?
-		else:
-			return
+		#else:
+		#	return
 
         self.close() #close the dialog window
 
