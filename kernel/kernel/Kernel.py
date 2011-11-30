@@ -1,4 +1,8 @@
-"This is the first attempt at making this work"
+"This code calculates the kernel density function values at a series of points"
+"The user must input:"
+"   A) Points: a list of points at which observations are made in the format [x1, y1, x2, y2, ..... xn, yn] where n is the total number of observations."
+"   B) Bandwidth: corresponds to the distance over which an observed point affects the grid points around it"
+"   C) Resolution: This directly corresponds to the number of grid points at which the user would like to see the output"
 
 import numpy
 
@@ -54,13 +58,29 @@ class Kernel:
             return outputgrid_x, outputgrid_y, xvals, yvals
             
         #Function for Gaussian calculation
-        def normd(self,xi,mu,sig):
-            constant = 1 / (numpy.sqrt(2*numpy.pi * sig*sig))
-            exponent = (xi-mu)**2
-            exponent /= 2*sig*sig
-            return constant * numpy.exp(-exponent)
+        def calculate(self,xi,mu,sig,method):
+            if method == 1:   #This corresponds to the Gaussian method
+                constant = 1 / (numpy.sqrt(2*numpy.pi * sig*sig))
+                exponent = (xi-mu)**2
+                exponent /= 2*sig*sig
+                returnval = constant * numpy.exp(-exponent)
 
-        #Calculate Gaussin Kernel
+            elif method == 2:   #This corresponds to the Triangular method
+                if (mu-sig) <= xi and (mu+sig) >= xi:
+                    z = abs(mu-xi)
+                    returnval = (sig-z)/sig
+                else:
+                    returnval = 0
+            
+            elif method == 3:    #This corresponds to the Uniform method
+                if (mu-sig) <= xi and (mu+sig) >= xi:
+                    returnval = 1
+                else:
+                    returnval = 0
+
+            return returnval
+
+        #Calculate Gaussian Kernel in an output grid
         def gaussian(self):
             x = numpy.array(self.xvals) #Pass x-values into array
             X = self.outputgrid_x #Set x linespace
@@ -68,7 +88,7 @@ class Kernel:
             f = numpy.zeros((rows,X.shape[0]))
             for i,Xi in enumerate(X):
                 for j, xj in enumerate(x):
-                    f[j,i] = self.normd(Xi,xj,self.bandwidth)
+                    f[j,i] = self.calculate(Xi,xj,self.bandwidth,1)
             kernx = numpy.sum(f, axis = 0)        
 
             y = numpy.array(self.yvals) #Pass y-values into array
@@ -76,15 +96,141 @@ class Kernel:
             g = numpy.zeros((rows,Y.shape[0]))
             for i,Yi in enumerate(Y):
                 for j, yj in enumerate(y):
-                    g[j,i] = self.normd(Yi,yj,self.bandwidth)
+                    g[j,i] = self.calculate(Yi,yj,self.bandwidth,1)
             kerny = numpy.sum(g, axis = 0)        
 
             gaus_kernel = kernx * kerny #Calculate 2-dimensional kernel
             
             r = zip(self.outputgrid_x, self.outputgrid_y, gaus_kernel)
             return r
-                    
-            #Now we just need to find the kernel value at each output grid x,y    
+        
+        #Calculate Gaussian Kernel at one user-provided point
+        def gaussian_point(self, xpoint, ypoint):
+            if xpoint < min(self.outputgrid_x) or xpoint > max(self.outputgrid_x) or ypoint < min(self.outputgrid_y) or ypoint > max(self.outputgrid_y):
+                r = "The point you provided lies outside the area of influence of the input points"
+            else:    
+                x = numpy.array(self.xvals) #Pass input x-values into array
+                X = xpoint
+                rows = len(self.points)/2
+                f = numpy.zeros((rows,1))
+                for j, xj in enumerate(x):
+                    f[j] = self.calculate(X,xj,self.bandwidth,1)
+                kernx = numpy.sum(f, axis = 0)        
+
+                y = numpy.array(self.yvals) #Pass y-values into array
+                Y = ypoint
+                g = numpy.zeros((rows,1))
+                for j, yj in enumerate(y):
+                    g[j] = self.calculate(Y,yj,self.bandwidth,1)
+                kerny = numpy.sum(g, axis = 0)        
+
+                gaus_kernel = kernx * kerny #Calculate 2-dimensional kernel
+            
+                r = gaus_kernel
+
+            return r
+            
+            
+        #Calculate Triangular Kernel in an output grid
+        def triangular(self):
+            x = numpy.array(self.xvals) #Pass x-values into array
+            X = self.outputgrid_x #Set x linespace
+            rows = len(self.points)/2
+            f = numpy.zeros((rows,X.shape[0]))
+            for i,Xi in enumerate(X):
+                for j, xj in enumerate(x):
+                    f[j,i] = self.calculate(Xi,xj,self.bandwidth,2)
+            kernx = numpy.sum(f, axis = 0)        
+
+            y = numpy.array(self.yvals) #Pass y-values into array
+            Y = self.outputgrid_y #Set y linespace
+            g = numpy.zeros((rows,Y.shape[0]))
+            for i,Yi in enumerate(Y):
+                for j, yj in enumerate(y):
+                    g[j,i] = self.calculate(Yi,yj,self.bandwidth,2)
+            kerny = numpy.sum(g, axis = 0)        
+
+            tri_kernel = kernx * kerny #Calculate 2-dimensional kernel
+            
+            r = zip(self.outputgrid_x, self.outputgrid_y, tri_kernel)
+            return r
+           
+        #Calculate Triangular Kernel at one user-provided point
+        def triangular_point(self, xpoint, ypoint):
+            if xpoint < min(self.outputgrid_x) or xpoint > max(self.outputgrid_x) or ypoint < min(self.outputgrid_y) or ypoint > max(self.outputgrid_y):
+                r = "The point you provided lies outside the area of influence of the input points"
+            else:    
+                x = numpy.array(self.xvals) #Pass input x-values into array
+                X = xpoint
+                rows = len(self.points)/2
+                f = numpy.zeros((rows,1))
+                for j, xj in enumerate(x):
+                    f[j] = self.calculate(X,xj,self.bandwidth,2)
+                kernx = numpy.sum(f, axis = 0)        
+
+                y = numpy.array(self.yvals) #Pass y-values into array
+                Y = ypoint
+                g = numpy.zeros((rows,1))
+                for j, yj in enumerate(y):
+                    g[j] = self.calculate(Y,yj,self.bandwidth,2)
+                kerny = numpy.sum(g, axis = 0)        
+
+                tri_kernel = kernx * kerny #Calculate 2-dimensional kernel
+            
+                r = tri_kernel
+
+            return r
+           
+        #Calculate Uniform Kernel in an output grid
+        def uniform(self):
+            x = numpy.array(self.xvals) #Pass x-values into array
+            X = self.outputgrid_x #Set x linespace
+            rows = len(self.points)/2
+            f = numpy.zeros((rows,X.shape[0]))
+            for i,Xi in enumerate(X):
+                for j, xj in enumerate(x):
+                    f[j,i] = self.calculate(Xi,xj,self.bandwidth,3)
+            kernx = numpy.sum(f, axis = 0)        
+
+            y = numpy.array(self.yvals) #Pass y-values into array
+            Y = self.outputgrid_y #Set y linespace
+            g = numpy.zeros((rows,Y.shape[0]))
+            for i,Yi in enumerate(Y):
+                for j, yj in enumerate(y):
+                    g[j,i] = self.calculate(Yi,yj,self.bandwidth,3)
+            kerny = numpy.sum(g, axis = 0)        
+
+            uni_kernel = kernx * kerny #Calculate 2-dimensional kernel
+            
+            r = zip(self.outputgrid_x, self.outputgrid_y, uni_kernel)
+            return r
+            
+        #Calculate Uniform Kernel at one user-provided point
+        def gaussian_point(self, xpoint, ypoint):
+            if xpoint < min(self.outputgrid_x) or xpoint > max(self.outputgrid_x) or ypoint < min(self.outputgrid_y) or ypoint > max(self.outputgrid_y):
+                r = "The point you provided lies outside the area of influence of the input points"
+            else:    
+                x = numpy.array(self.xvals) #Pass input x-values into array
+                X = xpoint
+                rows = len(self.points)/2
+                f = numpy.zeros((rows,1))
+                for j, xj in enumerate(x):
+                    f[j] = self.calculate(X,xj,self.bandwidth,3)
+                kernx = numpy.sum(f, axis = 0)        
+
+                y = numpy.array(self.yvals) #Pass y-values into array
+                Y = ypoint
+                g = numpy.zeros((rows,1))
+                for j, yj in enumerate(y):
+                    g[j] = self.calculate(Y,yj,self.bandwidth,3)
+                kerny = numpy.sum(g, axis = 0)        
+
+                uni_kernel = kernx * kerny #Calculate 2-dimensional kernel
+            
+                r = uni_kernel
+
+            return r
+            
 
 if __name__ == '__main__':
 
@@ -94,8 +240,16 @@ if __name__ == '__main__':
 
     k = Kernel(points, b, r)
     k.preplists()
-    #test1 = k.gaussian()
-    #print test1
 
    # print 'The input/output grid coordinate pairs are', k.preplists()
     print 'The x-coordinate, y-coordinate, and gaussian kernel values are:', k.gaussian()
+    print 'The x-coordinate, y-coordinate, and triangular kernel values are:', k.triangular()
+    print 'The x-coordinate, y-coordinate, and uniform kernel values are:', k.uniform()
+
+    x1 = 30
+    y1 = 50
+    x2 = 67
+    y2 = 19
+
+    print 'The gaussian kernel value at a specific point is:', k.gaussian_point(x1, y1)
+    print 'When the specified point is outside the boundary you get:', k.gaussian_point(x2, y2)
