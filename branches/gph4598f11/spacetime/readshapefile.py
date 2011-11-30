@@ -1,3 +1,4 @@
+import pysal
 shp = pysal.open('Arizona_Counties_2010.shp', 'r')
 db = pysal.open('Arizona_Counties_2010.dbf')
 table = []
