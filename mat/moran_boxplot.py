@@ -55,8 +55,8 @@ class Moran_boxplot: #(wx.Frame):
                          positions=pos, bootstrap=5000 )
 #        text_transform= mtransforms.blended_transform_factory(self.axes.transData,self.axes.transAxes)
         
-        self.axes.set_xlabel('treatment')
-        self.axes.set_ylabel('response')
+        self.axes.set_xlabel('Treatment')
+        self.axes.set_ylabel('Response')
         #self.axes.set_ylim(-0.2, 1.4)
 #        self.figure.setp(bp['whiskers'], color='k',  linestyle='-' )
 #        self.figure.setp(bp['fliers'], markersize=3.0)

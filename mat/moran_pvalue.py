@@ -28,6 +28,8 @@ class Moran_pvalue: #(wx.Frame):
         '''
         self.figure = figure
         self.axes = self.figure.add_subplot(111)
+	self.axes.set_xlabel('x Values')
+	self.axes.set_ylabel('P Values')
 
 
         N = mi.p_sim.size
