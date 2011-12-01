@@ -11,5 +11,13 @@ old pysal?
 
 
 
-add y should be create chloropleth map of # of NN
+add y should be create chloropleth map of # of NN (just joking)
 how to retrieive layer information (file path, geometric data, etc)
+
+
+about presentation:
+
+overall structure of plugin (pysal roadmap with few branches)
+GUI Design With PyQt: Michael
+Autocorrelation&Spatial-markov: Vicky&Ngoc
+Spatial Weight: Xing
