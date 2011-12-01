@@ -35,11 +35,23 @@ class Moran_pvalue: #(wx.Frame):
         N = mi.p_sim.size
         x = np.arange(N)
         
-        self.axes.scatter(x, mi.p_sim)
+        color = []
+        for i in range(N):
+            if mi.p_sim[i] < 0.05:
+                color.append(100)
+            else:
+                color.append(10)
+        
+        
+        self.axes.scatter(x, mi.p_sim, c=color)
+        
+        self.axes.set_xlabel('x Values')
+        self.axes.set_ylabel('P Values')
+        self.axes.set_xlim(-2,N+2)
         
         line = np.ones(N)
         limit5 = list(0.05*line)
-        self.axes.plot(x,limit5)
+        self.axes.plot(x,limit5,linewidth=2.0)
 
 
 def main():

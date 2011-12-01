@@ -23,9 +23,9 @@ class WeightsMap(wx.Panel):
     """ Display a Weights Inspection Map """      
     def __init__(self, parent, geo, w_obj):          
         wx.Panel.__init__(self,parent,size=(400,400))          
-        self.status = parent.CreateStatusBar(3)          
-        self.status.SetStatusWidths([-1,-2,-2])          
-        self.status.SetStatusText('No Selection',0)          
+#        self.status = parent.CreateStatusBar(3)          
+#        self.status.SetStatusWidths([-1,-2,-2])          
+#        self.status.SetStatusText('No Selection',0)          
         self.Bind(wx.EVT_SIZE, self.onSize)          
         self.Bind(wx.EVT_PAINT, self.onPaint)          
         #self.Bind(wx.EVT_MOUSE_EVENTS, self.onMouse)          

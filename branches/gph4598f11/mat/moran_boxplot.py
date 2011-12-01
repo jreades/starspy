@@ -60,7 +60,7 @@ class Moran_boxplot: #(wx.Frame):
         #self.axes.set_ylim(-0.2, 1.4)
 #        self.figure.setp(bp['whiskers'], color='k',  linestyle='-' )
 #        self.figure.setp(bp['fliers'], markersize=3.0)
-        self.figure.subplots_adjust(right=0.99,top=0.99)
+        self.figure.subplots_adjust(right=0.95,top=0.95)
 
 
 
