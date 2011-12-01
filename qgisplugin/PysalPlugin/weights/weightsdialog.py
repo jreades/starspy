@@ -75,8 +75,8 @@ class WeightsDialog(QtGui.QDialog):
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
         k = self.ui.horizontalSlider.value() #nearest neighbor
-        threshDist = self.ui.threshDist.text()
-        invDist = self.ui.invDist.text()
+        threshDist = ""
+        invDist = ""
             
         # use shapefile
         if self.ui.rbSaveShapefile.isChecked():
@@ -95,11 +95,11 @@ class WeightsDialog(QtGui.QDialog):
             elif self.ui.rbDistance.isChecked():
                 distIdx = self.ui.distMethod.currentIndex()
                 if distIdx == 0:
-                    threshDist = float(threshDist)
+                    threshDist = float(self.ui.threshDist.text())
                     w = pysal.threshold_binaryW_from_shapefile(openfile,
                                                                 threshDist)
                 elif distIdx == 1:
-                    invDist = float(invDist)
+                    invDist = float(self.ui.invDist.text())
                     w = pysal.threshold_continuousW_from_shapefile(openfile,
                                                                    invDist)
                 elif distIdx == 2:
@@ -153,10 +153,10 @@ class WeightsDialog(QtGui.QDialog):
                 elif self.ui.rbDistance.isChecked():
                     distIdx = self.ui.distMethod.currentIndex()
                     if distIdx == 0:
-                        threshDist = float(threshDist)
+                        threshDist = float(self.ui.threshDist.text())
                         w = pysal.threshold_binaryW_from_array(pts,threshDist)
                     elif distIdx == 1:
-                        invDist = float(invDist)
+                        invDist = float(self.ui.invDist.text())
                         w = pysal.threshold_continuousW_from_array(pts,invDist)
                     elif distIdx == 2:
                         w = pysal.knnW_from_array(pts, k)
