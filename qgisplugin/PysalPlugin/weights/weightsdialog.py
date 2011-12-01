@@ -21,6 +21,7 @@ class WeightsDialog(QtGui.QDialog):
         self.scount = -1
         self.lcount = -1
         self.layers = []
+        self.w = 0
         for i in range(self.iface.mapCanvas().layerCount()):   #this for loop adds current layers
             layer = self.iface.mapCanvas().layer(i)             #to dropdown menu
             if layer.type()== 0:
@@ -59,8 +60,6 @@ class WeightsDialog(QtGui.QDialog):
         myFile = dlg.getSaveFileName(self, "Select a file for the weights matrix", "Saved File", "*.gal;;*.gwt;;*.mat")
         myFile += dlg.selectedNameFilter()[0]
         self.ui.outputFile.setText(myFile[0:-1])
-        
-
 
 ###############################################################################################
 ####                                                                                       ####
@@ -71,7 +70,6 @@ class WeightsDialog(QtGui.QDialog):
 ###############################################################################################
     def accept(self):
         savefile = str(self.ui.outputFile.text()) #this will be a string like "c:\output"
-            
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
         k = self.ui.horizontalSlider.value() #nearest neighbor
@@ -81,14 +79,14 @@ class WeightsDialog(QtGui.QDialog):
         # use shapefile
         if self.ui.rbSaveShapefile.isChecked():
             openfile = str(self.ui.inputFile.text()) #using a saved file this will be a string like "c:\shapefile.shp"
-            w = 0
+
             # contiguity-based
             if self.ui.rbContiguity.isChecked():
                 contIdx = self.ui.contComboBox.currentIndex()
                 if contIdx == 0:
-                    w = pysal.rook_from_shapefile(openfile)
+                    self.w = pysal.rook_from_shapefile(openfile)
                 elif contIdx == 1:
-                    w = pysal.queen_from_shapefile(openfile)
+                    self.w = pysal.queen_from_shapefile(openfile)
                 else:
                     return
             # distance-based
@@ -96,24 +94,23 @@ class WeightsDialog(QtGui.QDialog):
                 distIdx = self.ui.distMethod.currentIndex()
                 if distIdx == 0:
                     threshDist = float(self.ui.threshDist.text())
-                    w = pysal.threshold_binaryW_from_shapefile(openfile,
+                    self.w = pysal.threshold_binaryW_from_shapefile(openfile,
                                                                 threshDist)
                 elif distIdx == 1:
                     invDist = float(self.ui.invDist.text())
-                    w = pysal.threshold_continuousW_from_shapefile(openfile,
+                    self.w = pysal.threshold_continuousW_from_shapefile(openfile,
                                                                    invDist)
                 elif distIdx == 2:
-                    w = pysal.knnW_from_shapefile(openfile, k)
+                    self.w = pysal.knnW_from_shapefile(openfile, k)
                 else:
                     return
     
             output = pysal.open(savefile, 'w')
-            output.write(w)
+            output.write(self.w)
             output.close()
             #can pysal easily do all the work?          
         elif self.ui.rbUseActiveLayer.isChecked():
             layer = self.layers[self.ui.sourceLayer.currentIndex()]
-            w = 0
         ###################################################################
         ### Now we have either a layer in QGIS or a path to a shapefile ###
         ### What are the next steps? Import Pysal?                      ###
@@ -142,35 +139,44 @@ class WeightsDialog(QtGui.QDialog):
                         pt = geom.centroid().asPoint()
                         pts.append((pt.x(), pt.y()))
                     else:
-                        raise "Not Supported Geometry Type"
+                        QMessageBox.warning(self.iface.mainWindow(),
+                        "Spatial Weights", " Unsupported Geometric Type")
                 
                 pts = numpy.array(pts)
                 # contiguity-based
                 if self.ui.rbContiguity.isChecked():
-                    raise "Only External Shapefile Supported"
+                    QMessageBox.warning(self.iface.mainWindow(),
+                        "Spatial Weights", "Contiguity Weights Created from Layer Not Supported")
                     return
                 # distance-based
                 elif self.ui.rbDistance.isChecked():
                     distIdx = self.ui.distMethod.currentIndex()
                     if distIdx == 0:
                         threshDist = float(self.ui.threshDist.text())
-                        w = pysal.threshold_binaryW_from_array(pts,threshDist)
+                        self.w = pysal.threshold_binaryW_from_array(
+                                                                pts,threshDist)
                     elif distIdx == 1:
                         invDist = float(self.ui.invDist.text())
-                        w = pysal.threshold_continuousW_from_array(pts,invDist)
+                        self.w = pysal.threshold_continuousW_from_array(
+                                                                pts,invDist)
                     elif distIdx == 2:
-                        w = pysal.knnW_from_array(pts, k)
+                        self.w = pysal.knnW_from_array(pts, k)
                     else:
                         return
         
                 output = pysal.open(savefile, 'w')
-                output.write(w)
+                output.write(self.w)
                 output.close()
             elif layer.type() == layer.RasterLayer:
-                raise "Raster Layer Not Supported"
+                QMessageBox.warning(self.iface.mainWindow(),
+                        "Spatial Weights", "Raster Layer Not Supported")
+                return
             #Do weights have meaning for rasters?  We can limit the user to only choosing vectors at the
             #dropdown menu. Also can choose geometry type like layer.geometryType() == QGis.Polygon
-            else: raise "unknown layer type"
+            else:
+                QMessageBox.warning(self.iface.mainWindow(),
+                        "Spatial Weights", "Unknown Layer Type")
+                return
             
         #qgis api http://doc.qgis.org/stable/annotated.html
             
