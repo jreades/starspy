@@ -32,24 +32,6 @@ class Project_GPH(wx.Frame):
         self.initUI()
         
     def initUI(self):
-      
-#        self.parent.title("PySal Plots")
-#        
-#        menubar = Menu(self.parent)
-#        self.parent.config(menu=menubar)
-#        
-#        fileMenu = Menu(menubar)
-#        fileMenu.add_command(label="Open GAL", command=self.openGAL)
-#        fileMenu.add_command(label="Open TXT", command=self.openTXT)
-#        fileMenu.add_command(label="Exit", command=self.onExit)
-#        menubar.add_cascade(label="File", menu=fileMenu)
-#
-#
-#        plotMenu = Menu(menubar)
-#        plotMenu.add_command(label="Moran's I Scatter", command=self.openGAL)
-#        plotMenu.add_command(label="P-values", command=self.openTXT)
-#        plotMenu.add_command(label="Box-Plot", command=self.onExit)
-#        menubar.add_cascade(label="Plot", menu=plotMenu)
 
         self.w = None
         self.galpath = ""
@@ -92,25 +74,35 @@ class Project_GPH(wx.Frame):
         panel = wx.Panel(self, -1)
         
         
-        stat = wx.BoxSizer(wx.VERTICAL)
-        
-        self.ch1 = wx.ComboBox(panel, size=(150, -1), style=wx.CB_READONLY)
+        #stat = wx.BoxSizer(wx.VERTICAL)
+        stat = wx.GridBagSizer(5, 2)
+        self.ch1 = wx.ComboBox(panel, size=(120, -1), style=wx.CB_READONLY)
         self.Bind(wx.EVT_COMBOBOX, self.calPysal, self.ch1)
+        chtxt = wx.StaticText(panel, label="Select Variable: ")
         st1 = wx.StaticText(panel, label="Moran's I: ")
+        self.value1 = wx.StaticText(panel, label="")
         st2 = wx.StaticText(panel, label='Y mean: ')
+        self.value2 = wx.StaticText(panel, label="")
         st3 = wx.StaticText(panel, label='Y Standard Deviation: ')
+        self.value3 = wx.StaticText(panel, label="")
         st4 = wx.StaticText(panel, label='Number of points: ')
-        stat.Add(self.ch1, flag=wx.LEFT, border=8)
-        stat.Add(st1, flag=wx.LEFT, border=8)
-        stat.Add(st2, flag=wx.LEFT, border=8)
-        stat.Add(st3, flag=wx.LEFT, border=8)
-        stat.Add(st4, flag=wx.LEFT, border=8)
+        self.value4 = wx.StaticText(panel, label="")
+        stat.Add(chtxt, pos=(0, 0), flag=wx.LEFT, border=8)
+        stat.Add(self.ch1, pos=(0, 1), flag=wx.LEFT, border=8)
+        stat.Add(st1, pos=(1, 0), flag=wx.LEFT, border=8)
+        stat.Add(self.value1, pos=(1, 1), flag=wx.LEFT, border=8)
+        stat.Add(st2, pos=(2, 0), flag=wx.LEFT, border=8)
+        stat.Add(self.value2, pos=(2, 1), flag=wx.LEFT, border=8)
+        stat.Add(st3, pos=(3, 0), flag=wx.LEFT, border=8)
+        stat.Add(self.value3, pos=(3, 1), flag=wx.LEFT, border=8)
+        stat.Add(st4, pos=(4, 0), flag=wx.LEFT, border=8)
+        stat.Add(self.value4, pos=(4, 1), flag=wx.LEFT, border=8)
         
         
         
         
         self.infPanel = wx.Panel(panel, -1)
-        figure = Figure(figsize=(4, 4), dpi=100)
+        figure = Figure(figsize=(5, 4), dpi=100)
 #        moran = Moran_scatter(figure)
 #        self.figure = moran.figure
         self.figure = figure
@@ -134,7 +126,7 @@ class Project_GPH(wx.Frame):
         
         panel.SetSizer(main)
 
-        self.SetSize((1100, 480))
+        self.SetSize((1200, 480))
         self.SetTitle('PySAL Plots')
         self.Centre()
         self.Show(True)
@@ -142,28 +134,28 @@ class Project_GPH(wx.Frame):
         
     def showScatter(self,e):
         if self.mi <> None:            
-            figure = Figure(figsize=(4, 4), dpi=100)
+            figure = Figure(figsize=(5, 4), dpi=100)
             moran = Moran_scatter(figure, self.galpath, self.y)
             self.figure = moran.figure
             self.canvas = FigureCanvas(self.infPanel, -1, self.figure)        
  
     def showPvalue(self,e):
         if self.localmi <> None:
-            figure = Figure(figsize=(4, 4), dpi=100)
+            figure = Figure(figsize=(5, 4), dpi=100)
             moran = Moran_pvalue(figure, self.localmi)
             self.figure = moran.figure
             self.canvas = FigureCanvas(self.infPanel, -1, self.figure)   
             
     def showBoxplot(self,e):
         if self.localmi <> None:
-            figure = Figure(figsize=(4, 4), dpi=100)
+            figure = Figure(figsize=(5, 4), dpi=100)
             moran = Moran_boxplot(figure, self.y)
             self.figure = moran.figure
             self.canvas = FigureCanvas(self.infPanel, -1, self.figure)       
 
     def showHistogram(self,e):
         if self.mi<> None:
-            figure = Figure(figsize=(4, 4), dpi=100)
+            figure = Figure(figsize=(5, 4), dpi=100)
             moran = Moran_histogram(figure,self.mi)
             self.figure = moran.figure
             self.canvas = FigureCanvas(self.infPanel, -1, self.figure)
@@ -173,7 +165,7 @@ class Project_GPH(wx.Frame):
         dlg = wx.FileDialog(self,"Choose a shape file",os.getcwd(),"",wildcard,wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.shapepath = dlg.GetPath()
-            print "%s" %(self.shapepath)
+
             
             if issubclass(type(self.shapepath),basestring):              
                 geo = pysal.open(self.shapepath,'r')          
@@ -194,11 +186,10 @@ class Project_GPH(wx.Frame):
     def openGAL(self, e):
         dlg = wx.FileDialog(self,"Choose .gal file",os.getcwd(),"","*.gal",wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
+            self.initial()
             self.galpath = dlg.GetPath()
-            print "%s" %(self.galpath)
             self.w = pysal.open(self.galpath).read()
-            print "self.w"
-            print self.w
+
             
         dlg.Destroy()
         #self.openPysal()
@@ -209,7 +200,6 @@ class Project_GPH(wx.Frame):
         dlg = wx.FileDialog(self,"Choose a comma delimited file",os.getcwd(),"",wildcard,wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             commapath = dlg.GetPath()
-            print "%s" %(commapath)
             
             self.db = pysal.open(commapath)
             self.ch1.AppendItems(self.db.header)
@@ -231,9 +221,23 @@ class Project_GPH(wx.Frame):
             
             self.mi = pysal.Moran(self.y, self.w)
             self.localmi = pysal.Moran_Local(self.y, self.w)
-            print self.mi.I
-            print self.mi.EI
-            print self.mi.p_norm
+            
+            self.value1.SetLabel(str(self.mi.I))
+            self.value2.SetLabel(str(self.y.mean()))
+            self.value3.SetLabel(str(np.std(self.y)))
+            self.value4.SetLabel(str(len(self.y)))
+
+    def initial(self):
+        
+        self.value1.SetLabel("")
+        self.value2.SetLabel("")
+        self.value3.SetLabel("")
+        self.value4.SetLabel("")
+        self.ch1.Clear()
+        
+        self.figure = Figure(figsize=(5, 4), dpi=100)
+        self.canvas = FigureCanvas(self.infPanel, -1, self.figure)
+        self.shpPanel.ClearBackground()
 
     def onExit(self, e):
         self.Close()

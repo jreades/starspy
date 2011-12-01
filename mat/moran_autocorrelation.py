@@ -22,27 +22,32 @@ class Moran_scatter: #(wx.Frame):
 #    def __init__(self, args, **kwargs):
 #        super(Moran_scatter, self).__init__(args, **kwargs) 
 
-    def __init__(self, figure, comma, gal):     
+    def __init__(self, figure, gal, y1):     
 
         '''
         Constructor
         '''
         #read_data = open("C:/Users/Daehyun You/workspace/Project/stl_hom.txt", "r")
-        read_data = open(comma, "r")
-        read_data.readline()
-        read_data.readline()
-        
-        ch = []
-        for line in read_data:
-            temp = line.split(",")
-            ch.append(float(temp[3]))
+#        read_data = open(comma, "r")
+#        read_data.readline()
+#        read_data.readline()
+#        
+#        ch = []
+#        for line in read_data:
+#            temp = line.split(",")
+#            ch.append(float(temp[3]))
 
-        y = np.array(ch)
-        ymean = y.mean()
-        ystd = y.std()
-        z = (y - ymean)/ystd
+#        y = np.array(ch)
+#        ymean = y.mean()
+#        ystd = y.std()
+#        z = (y - ymean)/ystd
+#        
+#        read_data.close()
         
-        read_data.close()
+        
+        ymean = y1.mean()
+        ystd = y1.std()
+        z = (y1 - ymean)/ystd
         
         #read_gal = open("C:/Users/Daehyun You/workspace/Project/stl.gal", "r")
         read_gal = open(gal, "r")
@@ -60,7 +65,9 @@ class Moran_scatter: #(wx.Frame):
             for k in temp:
                 index = int(k)-1
                 wzi += zi[index]/num
-            wz.append(wzi)
+
+            wz.append(wzi)          
+            
         
         wz = np.array(wz)
         print z

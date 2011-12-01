@@ -14,8 +14,8 @@ from matplotlib.figure import Figure
 class Moran_histogram:
   
       def __init__(self, figure, mi):
-	 self.figure = figure
-	 self.axes = self.figure.add_subplot(111)
+    	 self.figure = figure
+    	 self.axes = self.figure.add_subplot(111)
 	 #mi = pysal.Moran(y,  w, permutations=9999)
 
 
@@ -29,8 +29,8 @@ class Moran_histogram:
          l = self.axes.plot(bins, y, 'r--', linewidth=1)
          l2 = self.axes.plot(mi.I*np.ones(20), max(n)*np.array(range(20))/19, 'b', linewidth =2)
 
-         #self.axes.set_xlabel('Permutation')
-         #self.axes.set_ylabel('Density')
+         self.axes.set_xlabel('Permutation')
+         self.axes.set_ylabel('Density')
          # plt.title(r"Permutation of Moran's I")
          #self.axes.grid(True)
 
