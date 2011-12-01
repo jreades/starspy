@@ -37,7 +37,7 @@ class spatial_dynamicsdialog(QtGui.QDialog):
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_inputbutton_clicked(self):
-	myFile1 = QFileDialog.getOpenFileName(self, "Select a shapefile","","shapefile(*.shp);;comma_separatedfile(*.csv)")
+	myFile1 = QFileDialog.getOpenFileName(self, "Select a shapefile","","comma_separatedfile(*.csv)")
 	if self.ui.inputbutton != None:
 		self.ui.inputline.setText(myFile1)
 	else:
