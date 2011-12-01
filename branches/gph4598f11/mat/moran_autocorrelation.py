@@ -71,6 +71,8 @@ class Moran_scatter: #(wx.Frame):
 
         self.figure = figure
         self.axes = self.figure.add_subplot(111)
+	self.axes.set_xlabel('Zi')
+	self.axes.set_ylabel('Wij*Zj')
 
         self.axes.scatter(z,wz)
         

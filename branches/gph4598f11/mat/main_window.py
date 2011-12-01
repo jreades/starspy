@@ -135,7 +135,7 @@ class Project_GPH(wx.Frame):
         panel.SetSizer(main)
 
         self.SetSize((1100, 480))
-        self.SetTitle('PySal Plots')
+        self.SetTitle('PySAL Plots')
         self.Centre()
         self.Show(True)
         
