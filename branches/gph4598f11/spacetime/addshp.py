@@ -1,6 +1,5 @@
-table = []
-p = 0
-t = 1
+p =0
+t = t+1
 
 for poly in shp:
   c = poly.centroid
@@ -8,3 +7,4 @@ for poly in shp:
   data = db.next()
   table.append([p,c,data,t])
   p = p+1
+
