@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>538</height>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>340</y>
+     <y>220</y>
      <width>111</width>
      <height>16</height>
     </rect>
@@ -33,7 +33,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>340</y>
+     <y>220</y>
      <width>221</width>
      <height>20</height>
     </rect>
@@ -43,7 +43,7 @@
    <property name="geometry">
     <rect>
      <x>360</x>
-     <y>340</y>
+     <y>220</y>
      <width>31</width>
      <height>23</height>
     </rect>
@@ -56,7 +56,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>370</y>
+     <y>250</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -69,7 +69,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>390</y>
+     <y>270</y>
      <width>381</width>
      <height>111</height>
     </rect>
@@ -170,7 +170,7 @@
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>510</y>
+     <y>390</y>
      <width>156</width>
      <height>23</height>
     </rect>
@@ -328,186 +328,6 @@ p, li { white-space: pre-wrap; }
       <y>150</y>
       <width>231</width>
       <height>22</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="datagroupbox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>220</y>
-     <width>381</width>
-     <height>111</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Data Processing</string>
-   </property>
-   <widget class="QLabel" name="classlabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>81</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Classification</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="standardlabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>50</y>
-      <width>91</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Standardization</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="savedatalabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>80</y>
-      <width>81</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Save Output as</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="classcombobox">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>20</y>
-      <width>231</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>Box_Plot</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Equal_Interval</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Fisher_Jenks</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Jenks_Caspall</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Jenks_Caspall_Forced</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Jenks_Caspall_Sampled</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Max_P_Classifier</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Maximum_Breaks</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Natural_Breaks</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Quantiles</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Percentiles</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Std_Mean</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>User_Defined</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>gadf</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>K_classifiers</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QComboBox" name="standardcombobox">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>50</y>
-      <width>69</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>Yes</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>No</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QPushButton" name="savedatabutton">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>80</y>
-      <width>31</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>...</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="savedataline">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>80</y>
-      <width>221</width>
-      <height>20</height>
      </rect>
     </property>
    </widget>
