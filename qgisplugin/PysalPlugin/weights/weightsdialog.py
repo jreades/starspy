@@ -7,7 +7,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from ui_weights import Ui_Weights
-import pysal
+import pysal, numpy
 import os.path
 # create the dialog
 class WeightsDialog(QtGui.QDialog):
@@ -113,15 +113,61 @@ class WeightsDialog(QtGui.QDialog):
             #can pysal easily do all the work?          
         elif self.ui.rbUseActiveLayer.isChecked():
             layer = self.layers[self.ui.sourceLayer.currentIndex()]
+            w = 0
         ###################################################################
         ### Now we have either a layer in QGIS or a path to a shapefile ###
         ### What are the next steps? Import Pysal?                      ###
         ###################################################################
             
             if layer.type() == layer.VectorLayer:
-                pass
+                pts = []
+                provider = layer.dataProvider()
+                
+                # select all features
+                feat = QgsFeature()
+                allAttrs = provider.attributeIndexes()
+                provider.select(allAttrs)
+                
+                while provider.nextFeature(feat):
+                    
+                    geom = feat.geometry()
+                    # for Point Dataset,
+                    # append itself
+                    if geom.type() == QGis.Point:
+                        pt = geom.asPoint()
+                        pts.append((pt.x(), pt.y()))
+                    # for Polygon Dataset,
+                    # append the centroid of multiPolygon
+                    elif geom.type() == QGis.Polygon:
+                        pt = geom.centroid().asPoint()
+                        pts.append((pt.x(), pt.y()))
+                    else:
+                        raise "Not Supported Geometry Type"
+                
+                pts = numpy.array(pts)
+                # contiguity-based
+                if self.ui.rbContiguity.isChecked():
+                    raise "Only External Shapefile Supported"
+                    return
+                # distance-based
+                elif self.ui.rbDistance.isChecked():
+                    distIdx = self.ui.distMethod.currentIndex()
+                    if distIdx == 0:
+                        threshDist = float(threshDist)
+                        w = pysal.threshold_binaryW_from_array(pts,threshDist)
+                    elif distIdx == 1:
+                        invDist = float(invDist)
+                        w = pysal.threshold_continuousW_from_array(pts,invDist)
+                    elif distIdx == 2:
+                        w = pysal.knnW_from_array(pts, k)
+                    else:
+                        return
+        
+                output = pysal.open(savefile, 'w')
+                output.write(w)
+                output.close()
             elif layer.type() == layer.RasterLayer:
-                pass
+                raise "Raster Layer Not Supported"
             #Do weights have meaning for rasters?  We can limit the user to only choosing vectors at the
             #dropdown menu. Also can choose geometry type like layer.geometryType() == QGis.Polygon
             else: raise "unknown layer type"
