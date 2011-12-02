@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'spatial_dynamics.ui'
 #
-# Created: Thu Dec 01 13:37:57 2011
+# Created: Thu Dec 01 16:22:51 2011
 #      by: PyQt4 UI code generator 4.8.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,10 +17,10 @@ except AttributeError:
 class Ui_spatial_dynamics(object):
     def setupUi(self, spatial_dynamics):
         spatial_dynamics.setObjectName(_fromUtf8("spatial_dynamics"))
-        spatial_dynamics.resize(400, 419)
-	spatial_dynamics.setMinimumSize(QtCore.QSize(400, 419)) # restrict the minimum size
-	spatial_dynamics.setMaximumSize(QtCore.QSize(400, 419)) # restrict the maximum size	
-        spatial_dynamics.setWindowTitle(QtGui.QApplication.translate("spatial_dynamics", "Spatial Dynamics", None, QtGui.QApplication.UnicodeUTF8))
+        spatial_dynamics.resize(400, 458)
+	spatial_dynamics.setMinimumSize(QtCore.QSize(400, 458)) # restrict the minimum size
+	spatial_dynamics.setMaximumSize(QtCore.QSize(400, 458)) # restrict the maximum size
+	spatial_dynamics.setWindowTitle(QtGui.QApplication.translate("spatial_dynamics", "Spatial Dynamics", None, QtGui.QApplication.UnicodeUTF8))
         spatial_dynamics.setLocale(QtCore.QLocale(QtCore.QLocale.Chinese, QtCore.QLocale.Taiwan))
         self.inputweightslabel = QtGui.QLabel(spatial_dynamics)
         self.inputweightslabel.setGeometry(QtCore.QRect(20, 220, 111, 16))
@@ -38,38 +38,38 @@ class Ui_spatial_dynamics(object):
         self.inputweightscreate.setText(QtGui.QApplication.translate("spatial_dynamics", "Create", None, QtGui.QApplication.UnicodeUTF8))
         self.inputweightscreate.setObjectName(_fromUtf8("inputweightscreate"))
         self.outputgroupbox = QtGui.QGroupBox(spatial_dynamics)
-        self.outputgroupbox.setGeometry(QtCore.QRect(10, 270, 381, 111))
+        self.outputgroupbox.setGeometry(QtCore.QRect(10, 280, 381, 141))
         self.outputgroupbox.setTitle(QtGui.QApplication.translate("spatial_dynamics", "Output", None, QtGui.QApplication.UnicodeUTF8))
         self.outputgroupbox.setObjectName(_fromUtf8("outputgroupbox"))
         self.matrixcheckbox = QtGui.QCheckBox(self.outputgroupbox)
-        self.matrixcheckbox.setGeometry(QtCore.QRect(20, 20, 131, 16))
-        self.matrixcheckbox.setText(QtGui.QApplication.translate("spatial_dynamics", "Transition Matrix", None, QtGui.QApplication.UnicodeUTF8))
+        self.matrixcheckbox.setGeometry(QtCore.QRect(20, 20, 241, 16))
+        self.matrixcheckbox.setText(QtGui.QApplication.translate("spatial_dynamics", "Global Transition Probability Matrix", None, QtGui.QApplication.UnicodeUTF8))
         self.matrixcheckbox.setObjectName(_fromUtf8("matrixcheckbox"))
         self.probabilitiescheckbox = QtGui.QCheckBox(self.outputgroupbox)
-        self.probabilitiescheckbox.setGeometry(QtCore.QRect(200, 20, 161, 16))
-        self.probabilitiescheckbox.setText(QtGui.QApplication.translate("spatial_dynamics", "Transition Probabilities", None, QtGui.QApplication.UnicodeUTF8))
+        self.probabilitiescheckbox.setGeometry(QtCore.QRect(20, 40, 231, 16))
+        self.probabilitiescheckbox.setText(QtGui.QApplication.translate("spatial_dynamics", "Conditioned Transition Probability Matrices", None, QtGui.QApplication.UnicodeUTF8))
         self.probabilitiescheckbox.setObjectName(_fromUtf8("probabilitiescheckbox"))
         self.steadystatecheckbox = QtGui.QCheckBox(self.outputgroupbox)
-        self.steadystatecheckbox.setGeometry(QtCore.QRect(20, 50, 141, 16))
-        self.steadystatecheckbox.setText(QtGui.QApplication.translate("spatial_dynamics", "Steady State Distribution", None, QtGui.QApplication.UnicodeUTF8))
+        self.steadystatecheckbox.setGeometry(QtCore.QRect(20, 60, 141, 16))
+        self.steadystatecheckbox.setText(QtGui.QApplication.translate("spatial_dynamics", "Steady State Distributions", None, QtGui.QApplication.UnicodeUTF8))
         self.steadystatecheckbox.setObjectName(_fromUtf8("steadystatecheckbox"))
         self.firstcheckbox = QtGui.QCheckBox(self.outputgroupbox)
-        self.firstcheckbox.setGeometry(QtCore.QRect(200, 50, 151, 16))
+        self.firstcheckbox.setGeometry(QtCore.QRect(20, 80, 151, 16))
         self.firstcheckbox.setText(QtGui.QApplication.translate("spatial_dynamics", "First Mean Passage Time", None, QtGui.QApplication.UnicodeUTF8))
         self.firstcheckbox.setObjectName(_fromUtf8("firstcheckbox"))
         self.saveoutputbutton = QtGui.QPushButton(self.outputgroupbox)
-        self.saveoutputbutton.setGeometry(QtCore.QRect(340, 80, 31, 23))
+        self.saveoutputbutton.setGeometry(QtCore.QRect(340, 110, 31, 23))
         self.saveoutputbutton.setText(QtGui.QApplication.translate("spatial_dynamics", "...", None, QtGui.QApplication.UnicodeUTF8))
         self.saveoutputbutton.setObjectName(_fromUtf8("saveoutputbutton"))
         self.saveoutputlabel = QtGui.QLabel(self.outputgroupbox)
-        self.saveoutputlabel.setGeometry(QtCore.QRect(20, 80, 81, 16))
+        self.saveoutputlabel.setGeometry(QtCore.QRect(20, 110, 81, 16))
         self.saveoutputlabel.setText(QtGui.QApplication.translate("spatial_dynamics", "Save Output as", None, QtGui.QApplication.UnicodeUTF8))
         self.saveoutputlabel.setObjectName(_fromUtf8("saveoutputlabel"))
         self.saveoutputline = QtGui.QLineEdit(self.outputgroupbox)
-        self.saveoutputline.setGeometry(QtCore.QRect(100, 80, 231, 20))
+        self.saveoutputline.setGeometry(QtCore.QRect(100, 110, 231, 20))
         self.saveoutputline.setObjectName(_fromUtf8("saveoutputline"))
         self.buttonBox = QtGui.QDialogButtonBox(spatial_dynamics)
-        self.buttonBox.setGeometry(QtCore.QRect(240, 390, 156, 23))
+        self.buttonBox.setGeometry(QtCore.QRect(230, 430, 156, 23))
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.label = QtGui.QLabel(spatial_dynamics)
@@ -96,11 +96,11 @@ class Ui_spatial_dynamics(object):
         self.inputline.setObjectName(_fromUtf8("inputline"))
         self.savedshpradio = QtGui.QRadioButton(self.groupBox)
         self.savedshpradio.setGeometry(QtCore.QRect(10, 60, 111, 16))
-        self.savedshpradio.setText(QtGui.QApplication.translate("spatial_dynamics", "Saved ShapeFile", None, QtGui.QApplication.UnicodeUTF8))
+        self.savedshpradio.setText(QtGui.QApplication.translate("spatial_dynamics", "Saved .csv File", None, QtGui.QApplication.UnicodeUTF8))
         self.savedshpradio.setObjectName(_fromUtf8("savedshpradio"))
         self.inputshplabel = QtGui.QLabel(self.groupBox)
         self.inputshplabel.setGeometry(QtCore.QRect(10, 90, 121, 16))
-        self.inputshplabel.setText(QtGui.QApplication.translate("spatial_dynamics", "Input ShapeFile", None, QtGui.QApplication.UnicodeUTF8))
+        self.inputshplabel.setText(QtGui.QApplication.translate("spatial_dynamics", "Input .csv File", None, QtGui.QApplication.UnicodeUTF8))
         self.inputshplabel.setObjectName(_fromUtf8("inputshplabel"))
         self.activeradio = QtGui.QRadioButton(self.groupBox)
         self.activeradio.setGeometry(QtCore.QRect(10, 30, 121, 16))

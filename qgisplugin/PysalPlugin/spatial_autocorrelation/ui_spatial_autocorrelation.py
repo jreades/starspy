@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'spatial_autocorrelation.ui'
 #
-# Created: Wed Nov 23 19:03:46 2011
+# Created: Thu Dec 01 14:23:11 2011
 #      by: PyQt4 UI code generator 4.8.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,13 +17,13 @@ except AttributeError:
 class Ui_spatial_autocorrelation(object):
     def setupUi(self, spatial_autocorrelation):
         spatial_autocorrelation.setObjectName(_fromUtf8("spatial_autocorrelation"))
-        spatial_autocorrelation.resize(400, 489)
-	spatial_autocorrelation.setMinimumSize(QtCore.QSize(400, 489)) # restrict the minimum size
-	spatial_autocorrelation.setMaximumSize(QtCore.QSize(400, 489)) # restrict the maximum size
-        spatial_autocorrelation.setMouseTracking(False)
+        spatial_autocorrelation.resize(400, 500)
+	spatial_autocorrelation.setMinimumSize(QtCore.QSize(400, 500)) # restrict the minimum size
+	spatial_autocorrelation.setMaximumSize(QtCore.QSize(400, 500)) # restrict the maximum size
+	spatial_autocorrelation.setMouseTracking(False)
         spatial_autocorrelation.setWindowTitle(QtGui.QApplication.translate("spatial_autocorrelation", "Spatial Autocorrelation", None, QtGui.QApplication.UnicodeUTF8))
         self.buttonBox = QtGui.QDialogButtonBox(spatial_autocorrelation)
-        self.buttonBox.setGeometry(QtCore.QRect(230, 460, 156, 23))
+        self.buttonBox.setGeometry(QtCore.QRect(230, 470, 156, 23))
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.input_groupbox = QtGui.QGroupBox(spatial_autocorrelation)
@@ -60,7 +60,7 @@ class Ui_spatial_autocorrelation(object):
         self.selectlabel.setText(QtGui.QApplication.translate("spatial_autocorrelation", "Select Column", None, QtGui.QApplication.UnicodeUTF8))
         self.selectlabel.setObjectName(_fromUtf8("selectlabel"))
         self.output_groupBox = QtGui.QGroupBox(spatial_autocorrelation)
-        self.output_groupBox.setGeometry(QtCore.QRect(20, 220, 361, 231))
+        self.output_groupBox.setGeometry(QtCore.QRect(20, 230, 361, 231))
         self.output_groupBox.setTitle(QtGui.QApplication.translate("spatial_autocorrelation", "Output", None, QtGui.QApplication.UnicodeUTF8))
         self.output_groupBox.setObjectName(_fromUtf8("output_groupBox"))
         self.MoranIcheck = QtGui.QCheckBox(self.output_groupBox)

@@ -74,7 +74,7 @@ class spatial_dynamicsdialog(QtGui.QDialog):
 
     @pyqtSignature('') #prevents actions being handled twice
     def on_inputweightsbutton_clicked(self):
-        myFile2 = QFileDialog.getOpenFileName (self, "Select a weights file","","*.gal")
+        myFile2 = QFileDialog.getOpenFileName (self, "Select a weights file","","*.gal;;*.gwt;;*.mat")
         self.ui.inputweightsline.setText(myFile2)
     
     @pyqtSignature('') #prevents actions being handled twice

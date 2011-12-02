@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>419</height>
+    <height>458</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,9 +69,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>270</y>
+     <y>280</y>
      <width>381</width>
-     <height>111</height>
+     <height>141</height>
     </rect>
    </property>
    <property name="title">
@@ -82,45 +82,45 @@
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>131</width>
+      <width>241</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Transition Matrix</string>
+     <string>Global Transition Probability Matrix</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="probabilitiescheckbox">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>20</y>
-      <width>161</width>
+      <x>20</x>
+      <y>40</y>
+      <width>231</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Transition Probabilities</string>
+     <string>Conditioned Transition Probability Matrices</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="steadystatecheckbox">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>50</y>
+      <y>60</y>
       <width>141</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Steady State Distribution</string>
+     <string>Steady State Distributions</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="firstcheckbox">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>50</y>
+      <x>20</x>
+      <y>80</y>
       <width>151</width>
       <height>16</height>
      </rect>
@@ -133,7 +133,7 @@
     <property name="geometry">
      <rect>
       <x>340</x>
-      <y>80</y>
+      <y>110</y>
       <width>31</width>
       <height>23</height>
      </rect>
@@ -146,7 +146,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>80</y>
+      <y>110</y>
       <width>81</width>
       <height>16</height>
      </rect>
@@ -159,7 +159,7 @@
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>80</y>
+      <y>110</y>
       <width>231</width>
       <height>20</height>
      </rect>
@@ -169,8 +169,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>390</y>
+     <x>230</x>
+     <y>430</y>
      <width>156</width>
      <height>23</height>
     </rect>
@@ -246,7 +246,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="text">
-     <string>Saved ShapeFile</string>
+     <string>Saved .csv File</string>
     </property>
    </widget>
    <widget class="QLabel" name="inputshplabel">
@@ -259,7 +259,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="text">
-     <string>Input ShapeFile</string>
+     <string>Input .csv File</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="activeradio">
