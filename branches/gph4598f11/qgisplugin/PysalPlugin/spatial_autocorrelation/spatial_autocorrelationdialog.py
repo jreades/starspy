@@ -73,7 +73,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 	
     @pyqtSignature('') #prevents actions being handled twice
     def on_Inputweightsbutton_clicked(self):
-        myFile2 = QFileDialog.getOpenFileName (self, "Select a weights file","","*.gal")
+        myFile2 = QFileDialog.getOpenFileName (self, "Select a weights file","","*.gal;;*.gwt;;*.mat")
         self.ui.Inputweightsline.setText(myFile2)
     
     @pyqtSignature('') #prevents actions being handled twice
