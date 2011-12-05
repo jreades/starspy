@@ -206,7 +206,7 @@ class Kernel:
             return r
             
         #Calculate Uniform Kernel at one user-provided point
-        def gaussian_point(self, xpoint, ypoint):
+        def uniform_point(self, xpoint, ypoint):
             if xpoint < min(self.outputgrid_x) or xpoint > max(self.outputgrid_x) or ypoint < min(self.outputgrid_y) or ypoint > max(self.outputgrid_y):
                 r = "The point you provided lies outside the area of influence of the input points"
             else:    
