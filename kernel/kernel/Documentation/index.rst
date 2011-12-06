@@ -38,11 +38,11 @@ Preplists take the input list from the user and splits the x- and y- values into
 
 After this step, the function finds the minimum bounding coordinates of the coverage area, then adds the bandwidth distance as a buffer.  Within this region, effects from the kernel smoothing function are possible.
 
-This sets up the output grid functionality.  The maximum and minimum range values are divided into equal parts by the input resolution value.  This creates an x,y grid, where output kernel values will be returned in the calculation functions.
+This sets up the output grid functionality.  The maximum and minimum range values are divided into equal parts by the input resolution value.  This creates an x,y grid, where output kernel values will be returned in the calculation functions.  The values outputgrid_x, and outputgrid_y are stored as the variable names, where each pairing of x,y values will later have a kernel value attached to it.
 
 Users also have the option - in later functions - to access a kernel value at a specific point, so long as that point falls within the bounding coordinates of the output grid.
 
-Values returned from this function are the xvals, yvals, outputx_grid, and outputy_grid.
+Values returned from this function are the xvals, yvals, outputgrid_x, and outputgrid_y.
 
 -----
 Example:
@@ -54,7 +54,7 @@ Example:
     k.preplists()
 
     This k.preplists() command would create an input xvals of [11,23,33,45] and an input yvals of [22,33,44,55].  In xy space, this would correspond to [(11,22), (23,33), (33,44), and (45,55)]  
-    The bandwidth above is '2', so the output x grid would have bounding coordinates of 9 (11-2), and 47 (45+2).  The output y grid would have bounding coordinates of 20 (22-2) and 57 (55+2).  Within this minimum bounding rectangle of (9,20) and (47,57) would contain any possible results of any following kernel function.  The x- and y- grids would be parsed into 10 equal parts, per the resolution, and these become the outputx and outputy lists.  These values are returned from the Preplists function to pass into the kernel calculation functions, along with the xvals and yvals variables.
+    The bandwidth above is '2', so the output x grid would have bounding coordinates of 9 (11-2), and 47 (45+2).  The output y grid would have bounding coordinates of 20 (22-2) and 57 (55+2).  Within this minimum bounding rectangle of (9,20) and (47,57) would contain any possible results of any following kernel function.  The x- and y- grids would be parsed into 10 equal parts, per the resolution, and these become the outputgrid_x and outputgrid_y lists.  These values are returned from the Preplists function to pass into the kernel calculation functions, along with the xvals and yvals variables.
 
 .. function:: calculate(xi, mu, sig, method)
 
@@ -98,11 +98,12 @@ Building on the example from earlier, calling the Gaussian function:
 
     print 'The x-coordinate, y-coordinate, and gaussian kernel values are:', k.gaussian()
 
-Will return:
+Will return an array of 100 x,y coordinate pairs and 100 associated kernel values, starting with
+"(9.0, 20.0, 0.01463745789778124), (9.0, 24.111111111111111, 0.013826330006026441), (9.0, 28.222222222222221, 0.0015821466424731905)...(47.0, 52.888888888888886, 0.013826330006026415), (47.0, 57.0, 0.01463745789778124)"
 
-The x-coordinate, y-coordinate, and gaussian kernel values are: [(9.0, 20.0, 0.01463745789778124), (13.222222222222221, 24.111111111111111, 0.012296353589811163), (17.444444444444443, 28.222222222222221, 6.9579895793571664e-05), (21.666666666666668, 32.333333333333329, 0.030138661108901638), (25.888888888888889, 36.444444444444443, 0.0032089432747310163), (30.111111111111111, 40.555555555555557, 0.0032089432747310163), (34.333333333333336, 44.666666666666664, 0.030138661108901635), (38.555555555555557, 48.777777777777771, 6.9579895793572098e-05), (42.777777777777779, 52.888888888888886, 0.01229635358981114), (47.0, 57.0, 0.01463745789778124)]
+Calling the k.gaussian_point() function using the input x1=30,y1=50 will generate the following result:
 
-
+"The gaussian kernel value at a specific point is: [ 0.00100357]"
 
 
 
