@@ -42,8 +42,16 @@ class Kernel:
 
             #Create a set of output x and y values (for the output grid)
             
-            outputgrid_x = numpy.linspace(lowx, highx, self.resolution)
-            outputgrid_y = numpy.linspace(lowy, highy, self.resolution)
+            outpoints_x = numpy.linspace(lowx, highx, self.resolution)
+            outpoints_y = numpy.linspace(lowy, highy, self.resolution)
+            outputgrid_x = [0]
+            outputgrid_y = [0]
+            for i in outpoints_x:
+                for j in outpoints_y:
+                    outputgrid_x.append(i)
+                    outputgrid_y.append(j)
+            outputgrid_x.pop(0)
+            outputgrid_y.pop(0)
 
             #Zips the x, y values for the output grid together to create
 	    #coordinate pairs.  We may not need this, but we can append
@@ -83,7 +91,7 @@ class Kernel:
         #Calculate Gaussian Kernel in an output grid
         def gaussian(self):
             x = numpy.array(self.xvals) #Pass x-values into array
-            X = self.outputgrid_x #Set x linespace
+            X = numpy.array(self.outputgrid_x) #Set x linespace
             rows = len(self.points)/2
             f = numpy.zeros((rows,X.shape[0]))
             for i,Xi in enumerate(X):
@@ -92,7 +100,7 @@ class Kernel:
             kernx = numpy.sum(f, axis = 0)        
 
             y = numpy.array(self.yvals) #Pass y-values into array
-            Y = self.outputgrid_y #Set y linespace
+            Y = numpy.array(self.outputgrid_y) #Set y linespace
             g = numpy.zeros((rows,Y.shape[0]))
             for i,Yi in enumerate(Y):
                 for j, yj in enumerate(y):
@@ -134,7 +142,7 @@ class Kernel:
         #Calculate Triangular Kernel in an output grid
         def triangular(self):
             x = numpy.array(self.xvals) #Pass x-values into array
-            X = self.outputgrid_x #Set x linespace
+            X = numpy.array(self.outputgrid_x) #Set x linespace
             rows = len(self.points)/2
             f = numpy.zeros((rows,X.shape[0]))
             for i,Xi in enumerate(X):
@@ -143,7 +151,7 @@ class Kernel:
             kernx = numpy.sum(f, axis = 0)        
 
             y = numpy.array(self.yvals) #Pass y-values into array
-            Y = self.outputgrid_y #Set y linespace
+            Y = numpy.array(self.outputgrid_y) #Set y linespace
             g = numpy.zeros((rows,Y.shape[0]))
             for i,Yi in enumerate(Y):
                 for j, yj in enumerate(y):
@@ -184,7 +192,7 @@ class Kernel:
         #Calculate Uniform Kernel in an output grid
         def uniform(self):
             x = numpy.array(self.xvals) #Pass x-values into array
-            X = self.outputgrid_x #Set x linespace
+            X = numpy.array(self.outputgrid_x) #Set x linespace
             rows = len(self.points)/2
             f = numpy.zeros((rows,X.shape[0]))
             for i,Xi in enumerate(X):
@@ -193,7 +201,7 @@ class Kernel:
             kernx = numpy.sum(f, axis = 0)        
 
             y = numpy.array(self.yvals) #Pass y-values into array
-            Y = self.outputgrid_y #Set y linespace
+            Y = numpy.array(self.outputgrid_y) #Set y linespace
             g = numpy.zeros((rows,Y.shape[0]))
             for i,Yi in enumerate(Y):
                 for j, yj in enumerate(y):
