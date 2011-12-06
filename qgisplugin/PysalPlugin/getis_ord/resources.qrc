@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/getis_ord" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
