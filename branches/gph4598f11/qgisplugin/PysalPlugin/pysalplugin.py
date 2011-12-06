@@ -22,7 +22,7 @@ except ImportError:
         dlg.show()
         results = dlg.exec_()
 
-
+from getis_ord.getis_orddialog import getis_ordDialog
 from weights.weightsdialog import WeightsDialog
 from spatial_dynamics.spatial_dynamicsdialog import spatial_dynamicsdialog
 from spatial_autocorrelation.spatial_autocorrelationdialog import spatial_autocorrelationDialog
@@ -138,6 +138,21 @@ class PysalPlugin:
 
         self.menu4.addActions([self.computeMatrixAction])
 
+#############################################
+### Set up the Getis-Ord Menu Tree  ###
+#############################################
+
+        self.menu5 = QMenu("Getis-Ord")
+        #Main Getis Menu
+        self.menu5.setIcon(QIcon(":/plugins/pysalplugin/resources/esda_icon.png"))
+
+        self.computeMatrixAction = QAction(QIcon(":/plugins/pysalplugin/icon8.png"), \
+            "Getis-Ord", self.iface.mainWindow())
+        QObject.connect(self.computeMatrixAction, SIGNAL("triggered()"), self.getis_ord)
+
+        self.menu5.addActions([self.computeMatrixAction])
+
+
 
 ################################################################
 ### Pack all the menus together and add them to QGIS MenuBar ###
@@ -146,6 +161,7 @@ class PysalPlugin:
         self.menu1.addMenu(self.menu2)
         self.menu1.addMenu(self.menu3)
 	self.menu1.addMenu(self.menu4)
+        self.menu1.addMenu(self.menu5)
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.addMenu(self.menu1)
 
@@ -200,6 +216,11 @@ class PysalPlugin:
         dlg = WeightsDialog(self.iface)
         dlg.show()
         results = dlg.exec_()
+    def getis_ord(self):
+        dlg = getis_ordDialog(self.iface)
+        dlg.show()
+        results = dlg.exec_()
+
 
 class notImplemented(Exception):
     pass

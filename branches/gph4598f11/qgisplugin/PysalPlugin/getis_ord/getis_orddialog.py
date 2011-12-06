@@ -104,65 +104,64 @@ def accept(self):
         # if selecting saved shp   TAI  SAO PHAI SHAVED SHAPE FILE?
 		openfile=str(self.ui.InputTextLine.text()) #make a string of saved file
 		savefile = str(self.ui.OuputTextLine.text()) #this will be a string like "c:\output.(.csv)"
-		weightsfile=str(self.ui.InputWeightsTextLine.text())
 
+		weightsfile=str(self.ui.InputWeightsTextLine.text())
+       
+        if self.ui.GetisOrdcheck.checkState():    #run Getisvalue
+			np.random.seed(10) #? Is this step necessary?
+			f=pysal.open(openfile) #read a shp file, not need to read
+			w=pysal.open(weightsfile).read() #read a weights file
+			opendbf=openfile[:-3] + "dbf" #open the same file only with dbf 
+			f_dbf = pysal.open(opendbf) #read the dbf attribute file
+			fileheader=f_dbf.header
+
+			#select a column and let it function
+			columnindex=self.ui.selectcombobox.currentText() #when select a column
+			y=np.array(f_dbf.by_col[columnindex]) #change into
 		
-		if  self.ui.GetisOrdcheck.checkState():#if check run Getis Ord
-			np.random.seed(10) #
-			f=pysal.open(openfile) #
-			w=pysal.open(weightsfile).read() #read a weights fil 
-                opendbf=openfile[:-3] + "dbf" # only with dbf 
-                f_dbf = pysal.open(opendbf) #read the dbf attribute file
-    	        fileheader=f_dbf.header
-           
-           #select a column and let it function
-    	        columnindex=self.ui.selectcombobox.currentText()
-                #when select a field
-	        y=np.array(f_dbf.by_col[columnindex]) #change into array, 
-                threshDist = float(self.ui.ThreshDistLine.text())
+		    threshDist = float(self.ui.ThreshDistLine.text())
             #calculate value of getis ord
-                dist_w = pysal.threshold_binaryW_from_shapefile(openfile,threshDist)
-                dist_w.transform = "B"
-                g = G(y, self.dist_w)
-			
-          			
-                savestring=str(g.G)
+            dist_w = pysal.threshold_binaryW_from_shapefile(openfile,threshDist)
+            dist_w.transform = "B"
+            g = G(y, self.dist_w)
+		
+            savestring=str(g.G)
     #savestring=','.join(str(n) for n in g) #change from list to string for saving
-                output=pysal.open(savefile, 'w')
-                output.write(savestring) 
-                output.close()
+            output=pysal.open(savefile, 'w')
+            output.write(savestring) 
+            output.close()
 			
-                if self.ui.Zvalue.checkState():
-					gZ=g.z_norm
-					savestring2=columnindex+'\n'+'Getis-Ord'+','+savestring+'\n'+'\n'+'\n'+'z-value'+','+str(gZ)
-					output=pysal.open(savefile, 'w')
-					output.write(savestring2)
-					output.close()
+            if self.ui.Zvalue.checkState():
+			    gZ=g.z_norm
+				savestring2=columnindex+'\n'+'Getis-Ord'+','+savestring+'\n'+'\n'+'\n'+'z-value'+','+str(gZ)
+				output=pysal.open(savefile, 'w')
+				output.write(savestring2)
+				output.close()
 				    
-                else:
-					pass
+            else:
+				pass
 				
-                if self.ui.Pvalue.checkState():
-					gP=g.p_norm
-					savestring3=columnindex+'\n'+'Getis-Ord'+','+savestring+'\n'+'\n'+'\n'+'p-value'+','+str(gP)
-					output=pysal.open(savefile, 'w')
-					output.write(savestring3)
-					output.close()
-                else:
-					pass
-             
+            if self.ui.Pvalue.checkState():
+				gP=g.p_norm
+				savestring3=columnindex+'\n'+'Getis-Ord'+','+savestring+'\n'+'\n'+'\n'+'p-value'+','+str(gP)
+				output=pysal.open(savefile, 'w')
+				output.write(savestring3)
+				output.close()
+            else:
+				pass
+            
     elif self.ui.activecombobox.isChecked(): #when selecting active shp and then import pysal
 		layer = self.layers[self.ui.activecombobox.currentIndex()] #select a shp layer
 		savefile = str(self.ui.OuputTextLine.text())
 		weightsfile=str(self.ui.InputWeightsTextLine.text())
 		
-		pass
+	
 		
-		if self.ui.GetisOrdcheck.checkState(): 
-			np.random.seed(10)
+		#if self.ui.GetisOrdcheck.checkState(): 
+		#	np.random.seed(10)
 			#f=pysal.open() #calculate Moran's I and other value, but do not know how to get the file path from active layers?
-		else:
-			return
+	else:
+	    return
 	
     self.close() #close the dialog            
             
