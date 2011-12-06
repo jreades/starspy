@@ -47,7 +47,7 @@ class Moran_pvalue: #(wx.Frame):
         
         self.axes.set_xlabel('x Values')
         self.axes.set_ylabel('P Values')
-        self.axes.set_xlim(-2,N+2)
+        self.axes.set_xlim(-5,N+5)
         
         line = np.ones(N)
         limit5 = list(0.05*line)
