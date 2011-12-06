@@ -31,6 +31,8 @@ from getis_orddialog import getis_ordDialog
       
 class getis_ord:
 
+    
+    
     def __init__(self, iface):
         # Save reference to the QGIS interface
         self.iface = iface
