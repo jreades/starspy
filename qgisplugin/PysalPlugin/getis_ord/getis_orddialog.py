@@ -86,7 +86,7 @@ class getis_ordDialog(QtGui.QDialog):
     @pyqtSignature('') #prevents actions being handled twice
     def on_OutputButton_clicked(self):
 	dlg = QFileDialog()
-	NFile3 = dlg.getSaveFileName(self,"Save Output", "","comma_separatedfile(*.dbf)")
+	NFile3 = dlg.getSaveFileName(self,"Save Output","","comma_separatedfile(*.csv)")
 	NFile3 += dlg.selectedNameFilter()[0] 
         self.ui.OuputTextLine.setText(NFile3[0:-1])
 
@@ -109,9 +109,9 @@ def accept(self):
 		
 		if  self.ui.GetisOrdcheck.checkState():#if check run Getis Ord
 			np.random.seed(10) #
-			#f=pysal.open(openfile) #
+			f=pysal.open(openfile) #
 			w=pysal.open(weightsfile).read() #read a weights fil 
-                opendbf=openfile[:-3] + "csv" # only with dbf 
+                opendbf=openfile[:-3] + "dbf" # only with dbf 
                 f_dbf = pysal.open(opendbf) #read the dbf attribute file
     	        fileheader=f_dbf.header
            
