@@ -80,12 +80,39 @@ class Moran_scatter: #(wx.Frame):
         self.axes = self.figure.add_subplot(111)
 	self.axes.set_xlabel('Zi')
 	self.axes.set_ylabel('Wij*Zj')
+	
+
+
+#	P = z.size
+	
+#	for i in range (P):
+#	    if z[i] < 0 & wz[i] < 0 :
+#		 color.append(100)
+#	    elif z[i] > 0 & wz[i] > 0:
+#		 color.append(100)
+#	    else:
+#		 color.append(10)
+
 
         self.axes.scatter(z,wz)
+
+
+
+	
+#	line = np.ones(z)
+#	self.axes.plot(0, wz, linewidth = 2.0)
+#	self.axes.plot(z, 0, linewidth = 2.0)
+#	self.axes.scatter(0)
+#	self.axes.scatter()
         
         slope, yint = self.LineFit(z,wz)
         regression = slope*z + yint
         self.axes.plot(z,regression)
+	self.axes.plot(z,0*wz)
+	self.axes.plot(0*z, wz)
+
+
+
         
 #        self.canvas = FigureCanvas(self, -1, self.figure)
 
