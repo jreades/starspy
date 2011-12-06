@@ -136,7 +136,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			if self.ui.normalradioButton.isChecked(): #under the assumption of normal distribution 
 				if self.ui.expectedcheckbox.checkState():
 					NE=mi.EI
-					savestring1=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Expected Value'+','+str(NE)
+					savestring1=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Expected Value'+','+str(NE)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring1)
 					output.close()
@@ -153,7 +153,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 	
 				if self.ui.variancecheckbox.checkState():
 					NV=mi.VI_norm
-					savestring2=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Variance'+','+str(NV)
+					savestring2=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Variance'+','+str(NV)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring2)
 					output.close()
@@ -161,7 +161,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 					pass
 				if self.ui.standardcheckbox.checkState():
 					NS=mi.seI_norm
-					savestring3=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Standard Deviation'+','+str(NS)
+					savestring3=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'Standard Deviation'+','+str(NS)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring3)
 					output.close()
@@ -169,7 +169,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 					pass
 				if self.ui.Zcheckbox.checkState():
 					Nz=mi.z_norm
-					savestring4=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'z-value'+','+str(Nz)
+					savestring4=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'z-value'+','+str(Nz)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring4)
 					output.close()
@@ -177,7 +177,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 					pass
 				if self.ui.Pcheckbox.checkState():
 					Np=mi.p_norm
-					savestring5=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'p-value'+','+str(Np)
+					savestring5=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Normality Assumption'+'\n'+'p-value'+','+str(Np)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring5)
 					output.close()
@@ -187,7 +187,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 			elif self.ui.randomradiobutton.isChecked(): #under the assumption of random distribution
 				if self.ui.variancecheckbox.checkState():
 					RV=mi.VI_rand
-					savestring6=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Variance'+','+str(RV)
+					savestring6=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Variance'+','+str(RV)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring6)
 					output.close()
@@ -195,7 +195,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 					pass
 				if self.ui.standardcheckbox.checkState():
 					RS=mi.seI_rand
-					savestring7=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Standard Deviation'+','+str(RS)
+					savestring7=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'Standard Deviation'+','+str(RS)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring7)
 					output.close()
@@ -203,7 +203,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 					pass
 				if self.ui.Zcheckbox.checkState():
 					Rz=mi.z_rand
-					savestring8=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'z-value'+','+str(Rz)
+					savestring8=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'z-value'+','+str(Rz)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring8)
 					output.close()
@@ -211,7 +211,7 @@ class spatial_autocorrelationDialog(QtGui.QDialog):
 					pass
 				if self.ui.Pcheckbox.checkState():
 					Rp=mi.p_rand
-					savestring9=columnindex+'\n'+'Moron\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'p-value'+','+str(Rp)
+					savestring9=columnindex+'\n'+'Moran\'s I'+','+savestring+'\n'+'\n'+'Randomization Assumption'+'\n'+'p-value'+','+str(Rp)
 					output=pysal.open(savefile, 'w')
 					output.write(savestring9)
 					output.close()
