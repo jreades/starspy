@@ -24,7 +24,9 @@ class Moran_pvalue: #(wx.Frame):
     def __init__(self, figure, mi):     
 
         '''
-        Constructor
+        Receive a figure object and local moran's value from main_window
+        Draw the scatter plot to show p-avlues with 5% line
+        p-values are obtained from the PySal function of moran.p_sim 
         '''
         self.figure = figure
         self.axes = self.figure.add_subplot(111)

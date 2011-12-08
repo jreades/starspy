@@ -133,13 +133,21 @@ class Project_GPH(wx.Frame):
         
         
     def showScatter(self,e):
-        if self.mi <> None:            
+        """
+        Call 'Moran_histogram' class to draw autocorrelation scatter plot.
+        It pass the path of the GAL file and a variable selected for the autocorrelation analysis
+        """
+        if self.mi <> None:
             figure = Figure(figsize=(5, 4), dpi=100)
             moran = Moran_scatter(figure, self.galpath, self.y)
             self.figure = moran.figure
             self.canvas = FigureCanvas(self.infPanel, -1, self.figure)        
  
     def showPvalue(self,e):
+        """
+        Call 'Moran_pvalue' class to draw scatter plot of p-values.
+        It pass local moran's values and a Figure object to the class
+        """
         if self.localmi <> None:
             figure = Figure(figsize=(5, 4), dpi=100)
             moran = Moran_pvalue(figure, self.localmi)
@@ -147,6 +155,10 @@ class Project_GPH(wx.Frame):
             self.canvas = FigureCanvas(self.infPanel, -1, self.figure)   
             
     def showBoxplot(self,e):
+        """
+        Call 'Moran_boxplot' class to draw box-plot of a variable selected for the analysis of autocorrelation.
+        It pass y which is a selected variable and a Figure object to the class
+        """
         if self.localmi <> None:
             figure = Figure(figsize=(5, 4), dpi=100)
             moran = Moran_boxplot(figure, self.y)
@@ -154,6 +166,10 @@ class Project_GPH(wx.Frame):
             self.canvas = FigureCanvas(self.infPanel, -1, self.figure)       
 
     def showHistogram(self,e):
+        """
+        Call 'Moran_histogram' class to draw permutation.
+        It pass moran's values and a Figure object to the class
+        """
         if self.mi<> None:
             figure = Figure(figsize=(5, 4), dpi=100)
             moran = Moran_histogram(figure,self.mi)
@@ -161,6 +177,9 @@ class Project_GPH(wx.Frame):
             self.canvas = FigureCanvas(self.infPanel, -1, self.figure)
 
     def openSHP(self, e):
+        """
+        import a shape file and call the class "WeightsMap" for drawing map using the shape file
+        """
         wildcard = "Shape File(.shp)|*.shp"
         dlg = wx.FileDialog(self,"Choose a shape file",os.getcwd(),"",wildcard,wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
@@ -184,6 +203,10 @@ class Project_GPH(wx.Frame):
 
 
     def openGAL(self, e):
+        """
+        Import .gal file which contains the information of number of neighbor features and 
+        identity number of each neighbor feature
+        """
         dlg = wx.FileDialog(self,"Choose .gal file",os.getcwd(),"","*.gal",wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.initial()
@@ -196,6 +219,10 @@ class Project_GPH(wx.Frame):
         #self.fileGAL = tkFileDialog.askopenfilename(filetypes = [('.gal files','.gal')], title = 'Open GAL',initialdir='./' )
 
     def openTXT(self, e):
+        """
+        Import comma delimited txet file with variables which are to analysis autocorrelation
+        """
+        
         wildcard = "Comma Delimited File(.txt)|*.txt|Comma Delimited File(.csv)|*.csv"
         dlg = wx.FileDialog(self,"Choose a comma delimited file",os.getcwd(),"",wildcard,wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
@@ -210,6 +237,9 @@ class Project_GPH(wx.Frame):
         #self.fileTXT = tkFileDialog.askopenfilename(filetypes = [('.csv files','.txt'),('.csv files','.csv')], title = 'Open Comma Delimited',initialdir='./' )
 
     def calPysal(self, e):
+        """
+        Obtain Moran'I, mean, and standard deviation of the input variable
+        """
         i = self.ch1.GetSelection()
         if i > -1 and self.w <> None:
             cname = str(self.ch1.GetString(i))
@@ -228,7 +258,9 @@ class Project_GPH(wx.Frame):
             self.value4.SetLabel(str(len(self.y)))
 
     def initial(self):
-        
+        """
+        Initialize previous values, map, and plot
+        """
         self.value1.SetLabel("")
         self.value2.SetLabel("")
         self.value3.SetLabel("")

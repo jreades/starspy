@@ -25,7 +25,8 @@ class Moran_boxplot: #(wx.Frame):
     def __init__(self, figure, y):     
 
         '''
-        Constructor
+        Receive a figure object and the selected variable from main_window
+        Draw a box-plot to show outliers. 
         '''
         self.figure = figure
         self.axes = self.figure.add_subplot(111)
