@@ -4,8 +4,8 @@ Created on Mar 6, 2011
 @author: dhyou
 '''
 
-#from Tkinter import *
-#import tkFileDialog
+
+
 
 import matplotlib
 matplotlib.use('WXAgg')
@@ -103,8 +103,8 @@ class Project_GPH(wx.Frame):
         
         self.infPanel = wx.Panel(panel, -1)
         figure = Figure(figsize=(5, 4), dpi=100)
-#        moran = Moran_scatter(figure)
-#        self.figure = moran.figure
+
+
         self.figure = figure
         self.canvas = FigureCanvas(self.infPanel, -1, self.figure)
         
@@ -135,7 +135,7 @@ class Project_GPH(wx.Frame):
     def showScatter(self,e):
         """
         Call 'Moran_histogram' class to draw autocorrelation scatter plot.
-        It pass the path of the GAL file and a variable selected for the autocorrelation analysis
+        It passes the path of the GAL file and a variable selected for the autocorrelation analysis
         """
         if self.mi <> None:
             figure = Figure(figsize=(5, 4), dpi=100)
@@ -146,7 +146,7 @@ class Project_GPH(wx.Frame):
     def showPvalue(self,e):
         """
         Call 'Moran_pvalue' class to draw scatter plot of p-values.
-        It pass local moran's values and a Figure object to the class
+        It passes local moran's values and a Figure object to the class
         """
         if self.localmi <> None:
             figure = Figure(figsize=(5, 4), dpi=100)
@@ -157,7 +157,7 @@ class Project_GPH(wx.Frame):
     def showBoxplot(self,e):
         """
         Call 'Moran_boxplot' class to draw box-plot of a variable selected for the analysis of autocorrelation.
-        It pass y which is a selected variable and a Figure object to the class
+        It passes y which is a selected variable and a Figure object to the class
         """
         if self.localmi <> None:
             figure = Figure(figsize=(5, 4), dpi=100)
@@ -168,7 +168,7 @@ class Project_GPH(wx.Frame):
     def showHistogram(self,e):
         """
         Call 'Moran_histogram' class to draw permutation.
-        It pass moran's values and a Figure object to the class
+        It passes moran's values and a Figure object to the class
         """
         if self.mi<> None:
             figure = Figure(figsize=(5, 4), dpi=100)
@@ -189,9 +189,9 @@ class Project_GPH(wx.Frame):
             if issubclass(type(self.shapepath),basestring):              
                 geo = pysal.open(self.shapepath,'r')          
             self.geo = geo          
-    #        if issubclass(type(w),basestring):             
-    #            w = pysal.open(w,'r').read()          
-    #        self.w = w       
+             
+          
+       
             self.shpPanel = WeightsMap(self,self.geo,self.w) 
             
             fname = self.shapepath.replace(".shp",".dbf")
@@ -215,12 +215,12 @@ class Project_GPH(wx.Frame):
 
             
         dlg.Destroy()
-        #self.openPysal()
-        #self.fileGAL = tkFileDialog.askopenfilename(filetypes = [('.gal files','.gal')], title = 'Open GAL',initialdir='./' )
+
+
 
     def openTXT(self, e):
         """
-        Import comma delimited txet file with variables which are to analysis autocorrelation
+        Import comma delimited text file with variables which are to analysis autocorrelation
         """
         
         wildcard = "Comma Delimited File(.txt)|*.txt|Comma Delimited File(.csv)|*.csv"
@@ -233,8 +233,8 @@ class Project_GPH(wx.Frame):
             
             
         dlg.Destroy()
-        #self.openPysal()
-        #self.fileTXT = tkFileDialog.askopenfilename(filetypes = [('.csv files','.txt'),('.csv files','.csv')], title = 'Open Comma Delimited',initialdir='./' )
+
+
 
     def calPysal(self, e):
         """
@@ -247,7 +247,7 @@ class Project_GPH(wx.Frame):
                 
             print "y-values"
             print self.y
-#            self.w = pysal.open(self.galpath).read()
+
             
             self.mi = pysal.Moran(self.y, self.w)
             self.localmi = pysal.Moran_Local(self.y, self.w)
