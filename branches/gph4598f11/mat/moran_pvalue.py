@@ -18,8 +18,8 @@ import wx
 
 class Moran_pvalue: #(wx.Frame):
 
-#    def __init__(self, args, **kwargs):
-#        super(Moran_scatter, self).__init__(args, **kwargs) 
+
+ 
 
     def __init__(self, figure, mi):     
 

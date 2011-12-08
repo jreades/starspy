@@ -1,8 +1,8 @@
-'''
-Created on Mar 6, 2011
 
-@author: dhyou
-'''
+
+
+
+
 import sys,math,random,time
 from copy import deepcopy 
 import numpy as np
@@ -32,6 +32,9 @@ class Moran_scatter:
         ystd = y1.std()
         z = (y1 - ymean)/ystd
         
+		""" open gal file 
+		"""
+
         read_gal = open(gal, "r")
         numNode = int(read_gal.readline())
         
@@ -72,7 +75,12 @@ class Moran_scatter:
         slope, yint = self.LineFit(z,wz)
         regression = slope*z + yint
         self.axes.plot(z,regression)
-        self.axes.plot(z,0*wz)
+        
+		
+		""" to draw the two lines those divide the figure into four quadrant 
+		"""
+
+		self.axes.plot(z,0*wz)
         self.axes.plot(0*z, wz)
 
         
