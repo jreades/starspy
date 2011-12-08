@@ -11,6 +11,7 @@ import pysal, numpy
 import os.path
 # create the dialog
 class WeightsDialog(QtGui.QDialog):
+    '''This class is the weights dialog and contains all weights methods.  It loads the ui_weights.py ui file'''
     def __init__(self,iface):
         QtGui.QDialog.__init__(self)
         # Set up the user interface from QTDesigner.
@@ -30,16 +31,19 @@ class WeightsDialog(QtGui.QDialog):
                 
     @pyqtSignature('') #prevents actions being handled twice
     def on_rbUseActiveLayer_clicked(self):
+        '''When radiobutton Use Active Layer update the NN slider'''
         if self.lcount != -1:
             self.ui.horizontalSlider.setMaximum(self.lcount-1)
             self.ui.horizontalSlider.setTickInterval((self.lcount-1)/10 or 1)
     @pyqtSignature('') #prevents actions being handled twice
     def on_rbSaveShapefile_clicked(self):
+        '''if the user toggles back to a saved shapefile already selected update NN slider'''
         if self.scount != -1:
             self.ui.horizontalSlider.setMaximum(self.scount-1)
             self.ui.horizontalSlider.setTickInterval((self.scount-1)/10 or 1) 
     @pyqtSignature('') #prevents actions being handled twice
     def on_pbnInput_clicked(self):
+        '''Pressbutton Input clicked.  Users selects a shapefile and the NNslider updates'''
         myFile = QFileDialog.getOpenFileName (self, "Select a shapefile","","*.shp")
         self.ui.inputFile.setText(myFile)
         vlayer = QgsVectorLayer(myFile, "temp", "ogr")
@@ -49,6 +53,7 @@ class WeightsDialog(QtGui.QDialog):
         self.ui.horizontalSlider.setTickInterval((self.scount-1)/10 or 1)
     @pyqtSignature('int') #prevents actions being handled twice    
     def on_sourceLayer_currentIndexChanged(self,i):
+        '''User selects a new layer from the active layers and the NN slider updates'''
         l = self.layers[i]
         self.lcount = l.featureCount()
         self.ui.horizontalSlider.setMaximum(self.lcount-1)
@@ -56,6 +61,7 @@ class WeightsDialog(QtGui.QDialog):
         
     @pyqtSignature('') #prevents actions being handled twice
     def on_pbnOutput_clicked(self):
+        '''Select a location for the output file'''
         dlg = QFileDialog()
         myFile = dlg.getSaveFileName(self, "Select a file for the weights matrix", "Saved File", "*.gal;;*.gwt;;*.mat")
         myFile += dlg.selectedNameFilter()[0]
@@ -69,6 +75,7 @@ class WeightsDialog(QtGui.QDialog):
 ####                                                                                       ####
 ###############################################################################################
     def accept(self):
+        '''The user has hit OK, run the script and create the output file'''
         savefile = str(self.ui.outputFile.text()) #this will be a string like "c:\output"
         addNumNeighbors = self.ui.addNumNeighbors.checkState() #this will be 0 or 2 but we can treat it as False/True
         addY = self.ui.addY.checkState() #this will be 0 or 2 but we can treat it as False/True      
@@ -183,81 +190,4 @@ class WeightsDialog(QtGui.QDialog):
         self.close() #close the dialog window
 
 
-        '''
-        # example code from a hillshade plugin
-        myEngine = ShadedReliefEngine()
-        myEngine.minSlopeParam = self.ui.spinBoxMinSlope.value()
-        myEngine.maxSlopeParam = self.ui.spinBoxMaxSlope.value()
-        myEngine.azimuthParam = self.ui.spinBoxAzi.value()
-        myEngine.incParam = self.ui.spinBoxInc.value()
-        myEngine.vzParam = self.ui.doubleSpinBoxVz.value()
-        myEngine.strideParam = self.ui.spinBoxStride.value()
-
-        if self.ui.rbUseActiveLayer.isChecked():
-
-
-
-          if self.iface.mapCanvas().layerCount() == 0:
-            QMessageBox.warning(self.iface.mainWindow(),
-                "Shaded Relief", "First open any one-band (DEM) raster layer, please")
-            return 2
-          layer = self.iface.activeLayer()
-
-          if layer == None or layer.type() != layer.RasterLayer or layer.bandCount() != 1:
-            QMessageBox.warning(self.iface.mainWindow(),
-                "Shaded Relief", "Please select one-band (DEM) raster layer")
-            return 3
-
-          myEngine.extentParam = layer.extent()
-          myEngine.widthParam = layer.width()
-          myEngine.heightParam = layer.height()
-          myEngine.noDataParam = layer.noDataValue()
-          myEngine.outFileParam = f
-          myEngine.sourceFileParam = layer.source()
-          myEngine.wktParam = layer.srs().toWkt()
-          myEngine.run()
-          if len(f) > 0:
-            newLayer = QgsRasterLayer(str(f),os.path.basename(str(f)))
-            QgsMapLayerRegistry.instance().addMapLayer(newLayer)
-            newLayer.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")
-            newLayer.triggerRepaint()
-            #remember path to file
-            self.dir = os.path.split(str(f))[0]
-          return
-        else: # batch mode
-          # loop through all the layers in the input
-          # dir and write them to the output dir
-          # with an added suffix if needed
-          myOutputDir = str(self.ui.leOutputDir.text())
-          myInputDir = str(self.ui.leInputDir.text())
-          mySuffix = str(self.ui.leSuffix.text())
-          for myFile in glob.glob(os.path.join(myInputDir, '*.tif')):
-
-            if not os.path.isdir(myOutputDir):
-              try:
-                os.makedirs(myOutputDir)
-              except OSError:
-                QMessageBox.warning(self.iface.mainWindow(),
-                    "Shaded Relief", "Unable to make the output directory. Check permissions and retry.")
-                return 3
-            myLayer = QgsRasterLayer(myFile,os.path.basename(myFile))
-            myEngine.extentParam = myLayer.extent()
-            myEngine.widthParam = myLayer.width()
-            myEngine.heightParam = myLayer.height()
-            myEngine.noDataParam = myLayer.noDataValue()
-            myFileBase = os.path.split(myFile)[1]
-            myFileBase = os.path.splitext(myFileBase)[0]
-            myOutFileName = os.path.join(myOutputDir,myFileBase + mySuffix + ".tiff")
-            myEngine.outFileParam = myOutFileName
-            myEngine.sourceFileParam = myLayer.source()
-            myEngine.wktParam = myLayer.srs().toWkt()
-            del myLayer
-            myEngine.run()
-            myNewLayer = QgsRasterLayer(str(myOutFileName),os.path.basename(str(myOutFileName)))
-            QgsMapLayerRegistry.instance().addMapLayer(myNewLayer)
-            myNewLayer.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")
-            myNewLayer.triggerRepaint()
-        return
-        '''
-
-
+        
