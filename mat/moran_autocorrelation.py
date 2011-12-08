@@ -25,7 +25,8 @@ class Moran_scatter: #(wx.Frame):
     def __init__(self, figure, gal, y1):     
 
         '''
-        Constructor
+        Read the data from GAL file and calculate x and y value
+        Draw the scatter plot to show autocorrelation with a linear line 
         '''
         #read_data = open("C:/Users/Daehyun You/workspace/Project/stl_hom.txt", "r")
 #        read_data = open(comma, "r")
@@ -143,7 +144,9 @@ class Moran_scatter: #(wx.Frame):
         
 
     def LineFit(self,x,y):
-        ''' Returns slope and y-intercept of linear fit to (x,y) data set'''
+        """
+        Returns slope and y-intercept of linear fit to (x,y) data set
+        """
         xavg = x.mean()
         slope = (y*(x-xavg)).sum()/(x*(x-xavg)).sum()
         yint = y.mean()-slope*xavg
