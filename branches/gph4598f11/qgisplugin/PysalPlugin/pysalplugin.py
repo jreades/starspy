@@ -174,6 +174,7 @@ class PysalPlugin:
 
     ############ run methods that performs all the real work#############
     def runAbout(self):
+        '''When users click on the 'About' Action'''
         # create and show the dialog
         dlg = PysalPluginDialog()
         dlg.ui.webView.setUrl(QUrl("file:///%s/about/about.html" % self.PySalPlugin_dir))
