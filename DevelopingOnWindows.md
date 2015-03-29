@@ -1,0 +1,8 @@
+# Developing on Windows #
+
+If you want to run the source code from the last stable release (in tags 0.8.2) on Windows you will need:
+
+  * [Python 2.4](http://www.python.org/ftp/python/2.4/python-2.4.msi)
+  * [Numeric](http://sourceforge.net/projects/numpy/files/Old%20Numeric/24.2/Numeric-24.2.win32-py2.4.exe/download)
+
+The new versions of STARS will not be supporting Numeric as we are porting to Numpy, but the above set up will let new developers on Windows explore and experiment the original source code prior to the port to Numpy.
